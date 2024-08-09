@@ -1,10 +1,10 @@
-dashboard "aws_s3_bucket_insecure_access" {
+dashboard "aws_elb_insecure_access" {
 
   tags = {
-    service = "AWS/S3"
+    service = "AWS/ELB"
   }
 
-  title         = "AWS S3 Bucket Insecure Access"
+  title         = "AWS ELB Insecure Access"
   #documentation = file("./dashboards/iam/docs/iam_user_report_mfa.md")
 
   /*
@@ -70,28 +70,30 @@ dashboard "aws_s3_bucket_insecure_access" {
     }
     */
 
-    query = query.aws_s3_bucket_insecure_access
+    query = query.aws_elb_insecure_access
   }
 
 }
 }
 
 // TODO: Add region and account ID
-query "aws_s3_bucket_insecure_access" {
+query "aws_elb_insecure_access" {
   sql = <<-EOQ
     select
       timestamp,
-      bucket,
-      key,
-      remote_ip,
-      operation,
-      requester,
+      elb,
+      type,
+      ssl_cipher,
+      ssl_protocol,
+      client_ip,
+      client_port,
+      request,
       user_agent
     from
-      aws_s3_server_access_log
+      aws_elb_access_log
     where
-      operation ilike 'REST.%.OBJECT' -- Ignore S3 initiated events
-      and (cipher_suite is null or tls_version is null)
+      type = 'https'
+      and (ssl_cipher= '-' or ssl_protocol = '-')
     order by
       timestamp desc
   EOQ
