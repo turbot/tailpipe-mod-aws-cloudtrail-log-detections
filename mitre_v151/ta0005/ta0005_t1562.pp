@@ -6,7 +6,7 @@ locals {
 
 benchmark "mitre_v151_ta0005_t1562" {
   title         = "T1562 Impair Defenses"
-  //documentation = file("./cis_v130/docs/cis_v130_3.md")
+  documentation = file("./mitre_v151/docs/ta0005_t1562.md")
   children = [
     benchmark.mitre_v151_ta0005_t1562_001
   ]
@@ -16,7 +16,7 @@ benchmark "mitre_v151_ta0005_t1562" {
 
 benchmark "mitre_v151_ta0005_t1562_001" {
   title         = "T1562.001 Disable or Modify Tools"
-  //documentation = file("./cis_v130/docs/cis_v130_3.md")
+  documentation = file("./mitre_v151/docs/ta0005_t1562_001.md")
   children = [
     control.cloudtrail_log_cloudtrail_trail_updates
   ]

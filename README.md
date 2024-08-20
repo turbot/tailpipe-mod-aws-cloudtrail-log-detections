@@ -1,2 +1,3 @@
-# tailpipe-mod-aws
-Scan AWS logs for high risk activity
+# AWS Mod for Tailpipe
+
+Scan AWS logs for high risk activity.

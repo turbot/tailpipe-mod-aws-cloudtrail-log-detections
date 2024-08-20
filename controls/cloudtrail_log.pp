@@ -4,87 +4,72 @@ locals {
   })
 }
 
-// TODO: Singular or plural for "login"?
-control "cloudtrail_log_console_root_login" {
-  title       = "Check CloudTrail Logs for Console Root Login"
-  description = "Logging in as root is not recommended due to the high privilege level."
-  severity    = "high"
-  query       = query.cloudtrail_log_console_root_login
+benchmark "cloudtrail_log_checks" {
+  title       = "CloudTrail Log Checks"
+  description = "This section contains recommendations for scanning CloudTrail logs."
+  children = [
+    control.cloudtrail_log_cloudtrail_trail_updates,
+    control.cloudtrail_log_ec2_security_group_ingress_egress_updates,
+    control.cloudtrail_log_iam_root_console_logins,
+    control.cloudtrail_log_non_read_only_updates,
+    control.cloudtrail_log_non_terraform_updates,
+  ]
 
   tags = merge(local.cloudtrail_log_common_tags, {
-    mitre_tactic    = "Initial Access"
-    mitre_tactic_id = "TA0001"
-    mitre_attack    = "Valid Accounts"
-    mitre_attack_id = "T1078"
+    type = "Benchmark"
   })
+}
+
+
+control "cloudtrail_log_iam_root_console_logins" {
+  title       = "Check CloudTrail Logs for IAM Root Console Logins"
+  description = "Detect IAM root user console logins to check for any actions performed by the root user."
+  severity    = "high"
+  query       = query.cloudtrail_log_iam_root_console_logins
+
+  tags = local.cloudtrail_log_common_tags
 }
 
 control "cloudtrail_log_cloudtrail_trail_updates" {
   title       = "Check CloudTrail Logs for CloudTrail Trail Updates"
-  description = "Modifying CloudTrail trails can affect logging and exports of logs."
+  description = "Detect CloudTrail trail changes to check if logging was stopped."
   severity    = "medium"
   query       = query.cloudtrail_log_cloudtrail_trail_updates
 
-  tags = merge(local.cloudtrail_log_common_tags, {
-    mitre_tactic    = "Defense Evasion"
-    mitre_tactic_id = "TA0005"
-    mitre_attack    = "Disable or Modify Tools"
-    mitre_attack_id = "T1562.001"
-  })
+  tags = local.cloudtrail_log_common_tags
 }
 
 control "cloudtrail_log_ec2_security_group_ingress_egress_updates" {
   title       = "Check CloudTrail Logs for EC2 Security Group Ingress/Egress Updates"
-  description = "Modifying EC2 security group rules can allow for unauthorized VPC access or export of data."
+  description = "Detect EC2 security group ingress and egress rule updates to check for unauthorized VPC access or export of data."
   severity    = "medium"
   query       = query.cloudtrail_log_ec2_security_group_ingress_egress_updates
 
-  tags = merge(local.cloudtrail_log_common_tags, {
-    mitre_tactic    = "Initial Access"
-    mitre_tactic_id = "TA0001"
-    mitre_attack    = "Exploit Public-Facing Application"
-    mitre_attack_id = "T1190"
-  })
+  tags = local.cloudtrail_log_common_tags
 }
 
 control "cloudtrail_log_non_read_only_updates" {
-  title       = "Check CloudTrail Logs for Non-Read Only Updates"
-  description = "View all events that are not read-only."
+  title       = "Check CloudTrail Logs for Non-Read-Only Updates"
+  description = "Detect write events that are performed by a non-AWS service."
   // TODO: What severity?
   severity    = "low"
   query       = query.cloudtrail_log_non_read_only_updates
 
-  // TODO: What tags?
-  /*
-  tags = merge(local.cloudtrail_log_common_tags, {
-    mitre_tactic    = "Initial Access"
-    mitre_tactic_id = "TA0001"
-    mitre_attack    = "Exploit Public-Facing Application"
-    mitre_attack_id = "T1190"
-  })
-  */
+  tags = local.cloudtrail_log_common_tags
 }
 
 control "cloudtrail_log_non_terraform_updates" {
   title       = "Check CloudTrail Logs for Non-Terraform Updates"
-  description = "API calls made outside of Terraform should be monitored."
+  description = "Detect write events that are performed by a non-AWS service and without Terraform."
   // TODO: What severity?
   severity    = "low"
   query       = query.cloudtrail_log_non_terraform_updates
 
-  // TODO: What tags?
-  /*
-  tags = merge(local.cloudtrail_log_common_tags, {
-    mitre_tactic    = "Initial Access"
-    mitre_tactic_id = "TA0001"
-    mitre_attack    = "Exploit Public-Facing Application"
-    mitre_attack_id = "T1190"
-  })
-  */
+  tags = local.cloudtrail_log_common_tags
 }
 
 // TODO: Add more request param data to reason
-query "cloudtrail_log_console_root_login" {
+query "cloudtrail_log_iam_root_console_logins" {
   sql = <<-EOQ
     install json;
     load json;
@@ -97,12 +82,8 @@ query "cloudtrail_log_console_root_login" {
       end as reason,
       (to_timestamp(tp_timestamp/1000)::timestamptz)::varchar as event_time,
       tp_id,
-      -- TODO: Do we need to show usernames if the reason has the ARN?
-      --tp_usernames::string,
       tp_source_ip,
-      recipient_account_id,
-      -- TODO: Region is the same for each partition, do we need it?
-      aws_region,
+      recipient_account_id
     from
       aws_cloudtrail_log
     where
@@ -126,11 +107,9 @@ query "cloudtrail_log_cloudtrail_trail_updates" {
       user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || ' for ' || (request_parameters::JSON ->> 'name') || '.' as reason,
       (to_timestamp(tp_timestamp/1000)::timestamptz)::varchar as event_time,
       tp_id,
-      -- TODO: Do we need to show usernames if the reason has the ARN?
-      --tp_usernames::string,
       tp_source_ip,
       recipient_account_id,
-      aws_region,
+      aws_region
     from
       aws_cloudtrail_log
     where
@@ -154,8 +133,6 @@ query "cloudtrail_log_ec2_security_group_ingress_egress_updates" {
       user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || ' for ' || (request_parameters::JSON ->> 'groupId') || '.' as reason,
       (to_timestamp(tp_timestamp/1000)::timestamptz)::varchar as event_time,
       tp_id,
-      -- TODO: Do we need to show usernames if the reason has the ARN?
-      --tp_usernames::string,
       tp_source_ip,
       recipient_account_id,
       aws_region,
@@ -185,8 +162,6 @@ query "cloudtrail_log_non_read_only_updates" {
       end as reason,
       (to_timestamp(tp_timestamp/1000)::timestamptz)::varchar as event_time,
       tp_id,
-      -- TODO: Do we need to show usernames if the reason has the ARN?
-      --tp_usernames::string,
       tp_source_ip,
       recipient_account_id,
       aws_region,
@@ -220,13 +195,10 @@ query "cloudtrail_log_non_terraform_updates" {
       end as reason,
       (to_timestamp(tp_timestamp/1000)::timestamptz)::varchar as event_time,
       tp_id,
-      -- TODO: Do I need to see user_agent all the time?
-      --user_agent,
-      -- TODO: Do we need to show usernames if the reason has the ARN?
-      --tp_usernames::string,
       tp_source_ip,
       recipient_account_id,
       aws_region,
+      user_agent,
       --request_parameters::string,
       --response_elements::string,
     from
@@ -242,4 +214,3 @@ query "cloudtrail_log_non_terraform_updates" {
       event_time desc;
   EOQ
 }
-
