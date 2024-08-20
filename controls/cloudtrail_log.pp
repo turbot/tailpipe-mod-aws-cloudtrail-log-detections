@@ -6,7 +6,7 @@ locals {
 
 benchmark "cloudtrail_log_checks" {
   title       = "CloudTrail Log Checks"
-  description = "This section contains recommendations for scanning CloudTrail logs."
+  description = "This benchmark contains recommendations when scanning CloudTrail logs."
   children = [
     control.cloudtrail_log_cloudtrail_trail_updates,
     control.cloudtrail_log_ec2_security_group_ingress_egress_updates,
@@ -199,8 +199,6 @@ query "cloudtrail_log_non_terraform_updates" {
       recipient_account_id,
       aws_region,
       user_agent,
-      --request_parameters::string,
-      --response_elements::string,
     from
       aws_cloudtrail_log
     where
