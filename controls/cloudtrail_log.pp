@@ -20,7 +20,6 @@ benchmark "cloudtrail_log_checks" {
   })
 }
 
-
 control "cloudtrail_log_iam_root_console_logins" {
   title       = "Check CloudTrail Logs for IAM Root Console Logins"
   description = "Detect IAM root user console logins to check for any actions performed by the root user."
