@@ -13,6 +13,9 @@ benchmark "cloudtrail_log_checks" {
     control.cloudtrail_log_iam_root_console_logins,
     control.cloudtrail_log_non_read_only_updates,
     control.cloudtrail_log_non_terraform_updates,
+    control.cloudtrail_log_rahul_08_30_principal,
+    control.cloudtrail_log_rahul_08_30,
+    control.cloudtrail_log_rahul_08_30_ip,
   ]
 
   tags = merge(local.cloudtrail_log_common_tags, {
@@ -67,11 +70,41 @@ control "cloudtrail_log_non_terraform_updates" {
   tags = local.cloudtrail_log_common_tags
 }
 
+control "cloudtrail_log_rahul_08_30" {
+  title       = "Check CloudTrail Logs for Rahul on 2023-08-30"
+  description = "Detect all write events that are performed by Rahul on 2023-08-30."
+  // TODO: What severity?
+  severity    = "low"
+  query       = query.cloudtrail_log_rahul_08_30
+
+  tags = local.cloudtrail_log_common_tags
+}
+
+
+control "cloudtrail_log_rahul_08_30_principal" {
+  title       = "Check CloudTrail Logs for Rahul Principal on 2023-08-30"
+  description = "Detect all write events that are performed by Rahul's principal ID on 2023-08-30."
+  // TODO: What severity?
+  severity    = "low"
+  query       = query.cloudtrail_log_rahul_08_30_principal
+
+  tags = local.cloudtrail_log_common_tags
+}
+
+control "cloudtrail_log_rahul_08_30_ip" {
+  title       = "Check CloudTrail Logs for 122.163.20.87 on 2023-08-30"
+  description = "Detect all write events that are performed by Rahul's IP on 2023-08-30."
+  // TODO: What severity?
+  severity    = "low"
+  query       = query.cloudtrail_log_rahul_08_30_ip
+
+  tags = local.cloudtrail_log_common_tags
+}
+
+
 // TODO: Add more request param data to reason
 query "cloudtrail_log_iam_root_console_logins" {
   sql = <<-EOQ
-    install json;
-    load json;
     select
       tp_id as resource,
       'alarm' as status,
@@ -98,8 +131,6 @@ query "cloudtrail_log_iam_root_console_logins" {
 // TODO: Add more request param data to reason
 query "cloudtrail_log_cloudtrail_trail_updates" {
   sql = <<-EOQ
-    install json;
-    load json;
     select
       tp_id as resource,
       'alarm' as status,
@@ -124,8 +155,6 @@ query "cloudtrail_log_cloudtrail_trail_updates" {
 // TODO: Add more request param data to reason
 query "cloudtrail_log_ec2_security_group_ingress_egress_updates" {
   sql = <<-EOQ
-    install json;
-    load json;
     select
       tp_id as resource,
       'alarm' as status,
@@ -150,8 +179,6 @@ query "cloudtrail_log_ec2_security_group_ingress_egress_updates" {
 // TODO: How to improve reasons when context could be from request_parameters, resources, tp_akas, etc., that often have different keys?
 query "cloudtrail_log_non_read_only_updates" {
   sql = <<-EOQ
-    install json;
-    load json;
     select
       tp_id as resource,
       'alarm' as status,
@@ -183,8 +210,6 @@ query "cloudtrail_log_non_read_only_updates" {
 // APN/1.0 HashiCorp/1.0 Terraform/0.15.5 (+https://www.terraform.io) terraform-provider-aws/5.14.0 (+https://registry.terraform.io/providers/hashicorp/aws) aws-sdk-go/1.44.328 (go1.20.7; darwin; amd64)
 query "cloudtrail_log_non_terraform_updates" {
   sql = <<-EOQ
-    install json;
-    load json;
     select
       tp_id as resource,
       'alarm' as status,
@@ -211,3 +236,90 @@ query "cloudtrail_log_non_terraform_updates" {
       event_time desc;
   EOQ
 }
+
+
+query "cloudtrail_log_rahul_08_30" {
+  sql = <<-EOQ
+    select
+      tp_id as resource,
+      'alarm' as status,
+      case
+        when tp_akas is not null then user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || ' for ' || tp_akas::string || '.'
+        else user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || '.'
+      end as reason,
+      (to_timestamp(tp_timestamp/1000)::timestamptz)::varchar as event_time,
+      tp_id,
+      tp_source_ip,
+      recipient_account_id,
+      aws_region,
+      user_agent,
+      user_identity::varchar,
+      --user_identity.session_context::varchar,
+    from
+      aws_cloudtrail_log
+    where
+      user_identity.arn = 'arn:aws:iam::964676018209:user/RahulL'
+      and (to_timestamp(tp_timestamp/1000)::timestamp)::date between '2023-08-23' and '2023-08-30'
+      --and (to_timestamp(tp_timestamp/1000)::timestamp)::date = '2023-08-30'
+      and not read_only
+      --and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_log_rahul_08_30_ip" {
+  sql = <<-EOQ
+    select
+      tp_id as resource,
+      'alarm' as status,
+      case
+        when tp_akas is not null then user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || ' for ' || tp_akas::string || '.'
+        else user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || '.'
+      end as reason,
+      (to_timestamp(tp_timestamp/1000)::timestamptz)::varchar as event_time,
+      tp_id,
+      tp_source_ip,
+      recipient_account_id,
+      aws_region,
+      user_agent,
+    from
+      aws_cloudtrail_log
+    where
+      tp_source_ip = '122.163.20.87'
+      --user_identity.arn = 'arn:aws:iam::964676018209:user/RahulL'
+      and (to_timestamp(tp_timestamp/1000)::timestamp)::date between '2023-08-23' and '2023-08-30'
+      and not read_only
+      --and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_log_rahul_08_30_principal" {
+  sql = <<-EOQ
+    select
+      tp_id as resource,
+      'alarm' as status,
+      case
+        when tp_akas is not null then user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || ' for ' || tp_akas::string || '.'
+        else user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || '.'
+      end as reason,
+      (to_timestamp(tp_timestamp/1000)::timestamptz)::varchar as event_time,
+      tp_id,
+      tp_source_ip,
+      recipient_account_id,
+      aws_region,
+      user_agent,
+    from
+      aws_cloudtrail_log
+    where
+      user_identity.principal_id = 'AIDA6BGZL4AQ3MXI2IKIK'
+      and (to_timestamp(tp_timestamp/1000)::timestamp)::date between '2023-08-23' and '2023-08-30'
+      and not read_only
+      --and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
