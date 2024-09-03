@@ -7,6 +7,7 @@ dashboard "cloudtrail_log_non_terraform_updates" {
     type = "Report"
   })
 
+  /*
   container {
   }
   container {
@@ -19,7 +20,7 @@ dashboard "cloudtrail_log_non_terraform_updates" {
   }
   container {
   }
-
+  */
 
   container {
 
