@@ -112,7 +112,7 @@ query "cloudtrail_log_iam_root_console_logins" {
         when (additional_event_data::JSON ->> 'MFAUsed') = 'Yes' then 'AWS root console login with MFA from ' || tp_source_ip || ' in AWS account ' || recipient_account_id || '.'
         else 'AWS root console login from ' || tp_source_ip || ' in AWS account ' || recipient_account_id || '.'
       end as reason,
-      (to_timestamp(tp_timestamp/1000)::timestamptz)::varchar as event_time,
+      (epoch_ms(tp_timestamp))::varchar as event_time,
       tp_id,
       tp_source_ip,
       recipient_account_id
@@ -135,7 +135,7 @@ query "cloudtrail_log_cloudtrail_trail_updates" {
       tp_id as resource,
       'alarm' as status,
       user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || ' for ' || (request_parameters::JSON ->> 'name') || '.' as reason,
-      (to_timestamp(tp_timestamp/1000)::timestamptz)::varchar as event_time,
+      (epoch_ms(tp_timestamp))::varchar as event_time,
       tp_id,
       tp_source_ip,
       recipient_account_id,
@@ -159,7 +159,7 @@ query "cloudtrail_log_ec2_security_group_ingress_egress_updates" {
       tp_id as resource,
       'alarm' as status,
       user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || ' for ' || (request_parameters::JSON ->> 'groupId') || '.' as reason,
-      (to_timestamp(tp_timestamp/1000)::timestamptz)::varchar as event_time,
+      (epoch_ms(tp_timestamp))::varchar as event_time,
       tp_id,
       tp_source_ip,
       recipient_account_id,
@@ -186,7 +186,7 @@ query "cloudtrail_log_non_read_only_updates" {
         when tp_akas is not null then user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || ' for ' || tp_akas::string || '.'
         else user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || '.'
       end as reason,
-      (to_timestamp(tp_timestamp/1000)::timestamptz)::varchar as event_time,
+      (epoch_ms(tp_timestamp))::varchar as event_time,
       tp_id,
       tp_source_ip,
       recipient_account_id,
@@ -217,7 +217,7 @@ query "cloudtrail_log_non_terraform_updates" {
         when tp_akas is not null then user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || ' for ' || tp_akas::string || '.'
         else user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || '.'
       end as reason,
-      (to_timestamp(tp_timestamp/1000)::timestamptz)::varchar as event_time,
+      (epoch_ms(tp_timestamp))::varchar as event_time,
       tp_id,
       tp_source_ip,
       recipient_account_id,
@@ -247,7 +247,7 @@ query "cloudtrail_log_rahul_08_30" {
         when tp_akas is not null then user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || ' for ' || tp_akas::string || '.'
         else user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || '.'
       end as reason,
-      (to_timestamp(tp_timestamp/1000)::timestamptz)::varchar as event_time,
+      (epoch_ms(tp_timestamp))::varchar as event_time,
       tp_id,
       tp_source_ip,
       recipient_account_id,
@@ -259,8 +259,8 @@ query "cloudtrail_log_rahul_08_30" {
       aws_cloudtrail_log
     where
       user_identity.arn = 'arn:aws:iam::964676018209:user/RahulL'
-      and (to_timestamp(tp_timestamp/1000)::timestamp)::date between '2023-08-23' and '2023-08-30'
-      --and (to_timestamp(tp_timestamp/1000)::timestamp)::date = '2023-08-30'
+      and epoch_ms(tp_timestamp)::date between '2023-08-23' and '2023-08-30'
+      --and epoch_ms(tp_timestamp)::date = '2023-08-30'
       and not read_only
       --and error_code is null
     order by
@@ -277,7 +277,7 @@ query "cloudtrail_log_rahul_08_30_ip" {
         when tp_akas is not null then user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || ' for ' || tp_akas::string || '.'
         else user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || '.'
       end as reason,
-      (to_timestamp(tp_timestamp/1000)::timestamptz)::varchar as event_time,
+      (epoch_ms(tp_timestamp))::varchar as event_time,
       tp_id,
       tp_source_ip,
       recipient_account_id,
@@ -288,7 +288,7 @@ query "cloudtrail_log_rahul_08_30_ip" {
     where
       tp_source_ip = '122.163.20.87'
       --user_identity.arn = 'arn:aws:iam::964676018209:user/RahulL'
-      and (to_timestamp(tp_timestamp/1000)::timestamp)::date between '2023-08-23' and '2023-08-30'
+      and epoch_ms(tp_timestamp)::date between '2023-08-23' and '2023-08-30'
       and not read_only
       --and error_code is null
     order by
@@ -305,7 +305,7 @@ query "cloudtrail_log_rahul_08_30_principal" {
         when tp_akas is not null then user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || ' for ' || tp_akas::string || '.'
         else user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || '.'
       end as reason,
-      (to_timestamp(tp_timestamp/1000)::timestamptz)::varchar as event_time,
+      (epoch_ms(tp_timestamp))::varchar as event_time,
       tp_id,
       tp_source_ip,
       recipient_account_id,
@@ -315,7 +315,7 @@ query "cloudtrail_log_rahul_08_30_principal" {
       aws_cloudtrail_log
     where
       user_identity.principal_id = 'AIDA6BGZL4AQ3MXI2IKIK'
-      and (to_timestamp(tp_timestamp/1000)::timestamp)::date between '2023-08-23' and '2023-08-30'
+      and epoch_ms(tp_timestamp)::date between '2023-08-23' and '2023-08-30'
       and not read_only
       --and error_code is null
     order by

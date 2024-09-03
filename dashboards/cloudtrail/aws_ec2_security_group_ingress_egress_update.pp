@@ -80,7 +80,7 @@ dashboard "aws_ec2_security_group_ingress_egress_update" {
 query "aws_ec2_security_group_ingress_egress_update" {
   sql = <<-EOQ
     select
-      to_timestamp(event_time/1000)::timestamptz as event_time,
+      epoch_ms(event_time) as event_time,
       event_name,
       user_identity.arn as user_arn,
       source_ip_address,

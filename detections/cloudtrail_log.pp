@@ -50,16 +50,14 @@ detection "cloudtrail_log_iam_root_console_logins" {
     "https://docs.aws.amazon.com/IAM/latest/UserGuide/root-user-tasks.html"
   ]
 
-  # Don't include MITRE info here since different versions can have different IDs
   tags = merge(local.cloudtrail_log_common_tags, {
-    category = ""
+    mitre_attack_tactic = "TA0004"
+    mitre_attack_technique = "T1078"
   })
 }
 
 query "cloudtrail_log_iam_root_console_logins_test" {
   sql = <<-EOQ
-    install json;
-    load json;
     select
       -- Required detection fields
       tp_id as log_id,
@@ -94,7 +92,7 @@ detection "cloudtrail_log_iam_root_console_failed_logins" {
     "https://docs.panther.com/alerts/alert-runbooks/built-in-rules/aws-console-login-failed"
   ]
 
-  # Don't include MITRE info here since different versions can have different IDs
+  # TODO: Add MITRE info
   # TODO: Should detection types be a top level property, tag?
   # TODO: How should we categorize them?
   tags = merge(local.cloudtrail_log_common_tags, {
@@ -105,8 +103,6 @@ detection "cloudtrail_log_iam_root_console_failed_logins" {
 
 query "cloudtrail_log_iam_root_console_failed_logins_test" {
   sql = <<-EOQ
-    install json;
-    load json;
     select
       -- Required detection fields
       tp_id as log_id,

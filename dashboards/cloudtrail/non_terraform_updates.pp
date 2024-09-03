@@ -8,11 +8,57 @@ dashboard "cloudtrail_log_non_terraform_updates" {
   })
 
   container {
+  }
+  container {
+  }
+  container {
+  }
+  container {
+  }
+  container {
+  }
+  container {
+  }
+
+
+  container {
+
+    /*
+    input "start_date" {
+      title       = "Enter a start date:"
+      type        = "text"
+      placeholder = formatdate("YYYY-MM-DD", timeadd(timestamp(), "-720h"))
+      width       = 4
+    }
+
+    input "end_date" {
+      title       = "Enter an end date:"
+      type        = "text"
+      placeholder = formatdate("YYYY-MM-DD", timestamp())
+      width       = 4
+    }
+    */
+
     table {
       query = query.cloudtrail_log_non_terraform_updates_with_principal
 
+      /*
+      args = [
+        self.input.start_date,
+        self.input.end_date
+      ]
+      */
+
       column "principal_id" {
         href = "/aws.dashboard.cloudtrail_log_search_by_principal_id?input.principal_id={{ .'principal_id' | @uri }}"
+      }
+
+      column "source_ip" {
+        href = "/aws.dashboard.cloudtrail_log_search_by_source_ip?input.source_ip={{ .'source_ip' | @uri }}"
+      }
+
+      column "tp_id" {
+        href = "/aws.dashboard.cloudtrail_log_search_by_tp_id?input.tp_id={{ .'tp_id' | @uri }}"
       }
 
       column "additional_event_data" {
@@ -56,12 +102,12 @@ dashboard "cloudtrail_log_non_terraform_updates" {
 query "cloudtrail_log_non_terraform_updates_with_principal" {
   sql = <<-EOQ
     select
-      to_timestamp(event_time/1000)::timestamptz as event_time,
+      epoch_ms(event_time) as event_time,
       tp_id,
       event_name,
       user_identity.principal_id as principal_id,
       user_identity.arn as user_arn,
-      source_ip_address,
+      tp_source_ip as source_ip,
       aws_region as region,
       recipient_account_id as account_id,
       user_agent,
@@ -77,6 +123,8 @@ query "cloudtrail_log_non_terraform_updates_with_principal" {
       and user_identity.type != 'AWSService'
       and not read_only
       and error_code is null
+      --and epoch_ms(event_time)::date >= $1
+      --and epoch_ms(event_time)::date <= $2
     order by
       event_time desc;
   EOQ
