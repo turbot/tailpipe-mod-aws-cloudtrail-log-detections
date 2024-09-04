@@ -1,7 +1,8 @@
 dashboard "aws_ec2_security_group_ingress_egress_update" {
 
   tags = {
-    service = "AWS/EC2"
+    service          = "AWS/EC2"
+    mitre_attack_ids = "TA0001:T1190,TA0005:T1562"
   }
 
   title = "AWS EC2 Security Group Ingress/Egress Update"
