@@ -7,20 +7,28 @@ dashboard "cloudtrail_log_non_terraform_updates" {
     type = "Report"
   })
 
-  /*
   container {
+
+    card {
+      query = query.cloudtrail_log_non_terraform_updates_total_count
+      width = 3
+    }
+
+    card {
+      query = query.cloudtrail_log_non_terraform_updates_critical_count
+      width = 3
+    }
+
+    card {
+      query = query.cloudtrail_log_non_terraform_updates_mitre_coverage
+      width = 3
+    }
+
+    card {
+      query = query.cloudtrail_log_non_terraform_updates_mitre_count
+      width = 3
+    }
   }
-  container {
-  }
-  container {
-  }
-  container {
-  }
-  container {
-  }
-  container {
-  }
-  */
 
   container {
 
@@ -128,5 +136,58 @@ query "cloudtrail_log_non_terraform_updates_with_principal" {
       --and epoch_ms(event_time)::date <= $2
     order by
       event_time desc;
+  EOQ
+}
+
+query "cloudtrail_log_non_terraform_updates_total_count" {
+  sql = <<-EOQ
+    select
+      'Total Alerts' as label,
+      '45' as value,
+      'alert' as type,
+    from
+      aws_cloudtrail_log
+  EOQ
+}
+
+query "cloudtrail_log_non_terraform_updates_critical_count" {
+  sql = <<-EOQ
+    select
+      'Critical Alerts' as label,
+      '35' as value,
+      'alert' as type,
+    from
+      aws_cloudtrail_log
+  EOQ
+}
+
+query "cloudtrail_log_non_terraform_updates_mitre_coverage" {
+  sql = <<-EOQ
+    select
+      'MITRE ATT&CK Coverage' as label,
+      '25%' as value,
+      'info' as type,
+      case
+        when count(*) > 0 then 'alert'
+        else 'ok'
+      end as type
+    from
+      aws_cloudtrail_log
+  EOQ
+}
+
+query "cloudtrail_log_non_terraform_updates_mitre_count" {
+  sql = <<-EOQ
+    select
+      'MITRE ATT&CK Alerts' as label,
+      '50%' as value,
+      'alert' as type,
+    from
+      aws_cloudtrail_log
+    where
+      user_agent not ilike '%Terraform/%'
+      and user_identity.type != 'AWSService'
+      and not read_only
+      and error_code is null
   EOQ
 }
