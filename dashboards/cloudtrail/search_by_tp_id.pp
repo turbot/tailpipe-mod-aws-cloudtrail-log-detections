@@ -63,7 +63,7 @@ query "cloudtrail_log_search_by_tp_id" {
       error_message,
       aws_region as region,
       recipient_account_id as account_id,
-      user_identity::json,
+      user_identity::json as user_identity,
       user_agent,
       request_parameters,
       response_elements,
