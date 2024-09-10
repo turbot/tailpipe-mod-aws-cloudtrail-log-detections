@@ -1,18 +1,22 @@
-dashboard "aws_ec2_security_group_ingress_egress_update_detection" {
+dashboard "aws_iam_root_console_login_detection" {
 
   tags = {
-    mitre_attack_ids = "TA0001:T1190,TA0005:T1562"
-    service          = "AWS/EC2"
-    severity         = "medium"
+    mitre_attack_ids = "TA0004:T1078"
+    service          = "AWS/IAM"
+    severity         = "high"
   }
 
-  title = "CloudTrail Logs - EC2 Security Group Ingress/Egress Update"
+  title = "CloudTrail Logs - IAM Root Console Login"
 
   container {
     table {
-      query = query.aws_ec2_security_group_ingress_egress_update_detection
+      query = query.aws_iam_root_console_login_detection
 
       column "additional_event_data" {
+        wrap = "all"
+      }
+
+      column "login_data" {
         wrap = "all"
       }
 
@@ -44,32 +48,33 @@ dashboard "aws_ec2_security_group_ingress_egress_update_detection" {
   }
 }
 
-query "aws_ec2_security_group_ingress_egress_update_detection" {
+query "aws_iam_root_console_login_detection" {
   sql = <<-EOQ
     select
       epoch_ms(tp_timestamp) as timestamp,
       user_identity.arn as actor_id,
       tp_source_ip as source_ip_address,
       string_split(event_source, '.')[1] || ':' || event_name as operation,
-      --TODO: Use this instead when arrays are supported: array_value(request_parameters::JSON ->> 'groupId') as resources,
-      (request_parameters::JSON ->> 'groupId') as resources,
+      --(request_parameters::JSON ->> 'groupId') as resources, -- TODO: Are there any resources?
       tp_connection::varchar as index, -- TODO: Change to tp_index with newer data without varchar cast
       aws_region as location,
       tp_id as tp_log_id,
       -- Additional dimensions
+      (additional_event_data::JSON) as login_data,
       --additional_event_data,
       --request_parameters,
       --response_elements,
       --resources,
       --service_event_details,
-      --user_agent,
+      user_agent,
       --user_identity
     from
       aws_cloudtrail_log
     where
-      event_source = 'ec2.amazonaws.com'
-      and event_name in ('AuthorizeSecurityGroupEgress', 'AuthorizeSecurityGroupIngress', 'RevokeSecurityGroupEgress', 'RevokeSecurityGroupIngress')
-      and error_code is null
+      event_source = 'signin.amazonaws.com'
+      and event_name = 'ConsoleLogin'
+      --and user_identity.type = 'Root'
+      and (response_elements::JSON ->> 'ConsoleLogin') = 'Success'
     order by
       event_time desc;
   EOQ
