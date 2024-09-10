@@ -1,22 +1,22 @@
-dashboard "aws_s3_bucket_insecure_access" {
+dashboard "aws_s3_bucket_access_error" {
 
   tags = {
-    mitre_attack_ids = "TA0009:T1530"
+    mitre_attack_ids = "TA0007:T1619"
     service          = "AWS/S3"
     severity         = "low"
   }
 
-  title         = "S3 Server Access Logs - Bucket Insecure Access"
+  title         = "S3 Server Access Logs - Bucket Access Error"
   #documentation = file("./dashboards/iam/docs/iam_user_report_mfa.md")
 
    container {
     table {
-      query = query.aws_s3_bucket_insecure_access
+      query = query.aws_s3_bucket_access_error
     }
   }
 }
 
-query "aws_s3_bucket_insecure_access" {
+query "aws_s3_bucket_access_error" {
   sql = <<-EOQ
     select
       epoch_ms(tp_timestamp) as timestamp,
@@ -29,12 +29,14 @@ query "aws_s3_bucket_insecure_access" {
       tp_id as tp_log_id,
       -- Additional dimensions
       http_status,
+      error_code,
       user_agent
     from
       aws_s3_server_access_log
     where
-      operation ilike 'REST.%.OBJECT' -- Ignore S3 initiated events
-      and (cipher_suite is null or tls_version is null)
+      operation ilike 'REST.%.OBJECT'
+      and not starts_with(user_agent, 'aws-internal')
+      and http_status in (403, 405)
     order by
       timestamp desc
   EOQ
