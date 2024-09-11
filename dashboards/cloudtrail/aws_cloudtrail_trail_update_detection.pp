@@ -52,14 +52,11 @@ dashboard "aws_cloudtrail_trail_update_detection" {
 query "aws_cloudtrail_trail_update_detection" {
   sql = <<-EOQ
     select
-      epoch_ms(tp_timestamp) as timestamp,
-      user_identity.arn as actor_id,
-      tp_source_ip as source_ip_address,
-      string_split(event_source, '.')[1] || ':' || event_name as operation,
-      array_value(request_parameters::JSON ->> 'name')::JSON as resources, -- TODO: Are there any resources?
-      tp_connection::varchar as index, -- TODO: Change to tp_index with newer data without varchar cast
-      aws_region as location,
-      tp_id as tp_log_id,
+      ${local.common_dimensions_cloudtrail_log_sql}
+      case
+        when (request_parameters::JSON ->> 'name') is not null then array_value(request_parameters::JSON ->> 'name')::JSON
+        else '[]'::JSON
+      end as resources, -- TODO: Are there any resources?
       -- Additional dimensions
       --additional_event_data,
       request_parameters,
