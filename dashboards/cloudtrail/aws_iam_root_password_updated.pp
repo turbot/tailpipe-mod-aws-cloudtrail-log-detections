@@ -1,15 +1,15 @@
-dashboard "aws_ec2_security_group_ingress_egress_update" {
+dashboard "aws_iam_root_password_updated" {
 
   tags = {
-    service          = "AWS/EC2"
-    mitre_attack_ids = "TA0001:T1190,TA0005:T1562"
+    service          = "AWS/IAM"
+    mitre_attack_ids = "TA0003:T1098"
   }
 
-  title = "AWS EC2 Security Group Ingress/Egress Update"
+  title = "AWS IAM Root Password Updated"
 
   container {
     table {
-      query = query.aws_ec2_security_group_ingress_egress_update
+      query = query.aws_iam_root_password_updated
 
       column "additional_event_data" {
         wrap = "all"
@@ -44,7 +44,7 @@ dashboard "aws_ec2_security_group_ingress_egress_update" {
 }
 
 // TODO: Use normalized timestamp column
-query "aws_ec2_security_group_ingress_egress_update" {
+query "aws_iam_root_password_updated" {
   sql = <<-EOQ
     select
       epoch_ms(event_time) as event_time,
@@ -63,9 +63,9 @@ query "aws_ec2_security_group_ingress_egress_update" {
     from
       aws_cloudtrail_log
     where
-      event_source = 'ec2.amazonaws.com'
-      and event_name in ('AuthorizeSecurityGroupEgress', 'AuthorizeSecurityGroupIngress', 'RevokeSecurityGroupEgress', 'RevokeSecurityGroupIngress')
-      and error_code is null
+      event_name = 'PasswordUpdated'
+      and (user_identity ->> 'type') = 'Root'
+      and (response_elements::json ->> 'PasswordUpdated') = 'Success'
     order by
       event_time desc;
   EOQ

@@ -1,15 +1,15 @@
-dashboard "aws_ec2_security_group_ingress_egress_update" {
+dashboard "aws_rds_db_snapshot_shared" {
 
   tags = {
-    service          = "AWS/EC2"
-    mitre_attack_ids = "TA0001:T1190,TA0005:T1562"
+    service          = "AWS/RDS"
+    mitre_attack_ids = "TA0010:T1020"
   }
 
-  title = "AWS EC2 Security Group Ingress/Egress Update"
+  title = "AWS RDS DB Snapshot Shared"
 
   container {
     table {
-      query = query.aws_ec2_security_group_ingress_egress_update
+      query = query.aws_rds_db_snapshot_shared
 
       column "additional_event_data" {
         wrap = "all"
@@ -44,7 +44,7 @@ dashboard "aws_ec2_security_group_ingress_egress_update" {
 }
 
 // TODO: Use normalized timestamp column
-query "aws_ec2_security_group_ingress_egress_update" {
+query "aws_rds_db_snapshot_shared" {
   sql = <<-EOQ
     select
       epoch_ms(event_time) as event_time,
@@ -62,10 +62,13 @@ query "aws_ec2_security_group_ingress_egress_update" {
       user_identity
     from
       aws_cloudtrail_log
-    where
-      event_source = 'ec2.amazonaws.com'
-      and event_name in ('AuthorizeSecurityGroupEgress', 'AuthorizeSecurityGroupIngress', 'RevokeSecurityGroupEgress', 'RevokeSecurityGroupIngress')
-      and error_code is null
+    where 
+      eventsource = 'rds.amazonaws.com'
+      and (
+        eventname = 'ModifyDBSnapshotAttribute' 
+        or eventname = 'ModifyDBClusterSnapshotAttribute'
+      )
+      and request_parameters::json ->> 'attributeName' = 'restore'
     order by
       event_time desc;
   EOQ

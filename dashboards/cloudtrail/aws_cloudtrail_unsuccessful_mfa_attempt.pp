@@ -1,15 +1,16 @@
-dashboard "aws_ec2_security_group_ingress_egress_update" {
+dashboard "aws_cloudtrail_unsuccessful_mfa_attempt" {
 
   tags = {
-    service          = "AWS/EC2"
-    mitre_attack_ids = "TA0001:T1190,TA0005:T1562"
+    service          = "AWS/CloudTrail"
+    // TODO: add severity tags
+    mitre_attack_ids = "TA0010:T1567"
   }
 
-  title = "AWS EC2 Security Group Ingress/Egress Update"
+  title = "AWS CloudTrail Unsuccessful Attempt"
 
   container {
     table {
-      query = query.aws_ec2_security_group_ingress_egress_update
+      query = query.aws_cloudtrail_unsuccessful_mfa_attempt
 
       column "additional_event_data" {
         wrap = "all"
@@ -44,7 +45,7 @@ dashboard "aws_ec2_security_group_ingress_egress_update" {
 }
 
 // TODO: Use normalized timestamp column
-query "aws_ec2_security_group_ingress_egress_update" {
+query "aws_cloudtrail_unsuccessful_mfa_attempt" {
   sql = <<-EOQ
     select
       epoch_ms(event_time) as event_time,
@@ -63,9 +64,10 @@ query "aws_ec2_security_group_ingress_egress_update" {
     from
       aws_cloudtrail_log
     where
-      event_source = 'ec2.amazonaws.com'
-      and event_name in ('AuthorizeSecurityGroupEgress', 'AuthorizeSecurityGroupIngress', 'RevokeSecurityGroupEgress', 'RevokeSecurityGroupIngress')
-      and error_code is null
+      event_source = 'signin.amazonaws.com'
+      and event_name = 'ConsoleLogin'
+      and (additional_event_data::json ->> 'MFAUsed') = 'Yes'
+      and (response_elements::json ->> 'ConsoleLogin') = 'Failure'
     order by
       event_time desc;
   EOQ

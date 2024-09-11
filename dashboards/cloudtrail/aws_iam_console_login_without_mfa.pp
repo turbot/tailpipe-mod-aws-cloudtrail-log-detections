@@ -1,15 +1,17 @@
-dashboard "aws_ec2_security_group_ingress_egress_update" {
+// TODO: Check query logic
+dashboard "aws_iam_console_login_without_mfa" {
 
   tags = {
-    service          = "AWS/EC2"
-    mitre_attack_ids = "TA0001:T1190,TA0005:T1562"
+    service          = "AWS/IAM"
+    // TODO: add severity tags
+    mitre_attack_ids = "TA0010:T1567"
   }
 
-  title = "AWS EC2 Security Group Ingress/Egress Update"
+  title = "AWS IAM Console Login Without MFA"
 
   container {
     table {
-      query = query.aws_ec2_security_group_ingress_egress_update
+      query = query.aws_iam_console_login_without_mfa
 
       column "additional_event_data" {
         wrap = "all"
@@ -44,7 +46,7 @@ dashboard "aws_ec2_security_group_ingress_egress_update" {
 }
 
 // TODO: Use normalized timestamp column
-query "aws_ec2_security_group_ingress_egress_update" {
+query "aws_iam_console_login_without_mfa" {
   sql = <<-EOQ
     select
       epoch_ms(event_time) as event_time,
@@ -63,8 +65,9 @@ query "aws_ec2_security_group_ingress_egress_update" {
     from
       aws_cloudtrail_log
     where
-      event_source = 'ec2.amazonaws.com'
-      and event_name in ('AuthorizeSecurityGroupEgress', 'AuthorizeSecurityGroupIngress', 'RevokeSecurityGroupEgress', 'RevokeSecurityGroupIngress')
+      event_source = 'codebuild.amazonaws.com'
+      and event_name = 'UpdateProjectVisibility'
+      and (request_parameters::json ->> 'projectVisibility') = 'PUBLIC_READ'
       and error_code is null
     order by
       event_time desc;
