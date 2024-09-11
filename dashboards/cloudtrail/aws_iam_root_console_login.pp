@@ -55,7 +55,6 @@ query "aws_iam_root_console_login_detection" {
       user_identity.arn as actor_id,
       tp_source_ip as source_ip_address,
       string_split(event_source, '.')[1] || ':' || event_name as operation,
-      --(request_parameters::JSON ->> 'groupId') as resources, -- TODO: Are there any resources?
       tp_connection::varchar as index, -- TODO: Change to tp_index with newer data without varchar cast
       aws_region as location,
       tp_id as tp_log_id,

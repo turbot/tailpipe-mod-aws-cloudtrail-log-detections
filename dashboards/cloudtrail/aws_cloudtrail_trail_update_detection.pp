@@ -56,8 +56,7 @@ query "aws_cloudtrail_trail_update_detection" {
       user_identity.arn as actor_id,
       tp_source_ip as source_ip_address,
       string_split(event_source, '.')[1] || ':' || event_name as operation,
-      --TODO: Use this instead when arrays are supported: array_value(request_parameters::JSON ->> 'name') as resources,
-      (request_parameters::JSON ->> 'name') as resources, -- TODO: Are there any resources?
+      array_value(request_parameters::JSON ->> 'name')::JSON as resources, -- TODO: Are there any resources?
       tp_connection::varchar as index, -- TODO: Change to tp_index with newer data without varchar cast
       aws_region as location,
       tp_id as tp_log_id,

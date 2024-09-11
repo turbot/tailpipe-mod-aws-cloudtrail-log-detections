@@ -22,7 +22,7 @@ query "aws_elb_insecure_access" {
       tp_source_ip as source_ip_address,
       request as operation,
       --split_part(request, ' ', 1) as operation,
-      elb as resources,
+      array_value(elb)::JSON as resources,
       '123456789012' as index, -- TODO: Use tp_index when available
       'us-east-1' as location, -- TODO: Use tp_location when available
       tp_id as tp_log_id,

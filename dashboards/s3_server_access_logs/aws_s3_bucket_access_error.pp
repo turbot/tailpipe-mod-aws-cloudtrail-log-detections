@@ -23,7 +23,7 @@ query "aws_s3_bucket_access_error" {
       requester as actor_id,
       tp_source_ip as source_ip_address,
       operation,
-      bucket || '/' || key as resources,
+      array_value(bucket || '/' || key)::JSON as resources,
       '123456789012' as index, -- TODO: Use tp_index when available
       'us-east-1' as location, -- TODO: Use tp_location when available
       tp_id as tp_log_id,
