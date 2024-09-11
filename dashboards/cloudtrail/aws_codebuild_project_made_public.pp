@@ -1,15 +1,16 @@
-dashboard "aws_ec2_security_group_ingress_egress_update" {
+dashboard "aws_codebuild_project_made_public" {
 
   tags = {
-    service          = "AWS/EC2"
-    mitre_attack_ids = "TA0001:T1190,TA0005:T1562"
+    service          = "AWS/CodeBuild"
+    // TODO: add severity tags
+    mitre_attack_ids = "TA0010:T1567"
   }
 
-  title = "AWS EC2 Security Group Ingress/Egress Update"
+  title = "AWS CodeBuild Project Made Public"
 
   container {
     table {
-      query = query.aws_ec2_security_group_ingress_egress_update
+      query = query.aws_codebuild_project_made_public
 
       column "additional_event_data" {
         wrap = "all"
@@ -44,7 +45,7 @@ dashboard "aws_ec2_security_group_ingress_egress_update" {
 }
 
 // TODO: Use normalized timestamp column
-query "aws_ec2_security_group_ingress_egress_update" {
+query "aws_codebuild_project_made_public" {
   sql = <<-EOQ
     select
       epoch_ms(event_time) as event_time,
@@ -63,8 +64,9 @@ query "aws_ec2_security_group_ingress_egress_update" {
     from
       aws_cloudtrail_log
     where
-      event_source = 'ec2.amazonaws.com'
-      and event_name in ('AuthorizeSecurityGroupEgress', 'AuthorizeSecurityGroupIngress', 'RevokeSecurityGroupEgress', 'RevokeSecurityGroupIngress')
+      event_source = 'codebuild.amazonaws.com'
+      and event_name = 'UpdateProjectVisibility'
+      and (request_parameters::json ->> 'projectVisibility') = 'PUBLIC_READ'
       and error_code is null
     order by
       event_time desc;

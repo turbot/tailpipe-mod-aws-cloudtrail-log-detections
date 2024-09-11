@@ -7,6 +7,12 @@ locals {
   }
 }
 
+variable "assume_role_blocklist" {
+  type        = list(string)
+  default     = ["arn:aws:iam::123456789012:role/FullAdminRole"]
+  description = "A list of role ARNs that should not be assumed by users in normal operations."
+}
+
 locals {
   # Local internal variable to build the SQL select clause for common
   # dimensions using a table name qualifier if required. Do not edit directly.
