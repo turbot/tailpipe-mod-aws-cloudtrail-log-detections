@@ -1,17 +1,17 @@
-// TODO: Check query logic
-dashboard "aws_iam_console_login_without_mfa" {
+dashboard "aws_ec2_traffic_mirroring" {
 
   tags = {
-    service          = "AWS/IAM"
-    // TODO: add severity tags
-    mitre_attack_ids = "TA0010:T1567"
+    service          = "AWS/EC2"
+    severity         = "Medium"
+    # TODO: verify the mitre attack ID
+    mitre_attack_ids = "T1040"
   }
 
-  title = "AWS IAM Console Login Without MFA"
+  title = "AWS EC2 Traffic Mirroring"
 
   container {
     table {
-      query = query.aws_iam_console_login_without_mfa
+      query = query.aws_ec2_traffic_mirroring
 
       column "additional_event_data" {
         wrap = "all"
@@ -46,7 +46,7 @@ dashboard "aws_iam_console_login_without_mfa" {
 }
 
 // TODO: Use normalized timestamp column
-query "aws_iam_console_login_without_mfa" {
+query "aws_ec2_traffic_mirroring" {
   sql = <<-EOQ
     select
       epoch_ms(event_time) as event_time,
@@ -65,9 +65,9 @@ query "aws_iam_console_login_without_mfa" {
     from
       aws_cloudtrail_log
     where
-      event_source = 'signin.amazonaws.com'
-      and event_name = 'ConsoleLogin'
-      and (user_identity ->> 'type') = 'Root'
+      event_source = 'ec2.amazonaws.com'
+      and event_name in ('CreateTrafficMirrorFilter', 'CreateTrafficMirrorFilterRule', 'CreateTrafficMirrorSession', 'CreateTrafficMirrorTarget', 'DeleteTrafficMirrorFilter', 'DeleteTrafficMirrorFilterRule', 'DeleteTrafficMirrorSession', 'DeleteTrafficMirrorTarget', 'ModifyTrafficMirrorFilterNetworkServices', 'ModifyTrafficMirrorFilterRule', 'ModifyTrafficMirrorSession')
+      and error_code is null
     order by
       event_time desc;
   EOQ

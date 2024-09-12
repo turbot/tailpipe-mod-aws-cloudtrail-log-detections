@@ -1,17 +1,16 @@
-// TODO: Check query logic
-dashboard "aws_iam_console_login_without_mfa" {
+dashboard "aws_ebs_snapshot_made_public" {
 
   tags = {
-    service          = "AWS/IAM"
-    // TODO: add severity tags
-    mitre_attack_ids = "TA0010:T1567"
+    service          = "AWS/EBS"
+    severity         = "Medium"
+    mitre_attack_ids = "TA0010:T1537"
   }
 
-  title = "AWS IAM Console Login Without MFA"
+  title = "AWS EBS Snapshot Made Public"
 
   container {
     table {
-      query = query.aws_iam_console_login_without_mfa
+      query = query.aws_ebs_snapshot_made_public
 
       column "additional_event_data" {
         wrap = "all"
@@ -46,7 +45,7 @@ dashboard "aws_iam_console_login_without_mfa" {
 }
 
 // TODO: Use normalized timestamp column
-query "aws_iam_console_login_without_mfa" {
+query "aws_ebs_snapshot_made_public" {
   sql = <<-EOQ
     select
       epoch_ms(event_time) as event_time,
@@ -65,9 +64,11 @@ query "aws_iam_console_login_without_mfa" {
     from
       aws_cloudtrail_log
     where
-      event_source = 'signin.amazonaws.com'
-      and event_name = 'ConsoleLogin'
-      and (user_identity ->> 'type') = 'Root'
+      event_source = 'ec2.amazonaws.com'
+      and event_name = 'ModifySnapshotAttribute'
+      and (request_parameters::json ->> 'attributeType') = 'CREATE_VOLUME_PERMISSION'
+      and (request_parameters::json -> 'createVolumePermission' -> 'add' ->> 'items' ) = '[{ "group": "all" }]'
+      and error_code is null
     order by
       event_time desc;
   EOQ

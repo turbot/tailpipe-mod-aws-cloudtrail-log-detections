@@ -1,9 +1,9 @@
 // TODO: Check query logic
-dashboard "aws_iam_console_login_without_mfa" {
+dashboard "aws_iam_console_login_without_saml" {
 
   tags = {
     service          = "AWS/IAM"
-    // TODO: add severity tags
+    severity         = "High"
     mitre_attack_ids = "TA0010:T1567"
   }
 
@@ -11,7 +11,7 @@ dashboard "aws_iam_console_login_without_mfa" {
 
   container {
     table {
-      query = query.aws_iam_console_login_without_mfa
+      query = query.aws_iam_console_login_without_saml
 
       column "additional_event_data" {
         wrap = "all"
@@ -46,7 +46,7 @@ dashboard "aws_iam_console_login_without_mfa" {
 }
 
 // TODO: Use normalized timestamp column
-query "aws_iam_console_login_without_mfa" {
+query "aws_iam_console_login_without_saml" {
   sql = <<-EOQ
     select
       epoch_ms(event_time) as event_time,

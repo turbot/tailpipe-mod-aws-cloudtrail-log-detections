@@ -1,17 +1,17 @@
 // TODO: Check query logic
-dashboard "aws_iam_console_login_without_mfa" {
+dashboard "aws_iam_access_key_created" {
 
   tags = {
     service          = "AWS/IAM"
-    // TODO: add severity tags
-    mitre_attack_ids = "TA0010:T1567"
+    severity         = "Medium"
+    mitre_attack_ids = "TA0003:T1098,TA0005:T1108,TA0005:T1550,TA0008:T1550"
   }
 
-  title = "AWS IAM Console Login Without MFA"
+  title = "AWS IAM Access Key Created"
 
   container {
     table {
-      query = query.aws_iam_console_login_without_mfa
+      query = query.aws_iam_access_key_created
 
       column "additional_event_data" {
         wrap = "all"
@@ -46,7 +46,7 @@ dashboard "aws_iam_console_login_without_mfa" {
 }
 
 // TODO: Use normalized timestamp column
-query "aws_iam_console_login_without_mfa" {
+query "aws_iam_access_key_created" {
   sql = <<-EOQ
     select
       epoch_ms(event_time) as event_time,
@@ -65,9 +65,10 @@ query "aws_iam_console_login_without_mfa" {
     from
       aws_cloudtrail_log
     where
-      event_source = 'signin.amazonaws.com'
-      and event_name = 'ConsoleLogin'
-      and (user_identity ->> 'type') = 'Root'
+      event_source = 'iam.amazonaws.com'
+      and event_name = 'CreateAccessKey'
+      and (user_identity ->> 'arn') like '%' || (response_elements::json -> 'accessKey' ->> 'userName')
+      and error_code is not null
     order by
       event_time desc;
   EOQ

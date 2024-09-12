@@ -1,17 +1,16 @@
-// TODO: Check query logic
-dashboard "aws_iam_console_login_without_mfa" {
+dashboard "aws_config_service_disabled" {
 
   tags = {
-    service          = "AWS/IAM"
-    // TODO: add severity tags
-    mitre_attack_ids = "TA0010:T1567"
+    service          = "AWS/Config"
+    severity         = "Medium"
+    mitre_attack_ids = "TA0005:T1562"
   }
 
-  title = "AWS IAM Console Login Without MFA"
+  title = "AWS Config Service Disabled"
 
   container {
     table {
-      query = query.aws_iam_console_login_without_mfa
+      query = query.aws_config_service_disabled
 
       column "additional_event_data" {
         wrap = "all"
@@ -46,7 +45,7 @@ dashboard "aws_iam_console_login_without_mfa" {
 }
 
 // TODO: Use normalized timestamp column
-query "aws_iam_console_login_without_mfa" {
+query "aws_config_service_disabled" {
   sql = <<-EOQ
     select
       epoch_ms(event_time) as event_time,
@@ -65,9 +64,8 @@ query "aws_iam_console_login_without_mfa" {
     from
       aws_cloudtrail_log
     where
-      event_source = 'signin.amazonaws.com'
-      and event_name = 'ConsoleLogin'
-      and (user_identity ->> 'type') = 'Root'
+      event_name in ('StopConfigurationRecorder', 'DeleteDeliveryChannel')
+      and error_code is null
     order by
       event_time desc;
   EOQ

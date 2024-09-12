@@ -1,17 +1,16 @@
-// TODO: Check query logic
-dashboard "aws_iam_console_login_without_mfa" {
+dashboard "aws_vpc_network_acl_permissive_entry" {
 
   tags = {
-    service          = "AWS/IAM"
-    // TODO: add severity tags
-    mitre_attack_ids = "TA0010:T1567"
+    service          = "AWS/VPC"
+    severity         = "Medium"
+    mitre_attack_ids = "TA0003:T1098"
   }
 
-  title = "AWS IAM Console Login Without MFA"
+  title = "AWS VPC Network ACL Permissive Entry"
 
   container {
     table {
-      query = query.aws_iam_console_login_without_mfa
+      query = query.aws_vpc_network_acl_permissive_entry
 
       column "additional_event_data" {
         wrap = "all"
@@ -46,7 +45,7 @@ dashboard "aws_iam_console_login_without_mfa" {
 }
 
 // TODO: Use normalized timestamp column
-query "aws_iam_console_login_without_mfa" {
+query "aws_vpc_network_acl_permissive_entry" {
   sql = <<-EOQ
     select
       epoch_ms(event_time) as event_time,
@@ -65,9 +64,11 @@ query "aws_iam_console_login_without_mfa" {
     from
       aws_cloudtrail_log
     where
-      event_source = 'signin.amazonaws.com'
-      and event_name = 'ConsoleLogin'
-      and (user_identity ->> 'type') = 'Root'
+      event_name = 'CreateNetworkAclEntry'
+      and (request_parameters::json ->> 'cidrBlock') = '0.0.0.0/0'
+      and (request_parameters::json ->> 'ruleAction') = 'allow'
+      and (request_parameters::json ->> 'egress') = 'False'
+      and error_code is null
     order by
       event_time desc;
   EOQ

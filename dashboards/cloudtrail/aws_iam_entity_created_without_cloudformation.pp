@@ -1,17 +1,16 @@
-// TODO: Check query logic
-dashboard "aws_iam_console_login_without_mfa" {
+dashboard "aws_iam_entity_created_without_cloudformation" {
 
   tags = {
     service          = "AWS/IAM"
-    // TODO: add severity tags
-    mitre_attack_ids = "TA0010:T1567"
+    severity         = "Medium"
+    mitre_attack_ids = "TA0003:T1136"
   }
 
-  title = "AWS IAM Console Login Without MFA"
+  title = "AWS IAM Entity Created Without CloudFormation"
 
   container {
     table {
-      query = query.aws_iam_console_login_without_mfa
+      query = query.aws_iam_entity_created_without_cloudformation
 
       column "additional_event_data" {
         wrap = "all"
@@ -46,7 +45,7 @@ dashboard "aws_iam_console_login_without_mfa" {
 }
 
 // TODO: Use normalized timestamp column
-query "aws_iam_console_login_without_mfa" {
+query "aws_iam_entity_created_without_cloudformation" {
   sql = <<-EOQ
     select
       epoch_ms(event_time) as event_time,
@@ -65,10 +64,11 @@ query "aws_iam_console_login_without_mfa" {
     from
       aws_cloudtrail_log
     where
-      event_source = 'signin.amazonaws.com'
-      and event_name = 'ConsoleLogin'
-      and (user_identity ->> 'type') = 'Root'
+      event_source != 'cloudformation.amazonaws.com'
+      event_name in ('BatchCreateUser', 'CreateGroup', 'CreateInstanceProfile', 'CreatePolicy', 'CreatePolicyVersion', 'CreateRole', 'CreateServiceLinkedRole', 'CreateUser')
+      -- TODO: check how to validate the IAM admin roles arn
     order by
       event_time desc;
   EOQ
+
 }
