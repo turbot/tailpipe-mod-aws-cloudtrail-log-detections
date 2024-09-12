@@ -58,6 +58,7 @@ query "aws_cloudtrail_trail_update_detection" {
   sql = <<-EOQ
     select
       ${local.aws_cloudtrail_trail_update_detection_sql}
+      *
       -- Additional dimensions
       --additional_event_data,
       --request_parameters,
