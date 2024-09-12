@@ -48,10 +48,15 @@ dashboard "aws_iam_root_console_login_detection" {
   }
 }
 
+locals {
+  # Store the replace logic in a local variable
+  aws_iam_root_console_login_detection_sql = replace(local.common_dimensions_cloudtrail_log_sql, "__RESOURCE_SQL__", "''")
+}
+
 query "aws_iam_root_console_login_detection" {
   sql = <<-EOQ
     select
-      ${local.common_dimensions_cloudtrail_log_sql}
+      ${local.aws_iam_root_console_login_detection_sql}
       -- Additional dimensions
       (additional_event_data::JSON) as login_data,
       --additional_event_data,
@@ -66,7 +71,7 @@ query "aws_iam_root_console_login_detection" {
     where
       event_source = 'signin.amazonaws.com'
       and event_name = 'ConsoleLogin'
-      --and user_identity.type = 'Root'
+      and user_identity.type = 'Root'
       and (response_elements::JSON ->> 'ConsoleLogin') = 'Success'
     order by
       event_time desc;

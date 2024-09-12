@@ -14,15 +14,38 @@ variable "assume_role_blocklist" {
 }
 
 locals {
-  # Local internal variable to build the SQL select clause for common
-  # dimensions using a table name qualifier if required. Do not edit directly.
+  # Local internal variables to build the SQL select clause for common
+  # dimensions. Do not edit directly.
   common_dimensions_cloudtrail_log_sql = <<-EOQ
   epoch_ms(tp_timestamp) as timestamp,
-  user_identity.arn as actor_id,
-  tp_source_ip as source_ip_address,
   string_split(event_source, '.')[1] || ':' || event_name as operation,
-  tp_connection::varchar as index, -- TODO: Change to tp_index with newer data without varchar cast
-  aws_region as location,
-  tp_id as tp_log_id,
+  __RESOURCE_SQL__ as resource,
+  user_identity.arn as actor,
+  tp_source_ip as source_ip,
+  tp_connection::varchar as account_id, -- TODO: Change to tp_index with newer data without varchar cast
+  aws_region as region,
+  tp_id as source_id,
+  EOQ
+
+  common_dimensions_elb_log_sql = <<-EOQ
+  epoch_ms(tp_timestamp) as timestamp,
+  request as operation,
+  elb as resource,
+  conn_trace_id as actor, -- TODO: What to use here?
+  tp_source_ip as source_ip,
+  '123456789012' as account_id, -- TODO: Use tp_index when available
+  'us-east-1' as region, -- TODO: Use tp_location when available
+  tp_id as source_id,
+  EOQ
+
+  common_dimensions_s3_log_sql = <<-EOQ
+  epoch_ms(tp_timestamp) as timestamp,
+  operation as operation,
+  bucket as resource,
+  requester as actor, -- TODO: What to use here?
+  tp_source_ip as source_ip,
+  '123456789012' as account_id, -- TODO: Use tp_index when available
+  'us-east-1' as region, -- TODO: Use tp_location when available
+  tp_id as source_id,
   EOQ
 }

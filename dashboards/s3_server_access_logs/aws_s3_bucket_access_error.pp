@@ -16,17 +16,15 @@ dashboard "aws_s3_bucket_access_error" {
   }
 }
 
+locals {
+  # Store the replace logic in a local variable
+  aws_s3_bucket_access_error_sql = local.common_dimensions_s3_log_sql
+}
+
 query "aws_s3_bucket_access_error" {
   sql = <<-EOQ
     select
-      epoch_ms(tp_timestamp) as timestamp,
-      requester as actor_id,
-      tp_source_ip as source_ip_address,
-      operation,
-      array_value(bucket || '/' || key)::JSON as resources,
-      '123456789012' as index, -- TODO: Use tp_index when available
-      'us-east-1' as location, -- TODO: Use tp_location when available
-      tp_id as tp_log_id,
+      ${local.aws_s3_bucket_access_error_sql}
       -- Additional dimensions
       http_status,
       error_code,

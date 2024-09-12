@@ -44,14 +44,15 @@ dashboard "aws_ec2_security_group_ingress_egress_update_detection" {
   }
 }
 
+locals {
+  # Store the replace logic in a local variable
+  aws_ec2_security_group_ingress_egress_update_detection_sql = replace(local.common_dimensions_cloudtrail_log_sql, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'groupId'")
+}
+
 query "aws_ec2_security_group_ingress_egress_update_detection" {
   sql = <<-EOQ
     select
-      ${local.common_dimensions_cloudtrail_log_sql}
-      case
-        when (request_parameters::JSON ->> 'groupId') is not null then array_value(request_parameters::JSON ->> 'groupId')::JSON
-        else '[]'::JSON
-      end as resources, -- TODO: Are there any resources?
+      ${local.aws_ec2_security_group_ingress_egress_update_detection_sql}
       -- Additional dimensions
       --additional_event_data,
       --request_parameters,

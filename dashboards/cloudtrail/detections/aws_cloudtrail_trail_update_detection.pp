@@ -48,18 +48,19 @@ dashboard "aws_cloudtrail_trail_update_detection" {
   }
 }
 
+locals {
+  # Store the replace logic in a local variable
+  aws_cloudtrail_trail_update_detection_sql = replace(local.common_dimensions_cloudtrail_log_sql, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'name'")
+}
+
 // TODO: Use normalized timestamp column
 query "aws_cloudtrail_trail_update_detection" {
   sql = <<-EOQ
     select
-      ${local.common_dimensions_cloudtrail_log_sql}
-      case
-        when (request_parameters::JSON ->> 'name') is not null then array_value(request_parameters::JSON ->> 'name')::JSON
-        else '[]'::JSON
-      end as resources, -- TODO: Are there any resources?
+      ${local.aws_cloudtrail_trail_update_detection_sql}
       -- Additional dimensions
       --additional_event_data,
-      request_parameters,
+      --request_parameters,
       --response_elements,
       --resources,
       --service_event_details,
@@ -69,7 +70,7 @@ query "aws_cloudtrail_trail_update_detection" {
       aws_cloudtrail_log
     where
       event_source = 'cloudtrail.amazonaws.com'
-      --and event_name in ('DeleteTrail', 'StopLogging', 'UpdateTrail')
+      and event_name in ('DeleteTrail', 'StopLogging', 'UpdateTrail')
       and error_code is null
     order by
       event_time desc;

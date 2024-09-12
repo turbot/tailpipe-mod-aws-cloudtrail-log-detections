@@ -14,18 +14,15 @@ dashboard "aws_elb_insecure_access" {
   }
 }
 
+locals {
+  # Store the replace logic in a local variable
+  aws_elb_insecure_access_sql = replace(local.common_dimensions_elb_log_sql, "__RESOURCE_SQL__", "elb")
+}
+
 query "aws_elb_insecure_access" {
   sql = <<-EOQ
     select
-      epoch_ms(tp_timestamp) as timestamp,
-      conn_trace_id as actor_id, -- TODO: What to use here?
-      tp_source_ip as source_ip_address,
-      request as operation,
-      --split_part(request, ' ', 1) as operation,
-      array_value(elb)::JSON as resources,
-      '123456789012' as index, -- TODO: Use tp_index when available
-      'us-east-1' as location, -- TODO: Use tp_location when available
-      tp_id as tp_log_id,
+      ${local.aws_elb_insecure_access_sql}
       -- Additional dimensions
       elb_status_code,
       target_status_code,
