@@ -53,7 +53,7 @@ locals {
   aws_cloudtrail_trail_update_detection_sql = replace(local.common_dimensions_cloudtrail_log_sql, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'name'")
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_cloudtrail_trail_update_detection" {
   sql = <<-EOQ
     select

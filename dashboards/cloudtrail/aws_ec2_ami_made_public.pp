@@ -44,7 +44,7 @@ dashboard "aws_ec2_ami_made_public" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_ec2_ami_made_public" {
   sql = <<-EOQ
     select

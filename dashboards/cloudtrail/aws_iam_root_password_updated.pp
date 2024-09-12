@@ -43,7 +43,7 @@ dashboard "aws_iam_root_password_updated" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_iam_root_password_updated" {
   sql = <<-EOQ
     select

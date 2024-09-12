@@ -43,7 +43,7 @@ dashboard "aws_iam_user_login_profile_updated" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_iam_user_login_profile_updated" {
   sql = <<-EOQ
     select

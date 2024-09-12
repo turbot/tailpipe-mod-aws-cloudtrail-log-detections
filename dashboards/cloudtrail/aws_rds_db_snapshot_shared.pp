@@ -43,7 +43,7 @@ dashboard "aws_rds_db_snapshot_shared" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_rds_db_snapshot_shared" {
   sql = <<-EOQ
     select

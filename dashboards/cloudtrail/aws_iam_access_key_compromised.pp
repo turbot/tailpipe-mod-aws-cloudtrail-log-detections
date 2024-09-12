@@ -43,7 +43,7 @@ dashboard "aws_iam_access_key_compromised" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_iam_access_key_compromised" {
   sql = <<-EOQ
     select

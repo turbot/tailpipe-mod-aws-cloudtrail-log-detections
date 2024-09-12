@@ -44,7 +44,7 @@ dashboard "aws_iam_assume_role_blocklist_ignored" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_iam_assume_role_blocklist_ignored" {
   sql = <<-EOQ
     select

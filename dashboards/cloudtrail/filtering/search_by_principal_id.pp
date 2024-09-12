@@ -23,7 +23,7 @@ dashboard "cloudtrail_log_search_by_principal_id" {
 
 }
 
-// TODO: Use normalized timestamp column
+
 query "cloudtrail_log_search_by_principal_id" {
   sql = <<-EOQ
     select

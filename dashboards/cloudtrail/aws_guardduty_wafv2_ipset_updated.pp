@@ -43,7 +43,7 @@ dashboard "aws_guardduty_wafv2_ipset_updated" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_guardduty_wafv2_ipset_updated" {
   sql = <<-EOQ
     select

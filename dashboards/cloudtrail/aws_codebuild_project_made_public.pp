@@ -44,7 +44,7 @@ dashboard "aws_codebuild_project_made_public" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_codebuild_project_made_public" {
   sql = <<-EOQ
     select

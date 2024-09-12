@@ -44,7 +44,7 @@ dashboard "aws_securityhub_finding_evasion" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_securityhub_finding_evasion" {
   sql = <<-EOQ
     select

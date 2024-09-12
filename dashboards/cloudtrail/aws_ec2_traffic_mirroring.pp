@@ -45,7 +45,7 @@ dashboard "aws_ec2_traffic_mirroring" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_ec2_traffic_mirroring" {
   sql = <<-EOQ
     select

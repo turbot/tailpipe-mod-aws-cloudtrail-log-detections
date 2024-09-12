@@ -44,7 +44,7 @@ dashboard "aws_ec2_startup_script_change" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_ec2_startup_script_change" {
   sql = <<-EOQ
     select

@@ -45,7 +45,7 @@ dashboard "aws_iam_access_key_created" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_iam_access_key_created" {
   sql = <<-EOQ
     select

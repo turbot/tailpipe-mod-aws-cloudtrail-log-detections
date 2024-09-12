@@ -43,7 +43,7 @@ dashboard "aws_lambda_function_crud_event" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_lambda_function_crud_event" {
   sql = <<-EOQ
     select

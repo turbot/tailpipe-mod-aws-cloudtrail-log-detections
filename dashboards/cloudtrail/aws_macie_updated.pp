@@ -44,7 +44,7 @@ dashboard "aws_macie_updated" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_macie_updated" {
   sql = <<-EOQ
     select

@@ -43,7 +43,7 @@ dashboard "aws_rds_db_instance_public_restore" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_rds_db_instance_public_restore" {
   sql = <<-EOQ
     select

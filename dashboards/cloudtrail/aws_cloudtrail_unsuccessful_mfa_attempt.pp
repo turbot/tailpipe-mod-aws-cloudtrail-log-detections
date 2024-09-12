@@ -44,7 +44,7 @@ dashboard "aws_cloudtrail_unsuccessful_mfa_attempt" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_cloudtrail_unsuccessful_mfa_attempt" {
   sql = <<-EOQ
     select

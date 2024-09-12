@@ -44,7 +44,7 @@ dashboard "aws_config_service_disabled" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_config_service_disabled" {
   sql = <<-EOQ
     select

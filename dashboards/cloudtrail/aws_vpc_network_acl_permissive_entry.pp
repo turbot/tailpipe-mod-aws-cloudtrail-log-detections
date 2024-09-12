@@ -44,7 +44,7 @@ dashboard "aws_vpc_network_acl_permissive_entry" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_vpc_network_acl_permissive_entry" {
   sql = <<-EOQ
     select

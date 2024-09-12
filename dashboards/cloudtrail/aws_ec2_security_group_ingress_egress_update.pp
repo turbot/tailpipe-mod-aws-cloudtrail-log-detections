@@ -43,7 +43,7 @@ dashboard "aws_ec2_security_group_ingress_egress_update" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_ec2_security_group_ingress_egress_update" {
   sql = <<-EOQ
     select

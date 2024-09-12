@@ -44,7 +44,7 @@ dashboard "aws_iam_entity_created_without_cloudformation" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_iam_entity_created_without_cloudformation" {
   sql = <<-EOQ
     select

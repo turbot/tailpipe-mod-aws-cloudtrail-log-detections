@@ -44,7 +44,7 @@ dashboard "aws_ebs_snapshot_made_public" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_ebs_snapshot_made_public" {
   sql = <<-EOQ
     select

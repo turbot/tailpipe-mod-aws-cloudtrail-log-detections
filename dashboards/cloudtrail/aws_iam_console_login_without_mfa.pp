@@ -45,7 +45,7 @@ dashboard "aws_iam_console_login_without_mfa" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_iam_console_login_without_mfa" {
   sql = <<-EOQ
     select

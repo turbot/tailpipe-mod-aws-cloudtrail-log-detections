@@ -44,7 +44,7 @@ dashboard "aws_iam_group_role_user_compromised_key_quarantine_policy_attached" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_iam_group_role_user_compromised_key_quarantine_policy_attached" {
   sql = <<-EOQ
     select

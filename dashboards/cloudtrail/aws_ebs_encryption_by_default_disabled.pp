@@ -44,7 +44,7 @@ dashboard "aws_ebs_encryption_by_default_disabled" {
   }
 }
 
-// TODO: Use normalized timestamp column
+
 query "aws_ebs_encryption_by_default_disabled" {
   sql = <<-EOQ
     select

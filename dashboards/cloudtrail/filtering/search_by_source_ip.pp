@@ -23,7 +23,7 @@ dashboard "cloudtrail_log_search_by_source_ip" {
 
 }
 
-// TODO: Use normalized timestamp column
+
 query "cloudtrail_log_search_by_source_ip" {
   sql = <<-EOQ
     select
