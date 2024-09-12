@@ -22,7 +22,7 @@ locals {
   __RESOURCE_SQL__ as resource,
   user_identity.arn as actor,
   tp_source_ip as source_ip,
-  tp_connection::varchar as account_id, -- TODO: Change to tp_index with newer data without varchar cast
+  tp_index::varchar as account_id,
   aws_region as region,
   tp_id as source_id,
   EOQ
@@ -33,7 +33,7 @@ locals {
   elb as resource,
   conn_trace_id as actor, -- TODO: What to use here?
   tp_source_ip as source_ip,
-  '123456789012' as account_id, -- TODO: Use tp_index when available
+  tp_index::varchar as account_id,
   'us-east-1' as region, -- TODO: Use tp_location when available
   tp_id as source_id,
   EOQ
@@ -44,7 +44,7 @@ locals {
   bucket as resource,
   requester as actor, -- TODO: What to use here?
   tp_source_ip as source_ip,
-  '123456789012' as account_id, -- TODO: Use tp_index when available
+  tp_index::varchar as account_id,
   'us-east-1' as region, -- TODO: Use tp_location when available
   tp_id as source_id,
   EOQ
