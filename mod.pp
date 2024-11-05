@@ -6,10 +6,12 @@ mod "aws" {
   #documentation = file("./docs/index.md")
   #icon          = "/images/mods/turbot/aws.svg"
   categories    = ["aws", "security"]
+  database      = var.database
 
   opengraph {
     title       = "Tailpipe Mod for AWS"
     description = "Search your AWS logs for high risk actions using Tailpipe."
     #image       = "/images/mods/turbot/aws-social-graphic.png"
   }
+
 }
