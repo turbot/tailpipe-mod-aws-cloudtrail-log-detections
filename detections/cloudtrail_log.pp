@@ -15,11 +15,12 @@ benchmark "cloudtrail_log_checks" {
   description = "This detection list contains recommendations when scanning CloudTrail logs."
   type        = "detection"
 
+  # TODO: Are there defaults? Descriptions?
   param "start_time" {}
   param "end_time" {}
   param "account_id" {}
 
-  #args = [self.param.start_time, self.param.end_time, self.param.account_id]
+  # TODO: Do we need these?
   args = [
     self.benchmark.cloudtrail_log_checks.start_time,
     self.benchmark.cloudtrail_log_checks.end_time,
