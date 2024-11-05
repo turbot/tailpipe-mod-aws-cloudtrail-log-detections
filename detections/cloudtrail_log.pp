@@ -20,12 +20,19 @@ benchmark "cloudtrail_log_checks" {
   param "end_time" {}
   param "account_id" {}
 
-  # TODO: Do we need these?
+  # TODO: Do we need args?
   args = [
-    self.benchmark.cloudtrail_log_checks.start_time,
-    self.benchmark.cloudtrail_log_checks.end_time,
-    self.benchmark.cloudtrail_log_checks.account_id
+    self.benchmark.param.cloudtrail_log_checks.start_time,
+    self.benchmark.param.cloudtrail_log_checks.end_time,
+    self.benchmark.param.cloudtrail_log_checks.account_id
   ]
+
+  # TODO: Would args be better as a map to not require a specific order?
+  args = {
+    start_time: self.benchmark.param.cloudtrail_log_checks.start_time,
+    end_time: self.benchmark.param.cloudtrail_log_checks.end_time,
+    account_id: self.benchmark.param.cloudtrail_log_checks.account_id
+  }
 
   children = [
     benchmark.cloudtrail_log_ec2_checks,
