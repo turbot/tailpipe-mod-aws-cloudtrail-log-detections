@@ -1,16 +1,3 @@
-/*
- * Required fields:
- * - tp_id/log_id: Used for uniqueness and to correlate back to tailpipe row)
- * - event_time: Event timestamp (in UTC?)
- * Optional fields:
- * - source_ip: Source IP address of actor
- * - actor: String (or object?) of actor used to link events
- * - account_id: Unique account ID to give more context
- * - region/location: Region within the account to give more context
- * Additional fields:
- * - Any named fields the query author wants to add for more context
- */
-
 // Already defined in controls/cloudtrail_log.pp
 /*
 locals {
@@ -20,19 +7,102 @@ locals {
 }
 */
 
+// Test benchmark/detection with params and top level args
+
+/*
+benchmark "cloudtrail_log_checks" {
+  title       = "CloudTrail Log Checks"
+  description = "This detection list contains recommendations when scanning CloudTrail logs."
+  type        = "detection"
+
+  param "start_time" {}
+  param "end_time" {}
+  param "account_id" {}
+
+  #args = [self.param.start_time, self.param.end_time, self.param.account_id]
+  args = [
+    self.benchmark.cloudtrail_log_checks.start_time,
+    self.benchmark.cloudtrail_log_checks.end_time,
+    self.benchmark.cloudtrail_log_checks.account_id
+  ]
+
+  children = [
+    benchmark.cloudtrail_log_ec2_checks,
+    detection.cloudtrail_log_iam_root_console_logins,
+    detection.cloudtrail_log_iam_root_console_failed_logins,
+  ]
+
+  tags = merge(local.cloudtrail_log_common_tags, {
+    type = "Benchmark"
+  })
+}
+
+benchmark "cloudtrail_log_ec2_checks" {
+  title       = "CloudTrail Log EC2 Checks"
+  description = "This detection list contains recommendations for EC2 when scanning CloudTrail logs."
+  type        = "detection"
+
+  param "start_time" {}
+  param "end_time" {}
+  param "account_id" {}
+
+  children = [
+    detection.cloudtrail_log_ec2_security_group_ingress_egress_updates
+  ]
+
+  tags = merge(local.cloudtrail_log_common_tags, {
+    type = "Benchmark"
+  })
+}
+
+detection "cloudtrail_log_ec2_security_group_ingress_egress_updates" {
+  title       = "EC2 Security Group Ingress/Egress Updates in CloudTrail Logs"
+  description = "Detect EC2 security group ingress and egress rule updates to check for unauthorized VPC access or export of data."
+  severity    = "low"
+  query       = query.cloudtrail_log_ec2_security_group_ingress_egress_updates
+  author      = "cbruno"
+  references  = [
+    "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/working-with-security-groups.html"
+  ]
+
+  param "start_time" {}
+  param "end_time" {}
+  param "account_id" {}
+
+  tags = merge(local.cloudtrail_log_common_tags, {
+    mitre_attack_ids = "TA0001:T1190,TA0005:T1562"
+  })
+}
+
+query "cloudtrail_log_ec2_security_group_ingress_egress_updates" {
+  sql = <<-EOQ
+    select
+      ${local.aws_ec2_security_group_ingress_egress_update_detection_sql}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'ec2.amazonaws.com'
+      and event_name in ('AuthorizeSecurityGroupEgress', 'AuthorizeSecurityGroupIngress', 'RevokeSecurityGroupEgress', 'RevokeSecurityGroupIngress')
+      and error_code is null
+      and timestamp between $1 and $2
+      and account_id = $3
+    order by
+      event_time desc;
+  EOQ
+
+  param "start_time" {}
+  param "end_time" {}
+  param "account_id" {}
+}
+*/
+
+// Test detection list/detection without params
 /*
 locals {
   # Store the replace logic in a local variable
   aws_ec2_security_group_ingress_egress_update_detection_sql = replace(local.common_dimensions_cloudtrail_log_sql, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'groupId'")
 }
 
-// For detections, they should be able to:
-// - Show OK/green if there are 0 items
-// - Expand the full row info (based on tp_id/log_id) easily
-// - Sort and filter by timestamp
-// - Filter based on additional fields
-// - Easily show events by the same actor for that session (or in the last hour)
-// - Through vars (or something in the UI ad hoc), filter events out to reduce false positives
 detection_list "cloudtrail_log_checks" {
   title       = "CloudTrail Log Checks"
   description = "This detection list contains recommendations when scanning CloudTrail logs."
