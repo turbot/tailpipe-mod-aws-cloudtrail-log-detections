@@ -11,11 +11,19 @@
  * - Any named fields the query author wants to add for more context
  */
 
+// Already defined in controls/cloudtrail_log.pp
 /*
 locals {
   cloudtrail_log_common_tags = merge(local.aws_common_tags, {
     service = "AWS/CloudTrail"
   })
+}
+*/
+
+/*
+locals {
+  # Store the replace logic in a local variable
+  aws_ec2_security_group_ingress_egress_update_detection_sql = replace(local.common_dimensions_cloudtrail_log_sql, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'groupId'")
 }
 
 // For detections, they should be able to:
@@ -29,8 +37,9 @@ detection_list "cloudtrail_log_checks" {
   title       = "CloudTrail Log Checks"
   description = "This detection list contains recommendations when scanning CloudTrail logs."
   children = [
-    detection.cloudtrail_log_iam_root_console_logins,
-    detection.cloudtrail_log_iam_root_console_failed_logins,
+    detection.cloudtrail_log_ec2_security_group_ingress_egress_updates,
+    #detection.cloudtrail_log_iam_root_console_logins,
+    #detection.cloudtrail_log_iam_root_console_failed_logins,
   ]
 
   tags = merge(local.cloudtrail_log_common_tags, {
@@ -38,6 +47,46 @@ detection_list "cloudtrail_log_checks" {
   })
 }
 
+detection "cloudtrail_log_ec2_security_group_ingress_egress_updates" {
+  title       = "EC2 Security Group Ingress/Egress Updates in CloudTrail Logs"
+  description = "Detect EC2 security group ingress and egress rule updates to check for unauthorized VPC access or export of data."
+  severity    = "low"
+  query       = query.cloudtrail_log_ec2_security_group_ingress_egress_updates
+  author      = "cbruno"
+  references  = [
+    "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/working-with-security-groups.html"
+  ]
+
+  tags = merge(local.cloudtrail_log_common_tags, {
+    mitre_attack_ids = "TA0001:T1190,TA0005:T1562"
+  })
+}
+
+query "cloudtrail_log_ec2_security_group_ingress_egress_updates" {
+  sql = <<-EOQ
+    select
+      ${local.aws_ec2_security_group_ingress_egress_update_detection_sql}
+      -- Additional dimensions
+      --additional_event_data,
+      --request_parameters,
+      --response_elements,
+      --resources,
+      --service_event_details,
+      --user_agent,
+      --user_identity
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'ec2.amazonaws.com'
+      and event_name in ('AuthorizeSecurityGroupEgress', 'AuthorizeSecurityGroupIngress', 'RevokeSecurityGroupEgress', 'RevokeSecurityGroupIngress')
+      and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+*/
+
+/*
 detection "cloudtrail_log_iam_root_console_logins" {
   title       = "IAM Root Console Logins in CloudTrail Logs"
   description = "Detect IAM root user console logins to check for any actions performed by the root user."
@@ -53,6 +102,25 @@ detection "cloudtrail_log_iam_root_console_logins" {
   tags = merge(local.cloudtrail_log_common_tags, {
     mitre_attack_tactic = "TA0004"
     mitre_attack_technique = "T1078"
+  })
+}
+
+detection "cloudtrail_log_iam_root_console_failed_logins" {
+  title       = "IAM Root Failed Console Logins in CloudTrail Logs"
+  description = "Detect failed IAM root user console logins to check for brute force attacks or use of old credentials."
+  severity    = "high"
+  query       = query.cloudtrail_log_iam_root_console_failed_logins_test
+  author      = "cbruno"
+
+  references  = [
+    "https://docs.panther.com/alerts/alert-runbooks/built-in-rules/aws-console-login-failed"
+  ]
+
+  # TODO: Add MITRE info
+  # TODO: Should detection types be a top level property, tag?
+  # TODO: How should we categorize them?
+  tags = merge(local.cloudtrail_log_common_tags, {
+    type = "failed attack"
   })
 }
 
@@ -80,26 +148,6 @@ query "cloudtrail_log_iam_root_console_logins_test" {
       event_time desc;
   EOQ
 }
-
-detection "cloudtrail_log_iam_root_console_failed_logins" {
-  title       = "IAM Root Failed Console Logins in CloudTrail Logs"
-  description = "Detect failed IAM root user console logins to check for brute force attacks or use of old credentials."
-  severity    = "high"
-  query       = query.cloudtrail_log_iam_root_console_failed_logins_test
-  author      = "cbruno"
-
-  references  = [
-    "https://docs.panther.com/alerts/alert-runbooks/built-in-rules/aws-console-login-failed"
-  ]
-
-  # TODO: Add MITRE info
-  # TODO: Should detection types be a top level property, tag?
-  # TODO: How should we categorize them?
-  tags = merge(local.cloudtrail_log_common_tags, {
-    type = "failed attack"
-  })
-}
-
 
 query "cloudtrail_log_iam_root_console_failed_logins_test" {
   sql = <<-EOQ
