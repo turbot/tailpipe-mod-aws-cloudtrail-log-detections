@@ -5,7 +5,7 @@ locals {
 }
 
 detection_benchmark "all_detections" {
-  title       = "All Controls"
+  title       = "All Detections"
   description = "This detection_benchmark contains all detections grouped by log type to help you detect high risk activities."
   children = [
     detection_benchmark.all_detections_cloudtrail_log_checks
@@ -15,7 +15,7 @@ detection_benchmark "all_detections" {
 }
 
 detection_benchmark "all_detections_cloudtrail_log_checks" {
-  title       = "CloudTrail Log Checks"
+  title       = "All CloudTrail Log Detections"
   description = "This section contains recommendations for scanning CloudTrail logs."
   children = [
     detection.cloudtrail_log_cloudtrail_trail_updates,

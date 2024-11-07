@@ -1,3 +1,6 @@
+// TODO: Add author and references to all detections
+// TODO: Detection vs check naming?
+
 locals {
   cloudtrail_log_common_tags = merge(local.aws_common_tags, {
     service = "AWS/CloudTrail"
@@ -76,16 +79,7 @@ detection "cloudtrail_log_non_terraform_updates" {
 query "cloudtrail_log_iam_root_console_logins" {
   sql = <<-EOQ
     select
-      tp_id as resource,
-      'alarm' as status,
-      case
-        when (additional_event_data::JSON ->> 'MFAUsed') = 'Yes' then 'AWS root console login with MFA from ' || tp_source_ip || ' in AWS account ' || recipient_account_id || '.'
-        else 'AWS root console login from ' || tp_source_ip || ' in AWS account ' || recipient_account_id || '.'
-      end as reason,
-      (epoch_ms(tp_timestamp))::varchar as event_time,
-      tp_id,
-      tp_source_ip,
-      recipient_account_id
+      ${local.aws_ec2_security_group_ingress_egress_update_detection_sql}
     from
       aws_cloudtrail_log
     where
@@ -101,14 +95,7 @@ query "cloudtrail_log_iam_root_console_logins" {
 query "cloudtrail_log_cloudtrail_trail_updates" {
   sql = <<-EOQ
     select
-      tp_id as resource,
-      'alarm' as status,
-      user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || ' for ' || (request_parameters::JSON ->> 'name') || '.' as reason,
-      (epoch_ms(tp_timestamp))::varchar as event_time,
-      tp_id,
-      tp_source_ip,
-      recipient_account_id,
-      aws_region
+      ${local.aws_ec2_security_group_ingress_egress_update_detection_sql}
     from
       aws_cloudtrail_log
     where
@@ -125,15 +112,7 @@ query "cloudtrail_log_cloudtrail_trail_updates" {
 query "cloudtrail_log_ec2_security_group_ingress_egress_updates" {
   sql = <<-EOQ
     select
-      tp_id as resource,
-      'alarm' as status,
-      user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || ' for ' || (request_parameters::JSON ->> 'groupId') || '.' as reason,
-      (epoch_ms(tp_timestamp))::varchar as event_time,
-      tp_id,
-      tp_source_ip,
-      recipient_account_id,
-      aws_region,
-      (request_parameters::JSON).ipPermissions.items as rule_updates,
+      ${local.aws_ec2_security_group_ingress_egress_update_detection_sql}
     from
       aws_cloudtrail_log
     where
@@ -149,19 +128,7 @@ query "cloudtrail_log_ec2_security_group_ingress_egress_updates" {
 query "cloudtrail_log_non_read_only_updates" {
   sql = <<-EOQ
     select
-      tp_id as resource,
-      'alarm' as status,
-      case
-        when tp_akas is not null then user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || ' for ' || tp_akas::string || '.'
-        else user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || '.'
-      end as reason,
-      (epoch_ms(tp_timestamp))::varchar as event_time,
-      tp_id,
-      tp_source_ip,
-      recipient_account_id,
-      aws_region,
-      --request_parameters::string,
-      --response_elements::string,
+      ${local.aws_ec2_security_group_ingress_egress_update_detection_sql}
     from
       aws_cloudtrail_log
     where
@@ -180,18 +147,7 @@ query "cloudtrail_log_non_read_only_updates" {
 query "cloudtrail_log_non_terraform_updates" {
   sql = <<-EOQ
     select
-      tp_id as resource,
-      'alarm' as status,
-      case
-        when tp_akas is not null then user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || ' for ' || tp_akas::string || '.'
-        else user_identity.arn || ' called ' || string_split(event_source, '.')[1] || ':' || event_name || '.'
-      end as reason,
-      (epoch_ms(tp_timestamp))::varchar as event_time,
-      tp_id,
-      tp_source_ip,
-      recipient_account_id,
-      aws_region,
-      user_agent,
+      ${local.aws_ec2_security_group_ingress_egress_update_detection_sql}
     from
       aws_cloudtrail_log
     where
