@@ -4,12 +4,12 @@ locals {
   })
 }
 
-benchmark "mitre_v151_ta0001" {
+detection_benchmark "mitre_v151_ta0001" {
   title         = "TA0001 Initial Access"
   documentation = file("./mitre_v151/docs/ta0001.md")
   children = [
-    benchmark.mitre_v151_ta0001_t1078,
-    benchmark.mitre_v151_ta0001_t1190,
+    detection_benchmark.mitre_v151_ta0001_t1078,
+    detection_benchmark.mitre_v151_ta0001_t1190,
   ]
 
   tags = merge(local.mitre_v151_ta0001_common_tags, {
