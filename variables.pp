@@ -1,15 +1,7 @@
-/*
 variable "database" {
   type        = connection.tailpipe
   description = "Tailpipe database connection string."
   default     = connection.tailpipe.default
-}
-*/
-
-variable "database" {
-  type        = connection.duckdb
-  description = "DuckDB database connection string."
-  default     = connection.duckdb.default
 }
 
 variable "assume_role_blocklist" {

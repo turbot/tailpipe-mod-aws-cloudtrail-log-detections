@@ -71,7 +71,7 @@ detection "cloudtrail_logs_base" {
 }
 
 detection "cloudtrail_logs_iam_root_console_logins" {
-  title       = "Check CloudTrail Logs for IAM Root Console Logins"
+  title       = "Detect IAM Root Console Logins in CloudTrail Logs"
   description = "Detect IAM root user console logins to check for any actions performed by the root user."
   severity    = "high"
   query       = query.cloudtrail_logs_iam_root_console_logins
@@ -86,7 +86,7 @@ detection "cloudtrail_logs_iam_root_console_logins" {
 }
 
 detection "cloudtrail_logs_cloudtrail_trail_updates" {
-  title       = "Check CloudTrail Logs for CloudTrail Trail Updates"
+  title       = "Detect CloudTrail Trail Updates in CloudTrail Logs"
   description = "Detect CloudTrail trail changes to check if logging was stopped."
   severity    = "medium"
   query       = query.cloudtrail_logs_cloudtrail_trail_updates
@@ -104,7 +104,7 @@ detection "cloudtrail_logs_cloudtrail_trail_updates" {
 }
 
 detection "cloudtrail_logs_ec2_security_group_ingress_egress_updates" {
-  title       = "Check CloudTrail Logs for EC2 Security Group Ingress/Egress Updates"
+  title       = "Detect EC2 Security Group Ingress/Egress Updates in CloudTrail Logs"
   description = "Detect EC2 security group ingress and egress rule updates to check for unauthorized VPC access or export of data."
   severity    = "medium"
   query       = query.cloudtrail_logs_ec2_security_group_ingress_egress_updates

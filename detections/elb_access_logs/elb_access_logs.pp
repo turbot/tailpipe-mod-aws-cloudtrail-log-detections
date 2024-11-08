@@ -19,8 +19,8 @@ detection_benchmark "elb_access_log_detections" {
 }
 
 detection "elb_access_logs_insecure_access" {
-  title       = "Check ELB Access Logs for Insecure Access"
-  description = "Detect access requests that were insecure."
+  title       = "Detect Insecure Access Requests in ELB Access Logs"
+  description = "Detect insecure access requests to check for possible application misconfigurations."
   severity    = "high"
   query       = query.elb_access_logs_insecure_access
 
