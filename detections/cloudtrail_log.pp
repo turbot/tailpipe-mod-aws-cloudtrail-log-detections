@@ -1,4 +1,4 @@
-// TODO: Add author and references to all detections
+// TODO: Add author to all detections
 // TODO: Detection vs check naming?
 
 locals {
@@ -21,17 +21,6 @@ detection_benchmark "cloudtrail_log_checks" {
 
   tags = merge(local.cloudtrail_log_common_tags, {
     type = "Benchmark"
-  })
-}
-
-detection "cloudtrail_log_iam_root_console_logins" {
-  title       = "Check CloudTrail Logs for IAM Root Console Logins"
-  description = "Detect IAM root user console logins to check for any actions performed by the root user."
-  severity    = "high"
-  query       = query.cloudtrail_log_iam_root_console_logins
-
-  tags = merge(local.cloudtrail_log_common_tags, {
-    mitre_attack_ids = "TA0004:T1078"
   })
 }
 
@@ -78,24 +67,33 @@ detection "cloudtrail_log_base" {
   */
 }
 
-detection "cloudtrail_log_iam_root_console_logins_base_test" {
-  base        = detection.cloudtrail_log_base
+detection "cloudtrail_log_iam_root_console_logins" {
   title       = "Check CloudTrail Logs for IAM Root Console Logins"
   description = "Detect IAM root user console logins to check for any actions performed by the root user."
   severity    = "high"
   query       = query.cloudtrail_log_iam_root_console_logins
+
+  #references = [
+  #  "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html"
+  #]
 
   tags = merge(local.cloudtrail_log_common_tags, {
     mitre_attack_ids = "TA0004:T1078"
   })
 }
 
-
 detection "cloudtrail_log_cloudtrail_trail_updates" {
   title       = "Check CloudTrail Logs for CloudTrail Trail Updates"
   description = "Detect CloudTrail trail changes to check if logging was stopped."
   severity    = "medium"
   query       = query.cloudtrail_log_cloudtrail_trail_updates
+
+  #references = [
+  #  "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/best-practices-security.html",
+  #  "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-delete-trails-console.html",
+  #  "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-update-a-trail-console.html",
+  #  "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-turning-off-logging.html"
+  #]
 
   tags = merge(local.cloudtrail_log_common_tags, {
     mitre_attack_ids = "TA0005:T1562:001"
@@ -107,6 +105,11 @@ detection "cloudtrail_log_ec2_security_group_ingress_egress_updates" {
   description = "Detect EC2 security group ingress and egress rule updates to check for unauthorized VPC access or export of data."
   severity    = "medium"
   query       = query.cloudtrail_log_ec2_security_group_ingress_egress_updates
+
+  #references = [
+  #  "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/working-with-security-groups.html",
+  #  "https://www.gorillastack.com/blog/real-time-events/important-aws-cloudtrail-security-events-tracking/"
+  #]
 
   tags = merge(local.cloudtrail_log_common_tags, {
     mitre_attack_ids = "TA0001:T1190,TA0005:T1562"
