@@ -19,6 +19,7 @@ locals {
   tp_index::varchar as account_id,
   aws_region as region,
   tp_id as source_id,
+  *
   EOQ
 
   common_dimensions_elb_log_sql = <<-EOQ
@@ -30,6 +31,7 @@ locals {
   tp_index::varchar as account_id,
   'us-east-1' as region, -- TODO: Use tp_location when available
   tp_id as source_id,
+  *
   EOQ
 
   common_dimensions_s3_log_sql = <<-EOQ
@@ -41,5 +43,6 @@ locals {
   tp_index::varchar as account_id,
   'us-east-1' as region, -- TODO: Use tp_location when available
   tp_id as source_id,
+  *
   EOQ
 }
