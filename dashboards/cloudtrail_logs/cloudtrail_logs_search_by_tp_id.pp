@@ -4,7 +4,7 @@ dashboard "cloudtrail_log_search_by_tp_id" {
   #documentation = file("./dashboards/ec2/docs/ec2_instance_detail.md")
 
   tags = merge(local.cloudtrail_log_common_tags, {
-    type = "Detail"
+    type = "Report"
   })
 
   container {
