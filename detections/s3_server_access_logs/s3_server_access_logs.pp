@@ -1,50 +1,49 @@
 locals {
-  s3_server_access_log_common_tags = merge(local.aws_common_tags, {
+  s3_server_access_logs_common_tags = merge(local.aws_common_tags, {
     service = "AWS/S3"
   })
 }
 
-
-detection_benchmark "s3_server_access_log_checks" {
+detection_benchmark "s3_server_access_logs_detections" {
   title       = "S3 Server Access Log Detections"
   description = "This detection_benchmark contains recommendations when scanning S3 server access logs."
   type        = "detection"
   children = [
-    detection.s3_server_access_log_access_errors,
-    detection.s3_server_access_log_insecure_access,
+    detection.s3_server_access_logs_access_errors,
+    detection.s3_server_access_logs_insecure_access,
   ]
 
-  tags = merge(local.s3_server_access_log_common_tags, {
+  tags = merge(local.s3_server_access_logs_common_tags, {
     type = "Benchmark"
   })
 }
 
-detection "s3_server_access_log_access_errors" {
+detection "s3_server_access_logs_access_errors" {
   title       = "Check S3 Server Access Logs for Access Errors"
   description = "Detect server access requests that resulted in access errors."
   severity    = "low"
-  query       = query.s3_server_access_log_access_errors
+  query       = query.s3_server_access_logs_access_errors
 
-  tags = merge(local.s3_server_access_log_common_tags, {
+  tags = merge(local.s3_server_access_logs_common_tags, {
     mitre_attack_ids = "TA0007:T1619"
   })
 }
 
-detection "s3_server_access_log_insecure_access" {
+detection "s3_server_access_logs_insecure_access" {
   title       = "Check S3 Server Access Logs for Insecure Access"
   description = "Detect server access requests that were insecure requests."
   severity    = "low"
-  query       = query.s3_server_access_log_insecure_access
+  query       = query.s3_server_access_logs_insecure_access
 
-  tags = merge(local.s3_server_access_log_common_tags, {
+  tags = merge(local.s3_server_access_logs_common_tags, {
     mitre_attack_ids = "TA0009:T1530"
   })
 }
 
-query "s3_server_access_log_access_errors" {
+query "s3_server_access_logs_access_errors" {
   sql = <<-EOQ
     select
-      ${local.common_dimensions_s3_log_sql}
+      ${local.common_dimensions_s3_server_access_logs_sql}
     from
       aws_s3_server_access_log
     where
@@ -56,10 +55,10 @@ query "s3_server_access_log_access_errors" {
   EOQ
 }
 
-query "s3_server_access_log_insecure_access" {
+query "s3_server_access_logs_insecure_access" {
   sql = <<-EOQ
     select
-      ${local.common_dimensions_s3_log_sql}
+      ${local.common_dimensions_s3_server_access_logs_sql}
     from
       aws_s3_server_access_log
     where

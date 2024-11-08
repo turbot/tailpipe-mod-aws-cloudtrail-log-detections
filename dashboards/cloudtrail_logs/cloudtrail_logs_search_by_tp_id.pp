@@ -1,9 +1,9 @@
-dashboard "cloudtrail_log_search_by_tp_id" {
+dashboard "cloudtrail_logs_search_by_tp_id" {
 
   title         = "CloudTrail Logs Search by Tailpipe ID"
   #documentation = file("./dashboards/ec2/docs/ec2_instance_detail.md")
 
-  tags = merge(local.cloudtrail_log_common_tags, {
+  tags = merge(local.cloudtrail_logs_common_tags, {
     type = "Report"
   })
 
@@ -16,7 +16,7 @@ dashboard "cloudtrail_log_search_by_tp_id" {
     }
 
     table {
-      query = query.cloudtrail_log_search_by_tp_id
+      query = query.cloudtrail_logs_search_by_tp_id
       args  = [self.input.tp_id.value]
       type  = "line"
 
@@ -50,7 +50,7 @@ dashboard "cloudtrail_log_search_by_tp_id" {
 }
 
 
-query "cloudtrail_log_search_by_tp_id" {
+query "cloudtrail_logs_search_by_tp_id" {
   sql = <<-EOQ
     select
       epoch_ms(event_time) as event_time,

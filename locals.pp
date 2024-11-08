@@ -10,7 +10,7 @@ locals {
 locals {
   # Local internal variables to build the SQL select clause for common
   # dimensions. Do not edit directly.
-  common_dimensions_cloudtrail_log_sql = <<-EOQ
+  common_dimensions_cloudtrail_logs_sql = <<-EOQ
   epoch_ms(tp_timestamp) as timestamp,
   string_split(event_source, '.')[1] || ':' || event_name as operation,
   __RESOURCE_SQL__ as resource,
@@ -22,7 +22,7 @@ locals {
   *
   EOQ
 
-  common_dimensions_elb_log_sql = <<-EOQ
+  common_dimensions_elb_access_logs_sql = <<-EOQ
   epoch_ms(tp_timestamp) as timestamp,
   request as operation,
   elb as resource,
@@ -34,7 +34,7 @@ locals {
   *
   EOQ
 
-  common_dimensions_s3_log_sql = <<-EOQ
+  common_dimensions_s3_server_access_logs_sql = <<-EOQ
   epoch_ms(tp_timestamp) as timestamp,
   operation as operation,
   bucket as resource,

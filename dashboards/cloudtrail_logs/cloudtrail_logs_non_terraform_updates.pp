@@ -1,31 +1,31 @@
-dashboard "cloudtrail_log_non_terraform_updates" {
+dashboard "cloudtrail_logs_non_terraform_updates" {
 
   title         = "CloudTrail Logs Non-Terraform Updates"
   #documentation = file("./dashboards/ec2/docs/ec2_instance_detail.md")
 
-  tags = merge(local.cloudtrail_log_common_tags, {
+  tags = merge(local.cloudtrail_logs_common_tags, {
     type = "Report"
   })
 
   container {
 
     card {
-      query = query.cloudtrail_log_non_terraform_updates_total_count
+      query = query.cloudtrail_logs_non_terraform_updates_total_count
       width = 3
     }
 
     card {
-      query = query.cloudtrail_log_non_terraform_updates_critical_count
+      query = query.cloudtrail_logs_non_terraform_updates_critical_count
       width = 3
     }
 
     card {
-      query = query.cloudtrail_log_non_terraform_updates_mitre_coverage
+      query = query.cloudtrail_logs_non_terraform_updates_mitre_coverage
       width = 3
     }
 
     card {
-      query = query.cloudtrail_log_non_terraform_updates_mitre_count
+      query = query.cloudtrail_logs_non_terraform_updates_mitre_count
       width = 3
     }
   }
@@ -49,7 +49,7 @@ dashboard "cloudtrail_log_non_terraform_updates" {
     */
 
     table {
-      query = query.cloudtrail_log_non_terraform_updates_with_principal
+      query = query.cloudtrail_logs_non_terraform_updates_with_principal
 
       /*
       args = [
@@ -59,15 +59,15 @@ dashboard "cloudtrail_log_non_terraform_updates" {
       */
 
       column "principal_id" {
-        href = "/aws.dashboard.cloudtrail_log_search_by_principal_id?input.principal_id={{ .'principal_id' | @uri }}"
+        href = "/aws.dashboard.cloudtrail_logs_search_by_principal_id?input.principal_id={{ .'principal_id' | @uri }}"
       }
 
       column "source_ip" {
-        href = "/aws.dashboard.cloudtrail_log_search_by_source_ip?input.source_ip={{ .'source_ip' | @uri }}"
+        href = "/aws.dashboard.cloudtrail_logs_search_by_source_ip?input.source_ip={{ .'source_ip' | @uri }}"
       }
 
       column "tp_id" {
-        href = "/aws.dashboard.cloudtrail_log_search_by_tp_id?input.tp_id={{ .'tp_id' | @uri }}"
+        href = "/aws.dashboard.cloudtrail_logs_search_by_tp_id?input.tp_id={{ .'tp_id' | @uri }}"
       }
 
       column "additional_event_data" {
@@ -108,7 +108,7 @@ dashboard "cloudtrail_log_non_terraform_updates" {
 // Sample user agent strings from TF:
 // APN/1.0 HashiCorp/1.0 Terraform/0.15.5 (+https://www.terraform.io) terraform-provider-aws/3.75.0 (+https://registry.terraform.io/providers/hashicorp/aws) aws-sdk-go/1.43.17 (go1.16; linux; amd64) exec-env/AWS_ECS_EC2
 // APN/1.0 HashiCorp/1.0 Terraform/0.15.5 (+https://www.terraform.io) terraform-provider-aws/5.14.0 (+https://registry.terraform.io/providers/hashicorp/aws) aws-sdk-go/1.44.328 (go1.20.7; darwin; amd64)
-query "cloudtrail_log_non_terraform_updates_with_principal" {
+query "cloudtrail_logs_non_terraform_updates_with_principal" {
   sql = <<-EOQ
     select
       epoch_ms(event_time) as event_time,
@@ -139,7 +139,7 @@ query "cloudtrail_log_non_terraform_updates_with_principal" {
   EOQ
 }
 
-query "cloudtrail_log_non_terraform_updates_total_count" {
+query "cloudtrail_logs_non_terraform_updates_total_count" {
   sql = <<-EOQ
     select
       'Total Alerts' as label,
@@ -150,7 +150,7 @@ query "cloudtrail_log_non_terraform_updates_total_count" {
   EOQ
 }
 
-query "cloudtrail_log_non_terraform_updates_critical_count" {
+query "cloudtrail_logs_non_terraform_updates_critical_count" {
   sql = <<-EOQ
     select
       'Critical Alerts' as label,
@@ -161,7 +161,7 @@ query "cloudtrail_log_non_terraform_updates_critical_count" {
   EOQ
 }
 
-query "cloudtrail_log_non_terraform_updates_mitre_coverage" {
+query "cloudtrail_logs_non_terraform_updates_mitre_coverage" {
   sql = <<-EOQ
     select
       'MITRE ATT&CK Coverage' as label,
@@ -176,7 +176,7 @@ query "cloudtrail_log_non_terraform_updates_mitre_coverage" {
   EOQ
 }
 
-query "cloudtrail_log_non_terraform_updates_mitre_count" {
+query "cloudtrail_logs_non_terraform_updates_mitre_count" {
   sql = <<-EOQ
     select
       'MITRE ATT&CK Alerts' as label,

@@ -1,9 +1,9 @@
-dashboard "cloudtrail_log_search_by_source_ip" {
+dashboard "cloudtrail_logs_search_by_source_ip" {
 
   title         = "CloudTrail Logs Search by Source IP"
   #documentation = file("./dashboards/ec2/docs/ec2_instance_detail.md")
 
-  tags = merge(local.cloudtrail_log_common_tags, {
+  tags = merge(local.cloudtrail_logs_common_tags, {
     type = "Report"
   })
 
@@ -16,7 +16,7 @@ dashboard "cloudtrail_log_search_by_source_ip" {
     }
 
     table {
-      query = query.cloudtrail_log_search_by_source_ip
+      query = query.cloudtrail_logs_search_by_source_ip
       args  = [self.input.source_ip.value]
     }
   }
@@ -24,7 +24,7 @@ dashboard "cloudtrail_log_search_by_source_ip" {
 }
 
 
-query "cloudtrail_log_search_by_source_ip" {
+query "cloudtrail_logs_search_by_source_ip" {
   sql = <<-EOQ
     select
       epoch_ms(event_time) as event_time,
