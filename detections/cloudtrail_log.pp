@@ -5,6 +5,11 @@ locals {
   cloudtrail_log_common_tags = merge(local.aws_common_tags, {
     service = "AWS/CloudTrail"
   })
+
+  # Store the replace logic in a local variable
+  aws_cloudtrail_trail_update_detection_sql = replace(local.common_dimensions_cloudtrail_log_sql, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'name'")
+  aws_ec2_security_group_ingress_egress_update_detection_sql = replace(local.common_dimensions_cloudtrail_log_sql, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'groupId'")
+  aws_iam_root_console_login_detection_sql = replace(local.common_dimensions_cloudtrail_log_sql, "__RESOURCE_SQL__", "''")
 }
 
 detection_benchmark "cloudtrail_log_checks" {
@@ -15,8 +20,6 @@ detection_benchmark "cloudtrail_log_checks" {
     detection.cloudtrail_log_cloudtrail_trail_updates,
     detection.cloudtrail_log_ec2_security_group_ingress_egress_updates,
     detection.cloudtrail_log_iam_root_console_logins,
-    detection.cloudtrail_log_non_read_only_updates,
-    detection.cloudtrail_log_non_terraform_updates,
   ]
 
   tags = merge(local.cloudtrail_log_common_tags, {
@@ -116,46 +119,10 @@ detection "cloudtrail_log_ec2_security_group_ingress_egress_updates" {
   })
 }
 
-detection "cloudtrail_log_non_read_only_updates" {
-  title       = "Check CloudTrail Logs for Non-Read-Only Updates"
-  description = "Detect write events that are performed by a non-AWS service."
-  // TODO: What severity?
-  severity    = "low"
-  query       = query.cloudtrail_log_non_read_only_updates
-
-  tags = local.cloudtrail_log_common_tags
-}
-
-detection "cloudtrail_log_non_terraform_updates" {
-  title       = "Check CloudTrail Logs for Non-Terraform Updates"
-  description = "Detect write events that are performed by a non-AWS service and without Terraform."
-  // TODO: What severity?
-  severity    = "low"
-  query       = query.cloudtrail_log_non_terraform_updates
-
-  tags = local.cloudtrail_log_common_tags
-}
-
-query "cloudtrail_log_iam_root_console_logins" {
-  sql = <<-EOQ
-    select
-      ${local.aws_ec2_security_group_ingress_egress_update_detection_sql}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'signin.amazonaws.com'
-      and event_name = 'ConsoleLogin'
-      and user_identity.type = 'Root'
-      and (response_elements::JSON ->> 'ConsoleLogin') = 'Success'
-    order by
-      event_time desc;
-  EOQ
-}
-
 query "cloudtrail_log_cloudtrail_trail_updates" {
   sql = <<-EOQ
     select
-      ${local.aws_ec2_security_group_ingress_egress_update_detection_sql}
+      ${local.aws_cloudtrail_trail_update_detection_sql}
     from
       aws_cloudtrail_log
     where
@@ -167,8 +134,6 @@ query "cloudtrail_log_cloudtrail_trail_updates" {
   EOQ
 }
 
-
-// TODO: Add more request param data to reason
 query "cloudtrail_log_ec2_security_group_ingress_egress_updates" {
   sql = <<-EOQ
     select
@@ -184,39 +149,17 @@ query "cloudtrail_log_ec2_security_group_ingress_egress_updates" {
   EOQ
 }
 
-// TODO: How to improve reasons when context could be from request_parameters, resources, tp_akas, etc., that often have different keys?
-query "cloudtrail_log_non_read_only_updates" {
+query "cloudtrail_log_iam_root_console_logins" {
   sql = <<-EOQ
     select
-      ${local.aws_ec2_security_group_ingress_egress_update_detection_sql}
+      ${local.aws_iam_root_console_login_detection_sql}
     from
       aws_cloudtrail_log
     where
-      user_identity.type != 'AWSService'
-      and not read_only
-      and error_code is null
-    order by
-      event_time desc;
-  EOQ
-}
-
-// TODO: How to improve reasons when context could be from request_parameters, resources, tp_akas, etc., that often have different keys?
-// Sample user agent strings from TF:
-// APN/1.0 HashiCorp/1.0 Terraform/0.15.5 (+https://www.terraform.io) terraform-provider-aws/3.75.0 (+https://registry.terraform.io/providers/hashicorp/aws) aws-sdk-go/1.43.17 (go1.16; linux; amd64) exec-env/AWS_ECS_EC2
-// APN/1.0 HashiCorp/1.0 Terraform/0.15.5 (+https://www.terraform.io) terraform-provider-aws/5.14.0 (+https://registry.terraform.io/providers/hashicorp/aws) aws-sdk-go/1.44.328 (go1.20.7; darwin; amd64)
-query "cloudtrail_log_non_terraform_updates" {
-  sql = <<-EOQ
-    select
-      ${local.aws_ec2_security_group_ingress_egress_update_detection_sql}
-    from
-      aws_cloudtrail_log
-    where
-      -- Should we use this instead to include Guardrails TF actions too?
-      --user_agent not ilike '%terraform-provider-%'
-      user_agent not ilike '%Terraform/%'
-      and user_identity.type != 'AWSService'
-      and not read_only
-      and error_code is null
+      event_source = 'signin.amazonaws.com'
+      and event_name = 'ConsoleLogin'
+      and user_identity.type = 'Root'
+      and (response_elements::JSON ->> 'ConsoleLogin') = 'Success'
     order by
       event_time desc;
   EOQ
