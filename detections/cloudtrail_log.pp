@@ -10,6 +10,7 @@ locals {
 detection_benchmark "cloudtrail_log_checks" {
   title       = "CloudTrail Log Detections"
   description = "This detection_benchmark contains recommendations when scanning CloudTrail logs."
+  type        = "detection"
   children = [
     detection.cloudtrail_log_cloudtrail_trail_updates,
     detection.cloudtrail_log_ec2_security_group_ingress_egress_updates,
@@ -33,6 +34,62 @@ detection "cloudtrail_log_iam_root_console_logins" {
     mitre_attack_ids = "TA0004:T1078"
   })
 }
+
+// Column blocks with base
+detection "cloudtrail_log_base" {
+  title = "CloudTrail Logs Base"
+
+  /*
+  columns {
+    display = "none"
+  }
+
+  column "account_id" {
+    display = "all"
+  }
+
+  column "actor" {
+    display = "all"
+  }
+
+  column "operation" {
+    display = "all"
+  }
+
+  column "region" {
+    display = "all"
+  }
+
+  column "resource" {
+    display = "all"
+  }
+
+  column "source_id" {
+    display = "all"
+  }
+
+  column "source_ip" {
+    display = "all"
+  }
+
+  column "timestamp" {
+    display = "all"
+  }
+  */
+}
+
+detection "cloudtrail_log_iam_root_console_logins_base_test" {
+  base        = detection.cloudtrail_log_base
+  title       = "Check CloudTrail Logs for IAM Root Console Logins"
+  description = "Detect IAM root user console logins to check for any actions performed by the root user."
+  severity    = "high"
+  query       = query.cloudtrail_log_iam_root_console_logins
+
+  tags = merge(local.cloudtrail_log_common_tags, {
+    mitre_attack_ids = "TA0004:T1078"
+  })
+}
+
 
 detection "cloudtrail_log_cloudtrail_trail_updates" {
   title       = "Check CloudTrail Logs for CloudTrail Trail Updates"
