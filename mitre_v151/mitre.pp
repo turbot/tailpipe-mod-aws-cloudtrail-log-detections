@@ -13,6 +13,7 @@ detection_benchmark "mitre_v151" {
   documentation = file("./mitre_v151/docs/mitre.md")
   children = [
     detection_benchmark.mitre_v151_ta0001,
+    detection_benchmark.mitre_v151_ta0003,
     detection_benchmark.mitre_v151_ta0005
   ]
 
