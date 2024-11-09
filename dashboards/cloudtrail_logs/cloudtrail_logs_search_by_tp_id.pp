@@ -4,7 +4,7 @@ dashboard "cloudtrail_logs_search_by_tp_id" {
   #documentation = file("./dashboards/ec2/docs/ec2_instance_detail.md")
 
   tags = merge(local.cloudtrail_logs_common_tags, {
-    type = "Report"
+    type = "Detail"
   })
 
   container {
@@ -49,11 +49,10 @@ dashboard "cloudtrail_logs_search_by_tp_id" {
 
 }
 
-
 query "cloudtrail_logs_search_by_tp_id" {
   sql = <<-EOQ
     select
-      epoch_ms(event_time) as event_time,
+      epoch_ms(tp_timestamp) as timestamp,
       tp_id,
       event_name,
       user_identity.principal_id as principal_id,
@@ -72,6 +71,6 @@ query "cloudtrail_logs_search_by_tp_id" {
     from
       aws_cloudtrail_log
     where
-      tp_id = $1
+      tp_id = $1;
   EOQ
 }

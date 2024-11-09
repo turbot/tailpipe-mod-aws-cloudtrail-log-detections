@@ -65,7 +65,7 @@ query "aws_iam_user_login_profile_updated" {
     where
       event_source = 'iam.amazonaws.com'
       and event_name = 'UpdateLoginProfile'
-      and (SUBSTR(user_identity ->> 'arn', -LENGTH(request_parameters::json ->> 'userName') - 1) = '/' || request_parameters:: ->> 'userName')
+      --and (SUBSTR(user_identity ->> 'arn', -LENGTH(request_parameters::json ->> 'userName') - 1) = '/' || request_parameters:: ->> 'userName')
     order by
       event_time desc;
   EOQ

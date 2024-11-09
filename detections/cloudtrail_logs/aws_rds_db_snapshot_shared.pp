@@ -62,11 +62,11 @@ query "aws_rds_db_snapshot_shared" {
       user_identity
     from
       aws_cloudtrail_log
-    where 
-      eventsource = 'rds.amazonaws.com'
+    where
+      event_source = 'rds.amazonaws.com'
       and (
-        eventname = 'ModifyDBSnapshotAttribute' 
-        or eventname = 'ModifyDBClusterSnapshotAttribute'
+        event_name = 'ModifyDBSnapshotAttribute'
+        or event_name = 'ModifyDBClusterSnapshotAttribute'
       )
       and request_parameters::json ->> 'attributeName' = 'restore'
     order by

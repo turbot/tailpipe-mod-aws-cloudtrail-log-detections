@@ -65,7 +65,7 @@ query "aws_iam_entity_created_without_cloudformation" {
       aws_cloudtrail_log
     where
       event_source != 'cloudformation.amazonaws.com'
-      event_name in ('BatchCreateUser', 'CreateGroup', 'CreateInstanceProfile', 'CreatePolicy', 'CreatePolicyVersion', 'CreateRole', 'CreateServiceLinkedRole', 'CreateUser')
+      and event_name in ('BatchCreateUser', 'CreateGroup', 'CreateInstanceProfile', 'CreatePolicy', 'CreatePolicyVersion', 'CreateRole', 'CreateServiceLinkedRole', 'CreateUser')
       -- TODO: check how to validate the IAM admin roles arn
     order by
       event_time desc;

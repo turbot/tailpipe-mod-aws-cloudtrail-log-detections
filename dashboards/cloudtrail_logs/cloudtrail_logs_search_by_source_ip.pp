@@ -9,6 +9,18 @@ dashboard "cloudtrail_logs_search_by_source_ip" {
 
   container {
 
+    input "detection_range" {
+      title = "Select the date range:"
+      type  = "date_range"
+      width = 4
+      # TODO: Do we need this sql arg?
+      sql   = "select 1;"
+    }
+
+  }
+
+  container {
+
     input "source_ip" {
       title = "Enter a source IP address:"
       type  = "text"
@@ -23,11 +35,10 @@ dashboard "cloudtrail_logs_search_by_source_ip" {
 
 }
 
-
 query "cloudtrail_logs_search_by_source_ip" {
   sql = <<-EOQ
     select
-      epoch_ms(event_time) as event_time,
+      epoch_ms(tp_timestamp) as timestamp,
       tp_id,
       event_name,
       user_identity.principal_id as principal_id,
@@ -47,7 +58,6 @@ query "cloudtrail_logs_search_by_source_ip" {
       aws_cloudtrail_log
     where
       tp_source_ip = $1
-      and not read_only
     order by
       event_time desc;
   EOQ

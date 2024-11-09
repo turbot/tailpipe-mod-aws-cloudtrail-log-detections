@@ -41,10 +41,11 @@ dashboard "cloudtrail_logs_all" {
         href = "/aws.dashboard.cloudtrail_logs_search_by_source_ip?input.source_ip={{ .'source_ip' | @uri }}"
       }
 
-      column "tp_id" {
-        href = "/aws.dashboard.cloudtrail_logs_search_by_tp_id?input.tp_id={{ .'tp_id' | @uri }}"
+      column "source_id" {
+        href = "/aws.dashboard.cloudtrail_logs_search_by_tp_id?input.tp_id={{ .'source_id' | @uri }}"
       }
 
+      /*
       column "additional_event_data" {
         wrap = "all"
       }
@@ -72,6 +73,7 @@ dashboard "cloudtrail_logs_all" {
       column "user_identity" {
         wrap = "all"
       }
+      */
 
     }
 
@@ -95,14 +97,16 @@ query "cloudtrail_logs_all_with_principal" {
       aws_cloudtrail_log
     order by
       event_time desc
-    limit 5;
+      --event_time asc
+    limit 10;
   EOQ
 }
 
 query "cloudtrail_logs_all_total_count" {
   sql = <<-EOQ
     select
-      count(*)
+      'Log count' as label,
+      count(*) as value
     from
       aws_cloudtrail_log
   EOQ
