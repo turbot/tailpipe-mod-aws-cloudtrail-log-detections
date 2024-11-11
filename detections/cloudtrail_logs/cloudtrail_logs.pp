@@ -6,12 +6,12 @@ locals {
   })
 
   # Store the replace logic in a local variable
-  aws_cloudtrail_trail_update_detection_sql = replace(local.common_dimensions_cloudtrail_logs_sql, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'name'")
-  aws_ec2_security_group_ingress_egress_update_detection_sql = replace(local.common_dimensions_cloudtrail_logs_sql, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'groupId'")
+  cloudtrail_logs_cloudtrail_trail_update_detection_sql = replace(local.common_dimensions_cloudtrail_logs_sql, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'name'")
+  cloudtrail_logs_ec2_security_group_ingress_egress_update_detection_sql = replace(local.common_dimensions_cloudtrail_logs_sql, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'groupId'")
   # TODO: How to handle multiple possible resource paths? Split detection per event type?
-  aws_iam_entity_created_without_cloudformation_detection_sql = replace(local.common_dimensions_cloudtrail_logs_sql, "__RESOURCE_SQL__", "response_elements::JSON -> 'role' ->> 'arn'")
-  aws_iam_root_console_login_detection_sql = replace(local.common_dimensions_cloudtrail_logs_sql, "__RESOURCE_SQL__", "''")
-  aws_iam_user_login_profile_update_detection_sql = replace(local.common_dimensions_cloudtrail_logs_sql, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'userName'")
+  cloudtrail_logs_iam_entity_created_without_cloudformation_detection_sql = replace(local.common_dimensions_cloudtrail_logs_sql, "__RESOURCE_SQL__", "response_elements::JSON -> 'role' ->> 'arn'")
+  cloudtrail_logs_iam_root_console_login_detection_sql = replace(local.common_dimensions_cloudtrail_logs_sql, "__RESOURCE_SQL__", "''")
+  cloudtrail_logs_iam_user_login_profile_update_detection_sql = replace(local.common_dimensions_cloudtrail_logs_sql, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'userName'")
 }
 
 detection_benchmark "cloudtrail_log_detections" {
@@ -122,7 +122,7 @@ detection "cloudtrail_logs_iam_root_console_logins" {
 query "cloudtrail_logs_cloudtrail_trail_updates" {
   sql = <<-EOQ
     select
-      ${local.aws_cloudtrail_trail_update_detection_sql}
+      ${local.cloudtrail_logs_cloudtrail_trail_update_detection_sql}
     from
       aws_cloudtrail_log
     where
@@ -137,7 +137,7 @@ query "cloudtrail_logs_cloudtrail_trail_updates" {
 query "cloudtrail_logs_ec2_security_group_ingress_egress_updates" {
   sql = <<-EOQ
     select
-      ${local.aws_ec2_security_group_ingress_egress_update_detection_sql}
+      ${local.cloudtrail_logs_ec2_security_group_ingress_egress_update_detection_sql}
     from
       aws_cloudtrail_log
     where
@@ -152,7 +152,7 @@ query "cloudtrail_logs_ec2_security_group_ingress_egress_updates" {
 query "cloudtrail_logs_iam_entity_created_without_cloudformation" {
   sql = <<-EOQ
     select
-      ${local.aws_iam_entity_created_without_cloudformation_detection_sql}
+      ${local.cloudtrail_logs_iam_entity_created_without_cloudformation_detection_sql}
     from
       aws_cloudtrail_log
     where
@@ -168,7 +168,7 @@ query "cloudtrail_logs_iam_entity_created_without_cloudformation" {
 query "cloudtrail_logs_iam_root_console_logins" {
   sql = <<-EOQ
     select
-      ${local.aws_iam_root_console_login_detection_sql}
+      ${local.cloudtrail_logs_iam_root_console_login_detection_sql}
     from
       aws_cloudtrail_log
     where
@@ -184,7 +184,7 @@ query "cloudtrail_logs_iam_root_console_logins" {
 query "cloudtrail_logs_iam_user_login_profile_updates" {
   sql = <<-EOQ
     select
-      ${local.aws_iam_user_login_profile_update_detection_sql}
+      ${local.cloudtrail_logs_iam_user_login_profile_update_detection_sql}
     from
       aws_cloudtrail_log
     where
