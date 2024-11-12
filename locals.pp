@@ -1,7 +1,7 @@
 // Benchmarks and controls for specific services should override the "service" tag
 locals {
   aws_common_tags = {
-    category = "Security"
+    category = "Detection"
     plugin   = "aws"
     service  = "AWS"
   }
