@@ -20,7 +20,7 @@ detection_benchmark "mitre_v151_ta0005_t1562_001" {
   type          = "benchmark"
   documentation = file("./mitre_v151/docs/ta0005_t1562_001.md")
   children = [
-    detection.cloudtrail_logs_cloudtrail_trail_updates
+    detection.cloudtrail_logs_detect_cloudtrail_trail_updates
   ]
 
   tags = merge(local.mitre_v151_ta0005_t1562_common_tags, {

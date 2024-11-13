@@ -1,5 +1,5 @@
 locals {
-  mitre_v151_common_tags = merge(local.aws_common_tags, {
+  mitre_v151_common_tags = merge(local.aws_detections_common_tags, {
     mitre         = "true"
     mitre_version = "v15.1"
   })

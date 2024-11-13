@@ -9,7 +9,7 @@ detection_benchmark "mitre_v151_ta0001_t1190" {
   type          = "benchmark"
   documentation = file("./mitre_v151/docs/ta0001_t1190.md")
   children = [
-    detection.cloudtrail_logs_ec2_security_group_ingress_egress_updates
+    detection.cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates
   ]
 
   tags = local.mitre_v151_ta0001_t1190_common_tags

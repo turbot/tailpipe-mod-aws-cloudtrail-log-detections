@@ -1,17 +1,15 @@
-# TODO: Should detections with multiple MITRE mappings be in each MITRE benchmark?
-
 locals {
-  cloudtrail_logs_common_tags = merge(local.aws_common_tags, {
+  cloudtrail_log_detection_common_tags = merge(local.aws_detections_common_tags, {
     service = "AWS/CloudTrail"
   })
 
-  # Store the replace logic in a local variable
-  cloudtrail_logs_cloudtrail_trail_update_detection_sql = replace(local.common_dimensions_cloudtrail_logs_sql, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'name'")
-  cloudtrail_logs_ec2_security_group_ingress_egress_update_detection_sql = replace(local.common_dimensions_cloudtrail_logs_sql, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'groupId'")
+  # Store the replace logic in local variables
+  cloudtrail_logs_detect_cloudtrail_trail_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'name'")
+  cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'groupId'")
   # TODO: How to handle multiple possible resource paths? Split detection per event type?
-  cloudtrail_logs_iam_entity_created_without_cloudformation_detection_sql = replace(local.common_dimensions_cloudtrail_logs_sql, "__RESOURCE_SQL__", "response_elements::JSON -> 'role' ->> 'arn'")
-  cloudtrail_logs_iam_root_console_login_detection_sql = replace(local.common_dimensions_cloudtrail_logs_sql, "__RESOURCE_SQL__", "''")
-  cloudtrail_logs_iam_user_login_profile_update_detection_sql = replace(local.common_dimensions_cloudtrail_logs_sql, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'userName'")
+  cloudtrail_logs_detect_iam_entities_created_without_cloudformation_sql = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "response_elements::JSON -> 'role' ->> 'arn'")
+  cloudtrail_logs_detect_iam_root_console_logins_sql = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "''")
+  cloudtrail_logs_detect_iam_user_login_profile_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'userName'")
 }
 
 detection_benchmark "cloudtrail_log_detections" {
@@ -19,14 +17,14 @@ detection_benchmark "cloudtrail_log_detections" {
   description = "This detection_benchmark contains recommendations when scanning CloudTrail logs."
   type        = "detection"
   children = [
-    detection.cloudtrail_logs_cloudtrail_trail_updates,
-    detection.cloudtrail_logs_ec2_security_group_ingress_egress_updates,
-    detection.cloudtrail_logs_iam_entity_created_without_cloudformation,
-    detection.cloudtrail_logs_iam_root_console_logins,
-    detection.cloudtrail_logs_iam_user_login_profile_updates,
+    detection.cloudtrail_logs_detect_cloudtrail_trail_updates,
+    detection.cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates,
+    detection.cloudtrail_logs_detect_iam_entity_created_without_cloudformation,
+    detection.cloudtrail_logs_detect_iam_root_console_logins,
+    detection.cloudtrail_logs_detect_iam_user_login_profile_updates,
   ]
 
-  tags = merge(local.cloudtrail_logs_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
     type = "Benchmark"
   })
 }
@@ -35,11 +33,11 @@ detection_benchmark "cloudtrail_log_detections" {
  * Detections
  */
 
-detection "cloudtrail_logs_cloudtrail_trail_updates" {
+detection "cloudtrail_logs_detect_cloudtrail_trail_updates" {
   title       = "Detect CloudTrail Trail Updates in CloudTrail Logs"
   description = "Detect CloudTrail trail changes to check if logging was stopped."
   severity    = "medium"
-  query       = query.cloudtrail_logs_cloudtrail_trail_updates
+  query       = query.cloudtrail_logs_detect_cloudtrail_trail_updates
 
   references = [
     "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/best-practices-security.html",
@@ -48,69 +46,69 @@ detection "cloudtrail_logs_cloudtrail_trail_updates" {
     "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-turning-off-logging.html"
   ]
 
-  tags = merge(local.cloudtrail_logs_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0005:T1562:001"
   })
 }
 
-detection "cloudtrail_logs_ec2_security_group_ingress_egress_updates" {
+detection "cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates" {
   title       = "Detect EC2 Security Group Ingress/Egress Updates in CloudTrail Logs"
   description = "Detect EC2 security group ingress and egress rule updates to check for unauthorized VPC access or export of data."
   severity    = "medium"
-  query       = query.cloudtrail_logs_ec2_security_group_ingress_egress_updates
+  query       = query.cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates
 
   references = [
     "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/working-with-security-groups.html",
     "https://www.gorillastack.com/blog/real-time-events/important-aws-cloudtrail-security-events-tracking/"
   ]
 
-  tags = merge(local.cloudtrail_logs_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0001:T1190,TA0005:T1562"
   })
 }
 
-detection "cloudtrail_logs_iam_entity_created_without_cloudformation" {
+detection "cloudtrail_logs_detect_iam_entity_created_without_cloudformation" {
   title       = "Detect IAM Entities Created Without CloudFormation in CloudTrail Logs"
   description = "Detect IAM entities created without CloudFormation to check for mismanaged permissions."
   severity    = "medium"
-  query       = query.cloudtrail_logs_iam_entity_created_without_cloudformation
+  query       = query.cloudtrail_logs_detect_iam_entity_created_without_cloudformation
 
   references = [
     "https://blog.awsfundamentals.com/aws-iam-roles-with-aws-cloudformation"
   ]
 
-  tags = merge(local.cloudtrail_logs_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0003:T1136"
   })
 }
 
-detection "cloudtrail_logs_iam_user_login_profile_updates" {
+detection "cloudtrail_logs_detect_iam_user_login_profile_updates" {
   title       = "Detect IAM User Login Profile Updates in CloudTrail Logs"
   description = "Detect IAM user login profile updates to check for password updates and usage."
   severity    = "low"
-  query       = query.cloudtrail_logs_iam_user_login_profile_updates
+  query       = query.cloudtrail_logs_detect_iam_user_login_profile_updates
 
   references = [
     "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_aws_my-sec-creds-self-manage-pass-accesskeys-ssh.html"
   ]
 
-  tags = merge(local.cloudtrail_logs_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0003:T1098,TA0005:T1108,TA0005:T1550,TA0008:T1550"
   })
 }
 
 
-detection "cloudtrail_logs_iam_root_console_logins" {
+detection "cloudtrail_logs_detect_iam_root_console_logins" {
   title       = "Detect IAM Root Console Logins in CloudTrail Logs"
   description = "Detect IAM root user console logins to check for any actions performed by the root user."
   severity    = "high"
-  query       = query.cloudtrail_logs_iam_root_console_logins
+  query       = query.cloudtrail_logs_detect_iam_root_console_logins
 
   references = [
     "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html"
   ]
 
-  tags = merge(local.cloudtrail_logs_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0004:T1078"
   })
 }
@@ -119,10 +117,10 @@ detection "cloudtrail_logs_iam_root_console_logins" {
  * Queries
  */
 
-query "cloudtrail_logs_cloudtrail_trail_updates" {
+query "cloudtrail_logs_detect_cloudtrail_trail_updates" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_cloudtrail_trail_update_detection_sql}
+      ${local.cloudtrail_logs_detect_cloudtrail_trail_updates_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -134,10 +132,10 @@ query "cloudtrail_logs_cloudtrail_trail_updates" {
   EOQ
 }
 
-query "cloudtrail_logs_ec2_security_group_ingress_egress_updates" {
+query "cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_ec2_security_group_ingress_egress_update_detection_sql}
+      ${local.cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -149,10 +147,10 @@ query "cloudtrail_logs_ec2_security_group_ingress_egress_updates" {
   EOQ
 }
 
-query "cloudtrail_logs_iam_entity_created_without_cloudformation" {
+query "cloudtrail_logs_detect_iam_entity_created_without_cloudformation" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_iam_entity_created_without_cloudformation_detection_sql}
+      ${local.cloudtrail_logs_detect_iam_entities_created_without_cloudformation_sql}
     from
       aws_cloudtrail_log
     where
@@ -165,10 +163,10 @@ query "cloudtrail_logs_iam_entity_created_without_cloudformation" {
   EOQ
 }
 
-query "cloudtrail_logs_iam_root_console_logins" {
+query "cloudtrail_logs_detect_iam_root_console_logins" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_iam_root_console_login_detection_sql}
+      ${local.cloudtrail_logs_detect_iam_root_console_logins_sql}
     from
       aws_cloudtrail_log
     where
@@ -181,10 +179,10 @@ query "cloudtrail_logs_iam_root_console_logins" {
   EOQ
 }
 
-query "cloudtrail_logs_iam_user_login_profile_updates" {
+query "cloudtrail_logs_detect_iam_user_login_profile_updates" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_iam_user_login_profile_update_detection_sql}
+      ${local.cloudtrail_logs_detect_iam_user_login_profile_updates_sql_columns}
     from
       aws_cloudtrail_log
     where

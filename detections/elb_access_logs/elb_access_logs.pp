@@ -1,5 +1,5 @@
 locals {
-  elb_access_logs_common_tags = merge(local.aws_common_tags, {
+  elb_access_log_detection_common_tags = merge(local.aws_detections_common_tags, {
     service = "AWS/ELB"
   })
 }
@@ -10,27 +10,27 @@ detection_benchmark "elb_access_log_detections" {
   type        = "detection"
 
   children = [
-    detection.elb_access_logs_insecure_access,
+    detection.elb_access_logs_detect_insecure_access,
   ]
 
-  tags = merge(local.elb_access_logs_common_tags, {
+  tags = merge(local.elb_access_log_detection_common_tags, {
     type = "Benchmark"
   })
 }
 
-detection "elb_access_logs_insecure_access" {
+detection "elb_access_logs_detect_insecure_access" {
   title       = "Detect Insecure Access Requests in ELB Access Logs"
   description = "Detect insecure access requests to check for possible application misconfigurations."
   severity    = "high"
-  query       = query.elb_access_logs_insecure_access
+  query       = query.elb_access_logs_detect_insecure_access
 
-  tags = local.elb_access_logs_common_tags
+  tags = local.elb_access_log_detection_common_tags
 }
 
-query "elb_access_logs_insecure_access" {
+query "elb_access_logs_detect_insecure_access" {
   sql = <<-EOQ
     select
-      ${local.common_dimensions_elb_access_logs_sql}
+      ${local.elb_access_log_detection_sql_columns}
     from
       aws_elb_access_log
     where
