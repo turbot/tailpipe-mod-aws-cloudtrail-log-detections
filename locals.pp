@@ -11,7 +11,7 @@ locals {
   # Local internal variables to build the SQL select clause for common
   # dimensions. Do not edit directly.
   cloudtrail_log_detection_sql_columns = <<-EOQ
-  epoch_ms(tp_timestamp) as timestamp,
+  tp_timestamp as timestamp,
   string_split(event_source, '.')[1] || ':' || event_name as operation,
   __RESOURCE_SQL__ as resource,
   user_identity.arn as actor,
@@ -35,7 +35,7 @@ locals {
   ]
 
   elb_access_log_detection_sql_columns = <<-EOQ
-  epoch_ms(tp_timestamp) as timestamp,
+  tp_timestamp as timestamp,
   request as operation,
   elb as resource,
   conn_trace_id as actor, -- TODO: What to use here?
@@ -47,7 +47,7 @@ locals {
   EOQ
 
   s3_server_access_log_detection_sql_columns = <<-EOQ
-  epoch_ms(tp_timestamp) as timestamp,
+  tp_timestamp as timestamp,
   operation as operation,
   bucket as resource,
   requester as actor, -- TODO: What to use here?
