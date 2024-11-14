@@ -19,7 +19,7 @@ detection_benchmark "s3_server_access_logs_detections" {
 }
 
 detection "s3_server_access_logs_detect_access_errors" {
-  title       = "Detect Access Errors in S3 Server Access Logs"
+  title       = "Detect Access Errors"
   description = "Detect server access request errors to check for possible brute force attacks."
   severity    = "low"
   query       = query.s3_server_access_logs_detect_access_errors
@@ -30,7 +30,7 @@ detection "s3_server_access_logs_detect_access_errors" {
 }
 
 detection "s3_server_access_logs_detect_insecure_access" {
-  title       = "Detect Insecure Access in S3 Server Access Logs"
+  title       = "Detect Insecure Access"
   description = "Detect insecure server access requests to check for possible application misconfigurations."
   severity    = "low"
   query       = query.s3_server_access_logs_detect_insecure_access

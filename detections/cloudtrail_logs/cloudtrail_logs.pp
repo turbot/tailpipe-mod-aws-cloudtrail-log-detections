@@ -34,7 +34,7 @@ detection_benchmark "cloudtrail_log_detections" {
  */
 
 detection "cloudtrail_logs_detect_cloudtrail_trail_updates" {
-  title       = "Detect CloudTrail Trail Updates in CloudTrail Logs"
+  title       = "Detect CloudTrail Trail Updates"
   description = "Detect CloudTrail trail changes to check if logging was stopped."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_cloudtrail_trail_updates
@@ -52,7 +52,7 @@ detection "cloudtrail_logs_detect_cloudtrail_trail_updates" {
 }
 
 detection "cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates" {
-  title       = "Detect EC2 Security Group Ingress/Egress Updates in CloudTrail Logs"
+  title       = "Detect EC2 Security Group Ingress/Egress Updates"
   description = "Detect EC2 security group ingress and egress rule updates to check for unauthorized VPC access or export of data."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates
@@ -68,7 +68,7 @@ detection "cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates" {
 }
 
 detection "cloudtrail_logs_detect_iam_entity_created_without_cloudformation" {
-  title       = "Detect IAM Entities Created Without CloudFormation in CloudTrail Logs"
+  title       = "Detect IAM Entities Created Without CloudFormation"
   description = "Detect IAM entities created without CloudFormation to check for mismanaged permissions."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_iam_entity_created_without_cloudformation
@@ -83,7 +83,7 @@ detection "cloudtrail_logs_detect_iam_entity_created_without_cloudformation" {
 }
 
 detection "cloudtrail_logs_detect_iam_user_login_profile_updates" {
-  title       = "Detect IAM User Login Profile Updates in CloudTrail Logs"
+  title       = "Detect IAM User Login Profile Updates"
   description = "Detect IAM user login profile updates to check for password updates and usage."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_iam_user_login_profile_updates
@@ -99,7 +99,7 @@ detection "cloudtrail_logs_detect_iam_user_login_profile_updates" {
 
 
 detection "cloudtrail_logs_detect_iam_root_console_logins" {
-  title       = "Detect IAM Root Console Logins in CloudTrail Logs"
+  title       = "Detect IAM Root Console Logins"
   description = "Detect IAM root user console logins to check for any actions performed by the root user."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_iam_root_console_logins
