@@ -19,7 +19,7 @@ detection_benchmark "cloudtrail_log_detections" {
   children = [
     detection.cloudtrail_logs_detect_cloudtrail_trail_updates,
     detection.cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates,
-    detection.cloudtrail_logs_detect_iam_entity_created_without_cloudformation,
+    detection.cloudtrail_logs_detect_iam_entities_created_without_cloudformation,
     detection.cloudtrail_logs_detect_iam_root_console_logins,
     detection.cloudtrail_logs_detect_iam_user_login_profile_updates,
   ]
@@ -67,11 +67,11 @@ detection "cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates" {
   })
 }
 
-detection "cloudtrail_logs_detect_iam_entity_created_without_cloudformation" {
+detection "cloudtrail_logs_detect_iam_entities_created_without_cloudformation" {
   title       = "Detect IAM Entities Created Without CloudFormation"
   description = "Detect IAM entities created without CloudFormation to check for mismanaged permissions."
   severity    = "medium"
-  query       = query.cloudtrail_logs_detect_iam_entity_created_without_cloudformation
+  query       = query.cloudtrail_logs_detect_iam_entities_created_without_cloudformation
 
   references = [
     "https://blog.awsfundamentals.com/aws-iam-roles-with-aws-cloudformation"
@@ -147,7 +147,7 @@ query "cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates" {
   EOQ
 }
 
-query "cloudtrail_logs_detect_iam_entity_created_without_cloudformation" {
+query "cloudtrail_logs_detect_iam_entities_created_without_cloudformation" {
   sql = <<-EOQ
     select
       ${local.cloudtrail_logs_detect_iam_entities_created_without_cloudformation_sql_columns}
