@@ -4,12 +4,12 @@ locals {
   })
 
   # Store the replace logic in local variables
-  cloudtrail_logs_detect_cloudtrail_trail_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'name'")
+  cloudtrail_logs_detect_cloudtrail_trail_updates_sql_columns                  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'name'")
   cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'groupId'")
   # TODO: How to handle multiple possible resource paths? Split detection per event type?
-  cloudtrail_logs_detect_iam_entities_created_without_cloudformation_sql = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "response_elements::JSON -> 'role' ->> 'arn'")
-  cloudtrail_logs_detect_iam_root_console_logins_sql = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "''")
-  cloudtrail_logs_detect_iam_user_login_profile_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'userName'")
+  cloudtrail_logs_detect_iam_entities_created_without_cloudformation_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "response_elements::JSON -> 'role' ->> 'arn'")
+  cloudtrail_logs_detect_iam_root_console_logins_sql_columns                     = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "''")
+  cloudtrail_logs_detect_iam_user_login_profile_updates_sql_columns              = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'userName'")
 }
 
 detection_benchmark "cloudtrail_log_detections" {
@@ -150,7 +150,7 @@ query "cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates" {
 query "cloudtrail_logs_detect_iam_entity_created_without_cloudformation" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_iam_entities_created_without_cloudformation_sql}
+      ${local.cloudtrail_logs_detect_iam_entities_created_without_cloudformation_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -166,7 +166,7 @@ query "cloudtrail_logs_detect_iam_entity_created_without_cloudformation" {
 query "cloudtrail_logs_detect_iam_root_console_logins" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_iam_root_console_logins_sql}
+      ${local.cloudtrail_logs_detect_iam_root_console_logins_sql_columns}
     from
       aws_cloudtrail_log
     where
