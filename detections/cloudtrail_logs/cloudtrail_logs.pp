@@ -170,7 +170,7 @@ detection "cloudtrail_logs_detect_ec2_network_acl_updates" {
   title       = "Detect EC2 Gateway Updates"
   description = "Detect EC2 gateway updates to check for changes in network configurations."
   severity    = "low"
-  query       = query.cloudtrail_logs_detect_ec2_gateway_updates
+  query       = query.cloudtrail_logs_detect_ec2_network_acl_updates
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0005:T1562"
