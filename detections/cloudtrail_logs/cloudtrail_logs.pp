@@ -10,6 +10,15 @@ locals {
   cloudtrail_logs_detect_iam_entities_created_without_cloudformation_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "response_elements::JSON -> 'role' ->> 'arn'")
   cloudtrail_logs_detect_iam_root_console_logins_sql_columns                     = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "''")
   cloudtrail_logs_detect_iam_user_login_profile_updates_sql_columns              = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'userName'")
+  cloudtrail_logs_detect_s3_bucket_deleted_sql_columns                           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'bucketName'")
+  cloudtrail_logs_detect_rds_manual_snapshot_created_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'dBInstanceIdentifier'")
+  cloudtrail_logs_detect_rds_master_pass_updated_sql_columns                     = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'dBInstanceIdentifier'")
+  cloudtrail_logs_detect_rds_publicrestore_sql_columns                           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'dBInstanceIdentifier'")
+  cloudtrail_logs_detect_s3_bucket_policy_modified_sql_columns                    = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'bucketName'")
+  cloudtrail_logs_detect_waf_disassociation_sql_columns                           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'resourceArn'")
+  cloudtrail_logs_detect_iam_group_read_only_events_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'groupName'")
+  cloudtrail_logs_detect_iam_policy_modified_sql_columns                          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'policyArn'")
+
 }
 
 detection_benchmark "cloudtrail_log_detections" {
@@ -22,6 +31,14 @@ detection_benchmark "cloudtrail_log_detections" {
     detection.cloudtrail_logs_detect_iam_entities_created_without_cloudformation,
     detection.cloudtrail_logs_detect_iam_root_console_logins,
     detection.cloudtrail_logs_detect_iam_user_login_profile_updates,
+    detection.cloudtrail_logs_detect_s3_bucket_deleted,
+    detection.cloudtrail_logs_detect_rds_manual_snapshot_created,
+    detection.cloudtrail_logs_detect_rds_master_pass_updated,
+    detection.cloudtrail_logs_detect_rds_publicrestore,
+    detection.cloudtrail_logs_detect_s3_bucket_policy_modified,
+    detection.cloudtrail_logs_detect_waf_disassociation,
+    detection.cloudtrail_logs_detect_iam_group_read_only_events,
+    detection.cloudtrail_logs_detect_iam_policy_modified
   ]
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
@@ -88,6 +105,127 @@ detection "cloudtrail_logs_detect_iam_root_console_logins" {
     mitre_attack_ids = "TA0004:T1078"
   })
 }
+
+detection "cloudtrail_logs_detect_s3_bucket_deleted" {
+  title       = "Detect S3 Bucket Deleted"
+  description = "Detect a S3 Bucket, Policy, or Website was deleted."
+  severity    = "low"
+  query       = query.cloudtrail_logs_detect_s3_bucket_deleted
+
+  references = [
+    "https://docs.aws.amazon.com/AmazonS3/latest/userguide/DeletingObjects.html"
+  ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0040:T1485"
+  })
+}
+
+detection "cloudtrail_logs_detect_rds_manual_snapshot_created" {
+  title       = "Detect RDS Manual Snapshot Created"
+  description = "Detect when RDS manual snapshot is created."
+  severity    = "low"
+  query       = query.cloudtrail_logs_detect_rds_manual_snapshot_created
+
+  references = [
+    "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateSnapshot.html"
+  ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0010:T1537"
+  })
+}
+
+detection "cloudtrail_logs_detect_rds_master_pass_updated" {
+  title       = "Detect RDS Master Password Updated"
+  description = "Detect when RDS master password is updated."
+  severity    = "low"
+  query       = query.cloudtrail_logs_detect_rds_master_pass_updated
+
+  references = [
+    "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.DBInstance.Modifying.html"
+  ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0003:T1098"
+  })
+}
+
+detection "cloudtrail_logs_detect_rds_publicrestore" {
+  title       = "Detect RDS public restore"
+  description = "Detect when RDS public instance is restored from snapshot."
+  severity    = "high"
+  query       = query.cloudtrail_logs_detect_rds_publicrestore
+
+  references = [
+    "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_RestoreFromSnapshot.html"
+  ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0010:T1020"
+  })
+}
+
+detection "cloudtrail_logs_detect_s3_bucket_policy_modified" {
+  title       = "Detect  S3 Bucket Policy Modified"
+  description = "Detect when S3 bucket policy, is modified."
+  severity    = "low"
+  query       = query.cloudtrail_logs_detect_s3_bucket_policy_modified
+
+  references = [
+    "https://docs.aws.amazon.com/AmazonS3/latest/dev/using-iam-policies.html"
+  ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0010:T1567"
+  })
+}
+
+detection "cloudtrail_logs_detect_waf_disassociation" {
+  title       = "Detect WAF Disassociation"
+  description = "Detect when WAF is disassociated."
+  severity    = "high"
+  query       = query.cloudtrail_logs_detect_waf_disassociation
+
+  references = [
+    "https://attack.mitre.org/techniques/T1078/"
+  ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0004:T1498"
+  })
+}
+
+detection "cloudtrail_logs_detect_iam_group_read_only_events" {
+  title       = "Detect IAM Group Read Only Event"
+  description = "Detect IAM group read only event"
+  severity    = "low"
+  query       = query.cloudtrail_logs_detect_iam_group_read_only_events
+
+  references = [
+    "https://attack.mitre.org/techniques/T1069/"
+  ]
+
+  // tags = merge(local.cloudtrail_log_detection_common_tags, {
+   //  mitre_attack_ids = "TA0040:T1485"
+  // })
+}
+
+detection "cloudtrail_logs_detect_iam_policy_modified" {
+  title       = "Detect IAM Policy Modified"
+  description = "Detect when IAM policy is modified."
+  severity    = "low"
+  query       = query.cloudtrail_logs_detect_iam_policy_modified
+
+  references = [
+    "https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html"
+  ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0004:T1548"
+  })
+}
+
 
 /*
  * Queries
@@ -164,6 +302,123 @@ query "cloudtrail_logs_detect_iam_user_login_profile_updates" {
     where
       event_source = 'iam.amazonaws.com'
       and event_name = 'UpdateLoginProfile'
+      and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_s3_bucket_deleted" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_s3_bucket_deleted_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_name = 'DeleteBucket'
+      and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_rds_manual_snapshot_created" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_rds_manual_snapshot_created_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'rds.amazonaws.com'
+      and event_name = 'CreateDBSnapshot'
+      and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_rds_master_pass_updated" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_rds_master_pass_updated_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'rds.amazonaws.com'
+      and event_name = 'ModifyDBInstance'
+      and (response_elements -> 'pendingModifiedValues' -> 'masterUserPassword') is not null
+      and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_rds_publicrestore" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_rds_publicrestore_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'rds.amazonaws.com'
+      and event_name = 'RestoreDBInstanceFromDBSnapshot'
+      and CAST(response_elements ->> 'publiclyAccessible' AS BOOLEAN) = true
+      and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_s3_bucket_policy_modified" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_s3_bucket_policy_modified_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_name in ('PutBucketPolicy', 'PutBucketAcl', 'PutBucketCors', 'PutBucketLifecycle', 'PutBucketReplication', 'DeleteBucketPolicy', 'DeleteBucketCors', 'DeleteBucketLifecycle', 'DeleteBucketReplication')
+      and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_waf_disassociation" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_waf_disassociation_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_name = 'DisassociateWebACL'
+      and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_iam_group_read_only_events" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_iam_group_read_only_events_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_name in ('GetGroup', 'GetGroupPolicy', 'ListAttachedGroupPolicies', 'ListGroupPolicies', 'ListGroups', 'DeleteBucketPolicy', 'ListGroupsForUser')
+      and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_iam_policy_modified" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_iam_policy_modified_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_name in ('DeleteGroupPolicy', 'DeleteRolePolicy', 'DeleteUserPolicy', 'PutGroupPolicy', 'PutRolePolicy', 'PutUserPolicy', 'CreatePolicy', 'DeletePolicy', 'CreatePolicyVersion', 'DeletePolicyVersion', 'AttachRolePolicy', 'DetachRolePolicy', 'AttachUserPolicy', 'DetachUserPolicy', 'AttachGroupPolicy', 'DetachGroupPolicy')
       and error_code is null
     order by
       event_time desc;
