@@ -37,6 +37,7 @@ detection "cloudtrail_logs_detect_cloudtrail_trail_updates" {
   title       = "Detect CloudTrail Trail Updates"
   description = "Detect CloudTrail trail changes to check if logging was stopped."
   severity    = "medium"
+  documentation        = file("./detections/docs/cloudtrail_logs_detect_cloudtrail_trail_updates.md")
   query       = query.cloudtrail_logs_detect_cloudtrail_trail_updates
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
@@ -48,6 +49,7 @@ detection "cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates" {
   title       = "Detect EC2 Security Group Ingress/Egress Updates"
   description = "Detect EC2 security group ingress and egress rule updates to check for unauthorized VPC access or export of data."
   severity    = "medium"
+  documentation        = file("./detections/docs/cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates.md")
   query       = query.cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
