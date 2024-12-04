@@ -26,9 +26,9 @@ detection "guardduty_finding_logs_with_low_severity" {
   severity    = "low"
   query       = query.guardduty_finding_logs_with_low_severity
 
-  references = [
-    "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html#guardduty_findings-severity"
-  ]
+  # references = [
+  #   "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html#guardduty_findings-severity"
+  # ]
 
   tags = local.guardduty_finding_log_detection_common_tags
 }
@@ -39,9 +39,9 @@ detection "guardduty_finding_logs_with_medium_severity" {
   severity    = "medium"
   query       = query.guardduty_finding_logs_with_medium_severity
 
-  references = [
-    "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html#guardduty_findings-severity"
-  ]
+  # references = [
+  #   "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html#guardduty_findings-severity"
+  # ]
 
   tags = local.guardduty_finding_log_detection_common_tags
 }
@@ -52,9 +52,9 @@ detection "guardduty_finding_logs_with_high_severity" {
   severity    = "high"
   query       = query.guardduty_finding_logs_with_high_severity
 
-  references = [
-    "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html#guardduty_findings-severity"
-  ]
+  # references = [
+  #   "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html#guardduty_findings-severity"
+  # ]
 
   tags = local.guardduty_finding_log_detection_common_tags
 }

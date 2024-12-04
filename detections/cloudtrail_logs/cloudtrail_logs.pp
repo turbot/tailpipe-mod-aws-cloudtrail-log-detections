@@ -407,10 +407,6 @@ detection "cloudtrail_logs_detect_s3_bucket_deleted" {
   severity    = "low"
   query       = query.cloudtrail_logs_detect_s3_bucket_deleted
 
-  references = [
-    "https://docs.aws.amazon.com/AmazonS3/latest/userguide/DeletingObjects.html"
-  ]
-
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0040:T1485"
   })
@@ -421,10 +417,6 @@ detection "cloudtrail_logs_detect_rds_manual_snapshot_created" {
   description = "Detect when RDS manual snapshot is created."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_rds_manual_snapshot_created
-
-  references = [
-    "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateSnapshot.html"
-  ]
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0010:T1537"
@@ -437,10 +429,6 @@ detection "cloudtrail_logs_detect_rds_master_pass_updated" {
   severity    = "low"
   query       = query.cloudtrail_logs_detect_rds_master_pass_updated
 
-  references = [
-    "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.DBInstance.Modifying.html"
-  ]
-
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0003:T1098"
   })
@@ -451,10 +439,6 @@ detection "cloudtrail_logs_detect_rds_publicrestore" {
   description = "Detect when RDS public instance is restored from snapshot."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_rds_publicrestore
-
-  references = [
-    "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_RestoreFromSnapshot.html"
-  ]
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0010:T1020"
@@ -467,10 +451,6 @@ detection "cloudtrail_logs_detect_s3_bucket_policy_modified" {
   severity    = "low"
   query       = query.cloudtrail_logs_detect_s3_bucket_policy_modified
 
-  references = [
-    "https://docs.aws.amazon.com/AmazonS3/latest/dev/using-iam-policies.html"
-  ]
-
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0010:T1567"
   })
@@ -481,10 +461,6 @@ detection "cloudtrail_logs_detect_waf_disassociation" {
   description = "Detect when WAF is disassociated."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_waf_disassociation
-
-  references = [
-    "https://attack.mitre.org/techniques/T1078/"
-  ]
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0004:T1498"
@@ -497,13 +473,10 @@ detection "cloudtrail_logs_detect_iam_group_read_only_events" {
   severity    = "low"
   query       = query.cloudtrail_logs_detect_iam_group_read_only_events
 
-  references = [
-    "https://attack.mitre.org/techniques/T1069/"
-  ]
 
-  // tags = merge(local.cloudtrail_log_detection_common_tags, {
-   //  mitre_attack_ids = "TA0040:T1485"
-  // })
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0040:T1485"
+   })
 }
 
 detection "cloudtrail_logs_detect_iam_policy_modified" {
@@ -511,10 +484,6 @@ detection "cloudtrail_logs_detect_iam_policy_modified" {
   description = "Detect when IAM policy is modified."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_iam_policy_modified
-
-  references = [
-    "https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html"
-  ]
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0004:T1548"
@@ -527,11 +496,6 @@ detection "cloudtrail_logs_detect_config_service_rule_delete" {
   severity    = "low"
   query       = query.cloudtrail_logs_detect_config_service_rule_delete
 
-  references = [
-    "https://docs.aws.amazon.com/config/latest/developerguide/how-does-config-work.html",
-    "https://docs.aws.amazon.com/config/latest/APIReference/API_Operations.html",
-  ]
-
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "T1562.001"
   })
@@ -542,11 +506,6 @@ detection "cloudtrail_logs_detect_configuration_recorder_stop" {
   description = "Detect when the configuration recorder is stopped."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_configuration_recorder_stop
-
-  references = [
-    "https://awscli.amazonaws.com/v2/documentation/api/latest/reference/configservice/stop-configuration-recorder.html",
-    "https://docs.aws.amazon.com/config/latest/APIReference/API_StopConfigurationRecorder.html",
-  ]
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0005.T1562"
@@ -559,13 +518,6 @@ detection "cloudtrail_logs_detect_rds_db_instance_cluster_stop" {
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_rds_db_instance_cluster_stop
 
-  references = [
-    "https://awscli.amazonaws.com/v2/documentation/api/latest/reference/rds/stop-db-cluster.html",
-    "https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_StopDBCluster.html",
-    "https://awscli.amazonaws.com/v2/documentation/api/latest/reference/rds/stop-db-instance.html",
-    "https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_StopDBInstance.html",
-  ]
-
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0040.T1489"
   })
@@ -577,11 +529,6 @@ detection "cloudtrail_logs_detect_rds_db_snapshot_delete" {
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_rds_db_snapshot_delete
 
-  references = [
-    "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_DeleteSnapshot.html",
-    "https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DeleteDBSnapshot.html",
-  ]
-
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0040.T1485"
   })
@@ -592,11 +539,6 @@ detection "cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_di
   description = "Detect when the RDS DB instance or cluster deletion protection is disabled."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_disable
-
-  references = [
-    "https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_ModifyDBInstance.html",
-    "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_DeleteInstance.html",
-  ]
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0040.T1485"
