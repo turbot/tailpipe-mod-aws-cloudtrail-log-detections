@@ -14,10 +14,15 @@ locals {
   cloudtrail_logs_detect_rds_manual_snapshot_created_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'dBInstanceIdentifier'")
   cloudtrail_logs_detect_rds_master_pass_updated_sql_columns                     = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'dBInstanceIdentifier'")
   cloudtrail_logs_detect_rds_publicrestore_sql_columns                           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'dBInstanceIdentifier'")
-  cloudtrail_logs_detect_s3_bucket_policy_modified_sql_columns                    = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'bucketName'")
-  cloudtrail_logs_detect_waf_disassociation_sql_columns                           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'resourceArn'")
-  cloudtrail_logs_detect_iam_group_read_only_events_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'groupName'")
-  cloudtrail_logs_detect_iam_policy_modified_sql_columns                          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'policyArn'")
+  cloudtrail_logs_detect_s3_bucket_policy_modified_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'bucketName'")
+  cloudtrail_logs_detect_waf_disassociation_sql_columns                          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'resourceArn'")
+  cloudtrail_logs_detect_iam_group_read_only_events_sql_columns                  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'groupName'")
+  cloudtrail_logs_detect_iam_policy_modified_sql_columns                         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'policyArn'")
+  cloudtrail_logs_detect_config_service_rule_delete_sql_columns                  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'configRuleName'")
+  cloudtrail_logs_detect_configuration_recorder_stop_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'configurationRecorderName'")
+  cloudtrail_logs_detect_rds_db_instance_cluster_stop_sql_columns                = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "coalesce(request_parameters::JSON ->> 'dBInstanceIdentifier', request_parameters::JSON ->> 'dBClusterIdentifier')")
+  cloudtrail_logs_detect_rds_db_snapshot_delete_sql_columns                      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters::JSON ->> 'dBSnapshotIdentifier'")
+  cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_disable_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "coalesce(request_parameters::JSON ->> 'dBInstanceIdentifier', request_parameters::JSON ->> 'dBClusterIdentifier')")
 
 }
 
@@ -38,7 +43,12 @@ detection_benchmark "cloudtrail_log_detections" {
     detection.cloudtrail_logs_detect_s3_bucket_policy_modified,
     detection.cloudtrail_logs_detect_waf_disassociation,
     detection.cloudtrail_logs_detect_iam_group_read_only_events,
-    detection.cloudtrail_logs_detect_iam_policy_modified
+    detection.cloudtrail_logs_detect_iam_policy_modified,
+    detection.cloudtrail_logs_detect_config_service_rule_delete,
+    detection.cloudtrail_logs_detect_configuration_recorder_stop,
+    detection.cloudtrail_logs_detect_rds_db_instance_cluster_stop,
+    detection.cloudtrail_logs_detect_rds_db_snapshot_delete,
+    detection.cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_disable
   ]
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
@@ -223,6 +233,88 @@ detection "cloudtrail_logs_detect_iam_policy_modified" {
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0004:T1548"
+  })
+}
+
+detection "cloudtrail_logs_detect_config_service_rule_delete" {
+  title       = "Detect Config Service Rule Deleted"
+  description = "Detect the deletion of config service rule."
+  severity    = "low"
+  query       = query.cloudtrail_logs_detect_config_service_rule_delete
+
+  references = [
+    "https://docs.aws.amazon.com/config/latest/developerguide/how-does-config-work.html",
+    "https://docs.aws.amazon.com/config/latest/APIReference/API_Operations.html",
+  ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "T1562.001"
+  })
+}
+
+detection "cloudtrail_logs_detect_configuration_recorder_stop" {
+  title       = "Detect Configuration Recorder Stopped"
+  description = "Detect when the configuration recorder is stopped."
+  severity    = "low"
+  query       = query.cloudtrail_logs_detect_configuration_recorder_stop
+
+  references = [
+    "https://awscli.amazonaws.com/v2/documentation/api/latest/reference/configservice/stop-configuration-recorder.html",
+    "https://docs.aws.amazon.com/config/latest/APIReference/API_StopConfigurationRecorder.html",
+  ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0005.T1562"
+  })
+}
+
+detection "cloudtrail_logs_detect_rds_db_instance_cluster_stop" {
+  title       = "Detect RDS DB Instance or Cluster Stopped"
+  description = "Detect when the RDS DB instance or cluster is stopped."
+  severity    = "medium"
+  query       = query.cloudtrail_logs_detect_rds_db_instance_cluster_stop
+
+  references = [
+    "https://awscli.amazonaws.com/v2/documentation/api/latest/reference/rds/stop-db-cluster.html",
+    "https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_StopDBCluster.html",
+    "https://awscli.amazonaws.com/v2/documentation/api/latest/reference/rds/stop-db-instance.html",
+    "https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_StopDBInstance.html",
+  ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0040.T1489"
+  })
+}
+
+detection "cloudtrail_logs_detect_rds_db_snapshot_delete" {
+  title       = "Detect RDS DB Snapshot Deleted"
+  description = "Detect when the RDS DB snapshot is deleted."
+  severity    = "medium"
+  query       = query.cloudtrail_logs_detect_rds_db_snapshot_delete
+
+  references = [
+    "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_DeleteSnapshot.html",
+    "https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DeleteDBSnapshot.html",
+  ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0040.T1485"
+  })
+}
+
+detection "cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_disable" {
+  title       = "Detect RDS DB Instance or Cluster Deletion Protection Disabled"
+  description = "Detect when the RDS DB instance or cluster deletion protection is disabled."
+  severity    = "medium"
+  query       = query.cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_disable
+
+  references = [
+    "https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_ModifyDBInstance.html",
+    "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_DeleteInstance.html",
+  ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0040.T1485"
   })
 }
 
@@ -424,3 +516,83 @@ query "cloudtrail_logs_detect_iam_policy_modified" {
       event_time desc;
   EOQ
 }
+
+query "cloudtrail_logs_detect_config_service_rule_delete" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_config_service_rule_delete_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'config.amazonaws.com'
+      and event_name in ('DeleteConfigRule', 'DeleteOrganizationConfigRule', 'DeleteConfigurationAggregator', 'DeleteConfigurationRecorder', 'DeleteConformancePack', 'DeleteOrganizationConformancePack', 'DeleteDeliveryChannel', 'DeleteRemediationConfiguration', 'DeleteRetentionConfiguration')
+      and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_configuration_recorder_stop" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_configuration_recorder_stop_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'config.amazonaws.com'
+      and event_name = 'StopConfigurationRecorder'
+      and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_rds_db_instance_cluster_stop" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_rds_db_instance_cluster_stop_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'rds.amazonaws.com'
+      and event_name in ('StopDBInstance', 'StopDBCluster')
+      and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_rds_db_snapshot_delete" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_rds_db_snapshot_delete_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'rds.amazonaws.com'
+      and (
+        (event_name in ('DeleteDBSnapshot', 'DeleteDBClusterSnapshot'))
+        or (event_name = 'ModifyDBInstance' and (request_parameters ->> 'backupRetentionPeriod')::int = 7)
+        )
+      and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_disable" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_disable_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'rds.amazonaws.com'
+      and event_name in ('ModifyDBInstance', 'ModifyDBCluster')
+      and (request_parameters ->> 'deletionProtection' = false)
+      and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
