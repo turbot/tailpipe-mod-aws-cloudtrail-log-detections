@@ -704,6 +704,7 @@ query "cloudtrail_logs_detect_route_table_updates" {
   EOQ
 }
 
+//TODO: do we need all the event names? Check what might be helpful in detection
 query "cloudtrail_logs_detect_vpc_updates" {
   sql = <<-EOQ
     select
@@ -1047,6 +1048,7 @@ query "cloudtrail_logs_detect_waf_disassociation" {
   EOQ
 }
 
+// TODO: It does not reflect anything dangerous and can be removed
 query "cloudtrail_logs_detect_iam_group_read_only_events" {
   sql = <<-EOQ
     select
@@ -1054,13 +1056,14 @@ query "cloudtrail_logs_detect_iam_group_read_only_events" {
     from
       aws_cloudtrail_log
     where
-      event_name in ('GetGroup', 'GetGroupPolicy', 'ListAttachedGroupPolicies', 'ListGroupPolicies', 'ListGroups', 'DeleteBucketPolicy', 'ListGroupsForUser')
+      event_name in ('GetGroup', 'GetGroupPolicy', 'ListAttachedGroupPolicies', 'ListGroupPolicies', 'ListGroups', 'ListGroupsForUser')
       and error_code is null
     order by
       event_time desc;
   EOQ
 }
 
+// TODO: Break it down to individual resource, like role, group, user
 query "cloudtrail_logs_detect_iam_policy_modified" {
   sql = <<-EOQ
     select
