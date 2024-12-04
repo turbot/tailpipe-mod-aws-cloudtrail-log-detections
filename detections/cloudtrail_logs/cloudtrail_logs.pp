@@ -607,6 +607,7 @@ query "cloudtrail_logs_detect_iam_root_console_logins" {
       and event_name = 'ConsoleLogin'
       and (user_identity::JSON ->> 'type') = 'Root'
       and (response_elements::JSON ->> 'ConsoleLogin') = 'Success'
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -637,6 +638,7 @@ query "cloudtrail_logs_detect_codebuild_project_visibility_updates" {
       event_source = 'codebuild.amazonaws.com'
       and event_name = 'UpdateProjectVisibility'
       and (request_parameters::JSON ->> 'projectVisibility') = 'PUBLIC_READ'
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -651,6 +653,7 @@ query "cloudtrail_logs_detect_ec2_ebs_encryption_disabled_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name = 'DisableEbsEncryptionByDefault'
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -665,6 +668,7 @@ query "cloudtrail_logs_detect_ec2_gateway_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('DeleteCustomerGateway', 'AttachInternetGateway', 'DeleteInternetGateway', 'DetachInternetGateway')
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -679,6 +683,7 @@ query "cloudtrail_logs_detect_ec2_network_acl_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('DeleteNetworkAcl', 'DeleteNetworkAclEntry', 'ReplaceNetworkAclEntry', 'ReplaceNetworkAclAssociation')
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -693,6 +698,7 @@ query "cloudtrail_logs_detect_route_table_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('DisassociateRouteTable', 'DeleteRoute', 'DeleteRouteTable', 'ReplaceRoute', 'ReplaceRouteTableAssociation')
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -706,6 +712,7 @@ query "cloudtrail_logs_detect_vpc_updates" {
       aws_cloudtrail_log
     where
       event_name in ('DeleteVpc', 'ModifyVpcAttribute', 'AcceptVpcPeeringConnection', 'DeleteVpcPeeringConnection', 'RejectVpcPeeringConnection', 'CreateVpcPeeringConnection', 'AttachClassicLinkVpc', 'DetachClassicLinkVpc', 'EnableVpcClassicLink', 'DisableVpcClassicLink')
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -721,7 +728,6 @@ query "cloudtrail_logs_detect_stopped_instances" {
       event_source = 'ec2.amazonaws.com'
       and event_name = 'StopInstances'
       and error_code is null
-      and error_message is null
     order by
       event_time desc;
   EOQ
@@ -736,6 +742,7 @@ query "cloudtrail_logs_detect_ec2_full_network_packet_capture_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('CreateTrafficMirrorTarget', 'CreateTrafficMirrorFilter', 'CreateTrafficMirrorSession', 'CreateTrafficMirrorFilterRule')
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -751,6 +758,7 @@ query "cloudtrail_logs_detect_rds_instance_pulicly_accessible" {
       event_source = 'rds.amazonaws.com'
       and event_name in ('ModifyDBInstance', 'CreateDBInstance')
       and coalesce(request_parameters::JSON ->> 'publiclyAccessible', 'false') = 'true'
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -765,6 +773,7 @@ query "cloudtrail_logs_detect_route53_domain_transfered_to_another_account" {
     where
       event_source = 'route53.amazonaws.com'
       and event_name = 'TransferDomainToAnotherAwsAccount'
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -779,6 +788,7 @@ query "cloudtrail_logs_detect_route53_domain_transfer_lock_disabled_updates" {
     where
       event_source = 'route53.amazonaws.com'
       and event_name = 'DisableDomainTransferLock'
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -793,6 +803,7 @@ query "cloudtrail_logs_detect_route53_associate_vpc_with_hosted_zone" {
     where
       event_source = 'route53.amazonaws.com'
       and event_name = 'AssociateVPCWithHostedZone'
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -806,6 +817,7 @@ query "cloudtrail_logs_detect_waf_web_acl_deletion_updates" {
       aws_cloudtrail_log
     where
       event_name = 'DeleteWebACL'
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -820,6 +832,7 @@ query "cloudtrail_logs_detect_ec2_flow_logs_deletion_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name = 'DeleteFlowLogs'
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -834,6 +847,7 @@ query "cloudtrail_logs_detect_guardduty_detector_deletion_updates" {
     where
       event_source = 'guardduty.amazonaws.com'
       and event_name = 'DeleteDetector'
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -848,6 +862,7 @@ query "cloudtrail_logs_detect_ec2_snapshot_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('DeleteSnapshot', 'ModifySnapshotAttribute')
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -862,6 +877,7 @@ query "cloudtrail_logs_detect_eventbridge_rule_disabled_or_deletion_updates" {
     where
       event_source = 'eventbridge.amazonaws.com'
       and event_name in ('DeleteRule', 'DisableRule')
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -876,6 +892,7 @@ query "cloudtrail_logs_detect_ec2_ami_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('CopyFpgaImage', 'CopyImage', 'CreateFpgaImage', 'CreateImage', 'CreateRestoreImageTask', 'CreateStoreImageTask', 'ImportImage')
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -890,6 +907,7 @@ query "cloudtrail_logs_detect_efs_deletion_updates" {
     where
       event_source = 'elasticfilesystem.amazonaws.com'
       and event_name in ('DeleteMountTarget', 'DeleteFileSystem', 'DeleteTags', 'DeleteFile', 'DeleteMountTargetSecurityGroups')
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -904,6 +922,7 @@ query "cloudtrail_logs_detect_cloudwatch_log_group_deletion_updates" {
     where
       event_source = 'logs.amazonaws.com'
       and event_name = 'DeleteLogGroup'
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -918,6 +937,7 @@ query "cloudtrail_logs_detect_cloudwatch_log_stream_deletion_updates" {
     where
       event_source = 'logs.amazonaws.com'
       and event_name = 'DeleteLogStream'
+      and error_code is null
     order by
       event_time desc;
   EOQ
@@ -932,6 +952,7 @@ query "cloudtrail_logs_detect_cloudwatch_alarm_deletion_updates" {
     where
       event_source = 'monitoring.amazonaws.com'
       and event_name = 'DeleteAlarms'
+      and error_code is null
     order by
       event_time desc;
   EOQ
