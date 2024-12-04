@@ -46,6 +46,18 @@ locals {
   *
   EOQ
 
+  guardduty_finding_log_detection_sql_columns = <<-EOQ
+  tp_timestamp as timestamp,
+  title as operation,
+  resource_type as resource,
+  action_type as actor,
+  tp_source_ip as source_ip,
+  tp_index::varchar as account_id,
+  'us-east-1' as region, -- TODO: Use tp_location when available
+  tp_id as source_id,
+  *
+  EOQ
+
   s3_server_access_log_detection_sql_columns = <<-EOQ
   tp_timestamp as timestamp,
   operation as operation,
