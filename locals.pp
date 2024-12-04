@@ -16,7 +16,7 @@ locals {
   __RESOURCE_SQL__ as resource,
   user_identity.arn as actor,
   tp_source_ip as source_ip,
-  tp_index::varchar as account_id,
+  tp_index as account_id,
   aws_region as region,
   tp_id as source_id,
   *
