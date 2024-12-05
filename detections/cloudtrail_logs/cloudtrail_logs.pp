@@ -54,45 +54,29 @@ benchmark "cloudtrail_log_detections" {
   type        = "detection"
   children = [
     detection.cloudtrail_logs_detect_cloudtrail_trail_updates,
-    detection.cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates,
     detection.cloudtrail_logs_detect_iam_entities_created_without_cloudformation,
     detection.cloudtrail_logs_detect_iam_root_console_logins,
     detection.cloudtrail_logs_detect_iam_user_login_profile_updates,
     detection.cloudtrail_logs_detect_codebuild_project_visibility_updates,
     detection.cloudtrail_logs_detect_ec2_ebs_encryption_disabled_updates,
-    detection.cloudtrail_logs_detect_ec2_gateway_updates,
-    detection.cloudtrail_logs_detect_ec2_network_acl_updates,
     detection.cloudtrail_logs_detect_route_table_updates,
     detection.cloudtrail_logs_detect_stopped_instances,
     detection.cloudtrail_logs_detect_vpc_updates,
-    detection.cloudtrail_logs_detect_ec2_full_network_packet_capture_updates,
-    detection.cloudtrail_logs_detect_rds_instance_pulicly_accessible,
     detection.cloudtrail_logs_detect_route53_domain_transfered_to_another_account,
     detection.cloudtrail_logs_detect_route53_domain_transfer_lock_disabled_updates,
     detection.cloudtrail_logs_detect_route53_associate_vpc_with_hosted_zone,
     detection.cloudtrail_logs_detect_waf_web_acl_deletion_updates,
-    detection.cloudtrail_logs_detect_ec2_flow_logs_deletion_updates,
     detection.cloudtrail_logs_detect_guardduty_detector_deletion_updates,
-    detection.cloudtrail_logs_detect_ec2_snapshot_updates,
     detection.cloudtrail_logs_detect_eventbridge_rule_disabled_or_deletion_updates,
-    detection.cloudtrail_logs_detect_ec2_ami_updates,
     detection.cloudtrail_logs_detect_efs_deletion_updates,
     detection.cloudtrail_logs_detect_cloudwatch_log_group_deletion_updates,
     detection.cloudtrail_logs_detect_cloudwatch_log_stream_deletion_updates,
     detection.cloudtrail_logs_detect_cloudwatch_alarm_deletion_updates,
-    detection.cloudtrail_logs_detect_s3_bucket_deleted,
-    detection.cloudtrail_logs_detect_rds_manual_snapshot_created,
-    detection.cloudtrail_logs_detect_rds_master_pass_updated,
-    detection.cloudtrail_logs_detect_rds_publicrestore,
-    detection.cloudtrail_logs_detect_s3_bucket_policy_modified,
     detection.cloudtrail_logs_detect_waf_disassociation,
     detection.cloudtrail_logs_detect_iam_group_read_only_events,
     detection.cloudtrail_logs_detect_iam_policy_modified,
     detection.cloudtrail_logs_detect_config_service_rule_delete,
     detection.cloudtrail_logs_detect_configuration_recorder_stop,
-    detection.cloudtrail_logs_detect_rds_db_instance_cluster_stop,
-    detection.cloudtrail_logs_detect_rds_db_snapshot_delete,
-    detection.cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_disable
   ]
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
@@ -113,18 +97,6 @@ detection "cloudtrail_logs_detect_cloudtrail_trail_updates" {
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0005:T1562:001"
-  })
-}
-
-detection "cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates" {
-  title       = "Detect EC2 Security Group Ingress/Egress Updates"
-  description = "Detect EC2 security group ingress and egress rule updates to check for unauthorized VPC access or export of data."
-  severity    = "medium"
-  documentation        = file("./detections/docs/cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates.md")
-  query       = query.cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = "TA0001:T1190,TA0005:T1562"
   })
 }
 
@@ -183,16 +155,7 @@ detection "cloudtrail_logs_detect_ec2_ebs_encryption_disabled_updates" {
   })
 }
 
-detection "cloudtrail_logs_detect_ec2_gateway_updates" {
-  title       = "Detect EC2 Gateway Updates"
-  description = "Detect EC2 gateway updates to check for changes in network configurations."
-  severity    = "low"
-  query       = query.cloudtrail_logs_detect_ec2_gateway_updates
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = "TA0005:T1562"
-  })
-}
 
 detection "cloudtrail_logs_detect_ec2_network_acl_updates" {
   title       = "Detect EC2 Gateway Updates"
@@ -233,28 +196,6 @@ detection "cloudtrail_logs_detect_vpc_updates" {
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0005:T1562"
-  })
-}
-
-detection "cloudtrail_logs_detect_ec2_full_network_packet_capture_updates" {
-  title       = "Detect EC2 Full Network Packet Capture Updates"
-  description = "Detect updates to EC2 full network packet capture configurations to identify potential misuse of Traffic Mirroring, which could be exploited to exfiltrate sensitive data from unencrypted internal traffic."
-  severity    = "medium"
-  query       = query.cloudtrail_logs_detect_ec2_full_network_packet_capture_updates
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = ""
-  })
-}
-
-detection "cloudtrail_logs_detect_rds_instance_pulicly_accessible" {
-  title       = "Detect RDS Instance Publicly Accessible"
-  description = "Detect RDS instance publicly accessible to check for unauthorized access."
-  severity    = "medium"
-  query       = query.cloudtrail_logs_detect_rds_instance_pulicly_accessible
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = ""
   })
 }
 
@@ -302,33 +243,11 @@ detection "cloudtrail_logs_detect_waf_web_acl_deletion_updates" {
   })
 }
 
-detection "cloudtrail_logs_detect_ec2_flow_logs_deletion_updates" {
-  title       = "Detect EC2 Flow Logs Deletion Updates"
-  description = "Detect EC2 flow logs deletion updates to check for unauthorized changes."
-  severity    = "high"
-  query       = query.cloudtrail_logs_detect_ec2_flow_logs_deletion_updates
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = ""
-  })
-}
-
 detection "cloudtrail_logs_detect_guardduty_detector_deletion_updates" {
   title       = "Detect GuardDuty Detector Deletion Updates"
   description = "Detect GuardDuty detector deletion updates to check for unauthorized changes."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_guardduty_detector_deletion_updates
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = ""
-  })
-}
-
-detection "cloudtrail_logs_detect_ec2_snapshot_updates" {
-  title       = "Detect EC2 Snapshot Updates"
-  description = "Detect EC2 snapshot updates to check for unauthorized changes."
-  severity    = "medium"
-  query       = query.cloudtrail_logs_detect_ec2_snapshot_updates
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = ""
@@ -343,17 +262,6 @@ detection "cloudtrail_logs_detect_eventbridge_rule_disabled_or_deletion_updates"
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = ""
-  })
-}
-
-detection "cloudtrail_logs_detect_ec2_ami_updates" {
-  title       = "Detect EC2 AMI Updates"
-  description = "Detect EC2 AMI updates to check for unauthorized changes."
-  severity    = "low"
-  query       = query.cloudtrail_logs_detect_ec2_ami_updates
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = "TA0002:T1204"
   })
 }
 
@@ -398,61 +306,6 @@ detection "cloudtrail_logs_detect_cloudwatch_alarm_deletion_updates" {
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = ""
-  })
-}
-
-detection "cloudtrail_logs_detect_s3_bucket_deleted" {
-  title       = "Detect S3 Bucket Deleted"
-  description = "Detect a S3 Bucket, Policy, or Website was deleted."
-  severity    = "low"
-  query       = query.cloudtrail_logs_detect_s3_bucket_deleted
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = "TA0040:T1485"
-  })
-}
-
-detection "cloudtrail_logs_detect_rds_manual_snapshot_created" {
-  title       = "Detect RDS Manual Snapshot Created"
-  description = "Detect when RDS manual snapshot is created."
-  severity    = "low"
-  query       = query.cloudtrail_logs_detect_rds_manual_snapshot_created
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = "TA0010:T1537"
-  })
-}
-
-detection "cloudtrail_logs_detect_rds_master_pass_updated" {
-  title       = "Detect RDS Master Password Updated"
-  description = "Detect when RDS master password is updated."
-  severity    = "low"
-  query       = query.cloudtrail_logs_detect_rds_master_pass_updated
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = "TA0003:T1098"
-  })
-}
-
-detection "cloudtrail_logs_detect_rds_publicrestore" {
-  title       = "Detect RDS public restore"
-  description = "Detect when RDS public instance is restored from snapshot."
-  severity    = "high"
-  query       = query.cloudtrail_logs_detect_rds_publicrestore
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = "TA0010:T1020"
-  })
-}
-
-detection "cloudtrail_logs_detect_s3_bucket_policy_modified" {
-  title       = "Detect  S3 Bucket Policy Modified"
-  description = "Detect when S3 bucket policy, is modified."
-  severity    = "low"
-  query       = query.cloudtrail_logs_detect_s3_bucket_policy_modified
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = "TA0010:T1567"
   })
 }
 
@@ -512,40 +365,6 @@ detection "cloudtrail_logs_detect_configuration_recorder_stop" {
   })
 }
 
-detection "cloudtrail_logs_detect_rds_db_instance_cluster_stop" {
-  title       = "Detect RDS DB Instance or Cluster Stopped"
-  description = "Detect when the RDS DB instance or cluster is stopped."
-  severity    = "medium"
-  query       = query.cloudtrail_logs_detect_rds_db_instance_cluster_stop
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = "TA0040.T1489"
-  })
-}
-
-detection "cloudtrail_logs_detect_rds_db_snapshot_delete" {
-  title       = "Detect RDS DB Snapshot Deleted"
-  description = "Detect when the RDS DB snapshot is deleted."
-  severity    = "medium"
-  query       = query.cloudtrail_logs_detect_rds_db_snapshot_delete
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = "TA0040.T1485"
-  })
-}
-
-detection "cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_disable" {
-  title       = "Detect RDS DB Instance or Cluster Deletion Protection Disabled"
-  description = "Detect when the RDS DB instance or cluster deletion protection is disabled."
-  severity    = "medium"
-  query       = query.cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_disable
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = "TA0040.T1485"
-  })
-}
-
-
 /*
  * Queries
  */
@@ -559,21 +378,6 @@ query "cloudtrail_logs_detect_cloudtrail_trail_updates" {
     where
       event_source = 'cloudtrail.amazonaws.com'
       and event_name in ('DeleteTrail', 'StopLogging', 'UpdateTrail')
-      and error_code is null
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'ec2.amazonaws.com'
-      and event_name in ('AuthorizeSecurityGroupEgress', 'AuthorizeSecurityGroupIngress', 'RevokeSecurityGroupEgress', 'RevokeSecurityGroupIngress')
       and error_code is null
     order by
       event_time desc;
@@ -659,36 +463,6 @@ query "cloudtrail_logs_detect_ec2_ebs_encryption_disabled_updates" {
   EOQ
 }
 
-query "cloudtrail_logs_detect_ec2_gateway_updates" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_ec2_gateway_updates_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'ec2.amazonaws.com'
-      and event_name in ('DeleteCustomerGateway', 'AttachInternetGateway', 'DeleteInternetGateway', 'DetachInternetGateway')
-      and error_code is null
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "cloudtrail_logs_detect_ec2_network_acl_updates" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_ec2_network_acl_updates_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'ec2.amazonaws.com'
-      and event_name in ('DeleteNetworkAcl', 'DeleteNetworkAclEntry', 'ReplaceNetworkAclEntry', 'ReplaceNetworkAclAssociation')
-      and error_code is null
-    order by
-      event_time desc;
-  EOQ
-}
-
 query "cloudtrail_logs_detect_route_table_updates" {
   sql = <<-EOQ
     select
@@ -728,37 +502,6 @@ query "cloudtrail_logs_detect_stopped_instances" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name = 'StopInstances'
-      and error_code is null
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "cloudtrail_logs_detect_ec2_full_network_packet_capture_updates" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_ec2_full_network_packet_capture_updates_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'ec2.amazonaws.com'
-      and event_name in ('CreateTrafficMirrorTarget', 'CreateTrafficMirrorFilter', 'CreateTrafficMirrorSession', 'CreateTrafficMirrorFilterRule')
-      and error_code is null
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "cloudtrail_logs_detect_rds_instance_pulicly_accessible" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_rds_instance_pulicly_accessible_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'rds.amazonaws.com'
-      and event_name in ('ModifyDBInstance', 'CreateDBInstance')
-      and coalesce(request_parameters.publiclyAccessible, 'false') = 'true'
       and error_code is null
     order by
       event_time desc;
@@ -824,21 +567,6 @@ query "cloudtrail_logs_detect_waf_web_acl_deletion_updates" {
   EOQ
 }
 
-query "cloudtrail_logs_detect_ec2_flow_logs_deletion_updates" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_ec2_flow_logs_deletion_updates_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'ec2.amazonaws.com'
-      and event_name = 'DeleteFlowLogs'
-      and error_code is null
-    order by
-      event_time desc;
-  EOQ
-}
-
 query "cloudtrail_logs_detect_guardduty_detector_deletion_updates" {
   sql = <<-EOQ
     select
@@ -854,21 +582,6 @@ query "cloudtrail_logs_detect_guardduty_detector_deletion_updates" {
   EOQ
 }
 
-query "cloudtrail_logs_detect_ec2_snapshot_updates" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_ec2_snapshot_updates_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'ec2.amazonaws.com'
-      and event_name in ('DeleteSnapshot', 'ModifySnapshotAttribute')
-      and error_code is null
-    order by
-      event_time desc;
-  EOQ
-}
-
 query "cloudtrail_logs_detect_eventbridge_rule_disabled_or_deletion_updates" {
   sql = <<-EOQ
     select
@@ -878,21 +591,6 @@ query "cloudtrail_logs_detect_eventbridge_rule_disabled_or_deletion_updates" {
     where
       event_source = 'eventbridge.amazonaws.com'
       and event_name in ('DeleteRule', 'DisableRule')
-      and error_code is null
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "cloudtrail_logs_detect_ec2_ami_updates" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_ec2_ami_updates_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'ec2.amazonaws.com'
-      and event_name in ('CopyFpgaImage', 'CopyImage', 'CreateFpgaImage', 'CreateImage', 'CreateRestoreImageTask', 'CreateStoreImageTask', 'ImportImage')
       and error_code is null
     order by
       event_time desc;
@@ -953,81 +651,6 @@ query "cloudtrail_logs_detect_cloudwatch_alarm_deletion_updates" {
     where
       event_source = 'monitoring.amazonaws.com'
       and event_name = 'DeleteAlarms'
-      and error_code is null
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "cloudtrail_logs_detect_s3_bucket_deleted" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_s3_bucket_deleted_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_name = 'DeleteBucket'
-      and error_code is null
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "cloudtrail_logs_detect_rds_manual_snapshot_created" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_rds_manual_snapshot_created_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'rds.amazonaws.com'
-      and event_name = 'CreateDBSnapshot'
-      and error_code is null
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "cloudtrail_logs_detect_rds_master_pass_updated" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_rds_master_pass_updated_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'rds.amazonaws.com'
-      and event_name = 'ModifyDBInstance'
-      and (response_elements -> 'pendingModifiedValues' -> 'masterUserPassword') is not null
-      and error_code is null
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "cloudtrail_logs_detect_rds_publicrestore" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_rds_publicrestore_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'rds.amazonaws.com'
-      and event_name = 'RestoreDBInstanceFromDBSnapshot'
-      and CAST(response_elements ->> 'publiclyAccessible' AS BOOLEAN) = true
-      and error_code is null
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "cloudtrail_logs_detect_s3_bucket_policy_modified" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_s3_bucket_policy_modified_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_name in ('PutBucketPolicy', 'PutBucketAcl', 'PutBucketCors', 'PutBucketLifecycle', 'PutBucketReplication', 'DeleteBucketPolicy', 'DeleteBucketCors', 'DeleteBucketLifecycle', 'DeleteBucketReplication')
       and error_code is null
     order by
       event_time desc;
@@ -1102,55 +725,6 @@ query "cloudtrail_logs_detect_configuration_recorder_stop" {
     where
       event_source = 'config.amazonaws.com'
       and event_name = 'StopConfigurationRecorder'
-      and error_code is null
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "cloudtrail_logs_detect_rds_db_instance_cluster_stop" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_rds_db_instance_cluster_stop_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'rds.amazonaws.com'
-      and event_name in ('StopDBInstance', 'StopDBCluster')
-      and error_code is null
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "cloudtrail_logs_detect_rds_db_snapshot_delete" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_rds_db_snapshot_delete_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'rds.amazonaws.com'
-      and (
-        (event_name in ('DeleteDBSnapshot', 'DeleteDBClusterSnapshot'))
-        or (event_name = 'ModifyDBInstance' and (request_parameters ->> 'backupRetentionPeriod')::int = 7)
-        )
-      and error_code is null
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_disable" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_disable_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'rds.amazonaws.com'
-      and event_name in ('ModifyDBInstance', 'ModifyDBCluster')
-      and (request_parameters ->> 'deletionProtection' = false)
       and error_code is null
     order by
       event_time desc;
