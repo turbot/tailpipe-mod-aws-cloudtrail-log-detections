@@ -4,9 +4,9 @@ locals {
   })
 }
 
-detection_benchmark "guardduty_finding_log_detections" {
+benchmark "guardduty_finding_log_detections" {
   title       = "GuardDuty Finding Log Detections"
-  description = "This detection_benchmark contains recommendations when scanning GuardDuty finding logs."
+  description = "This benchmark contains recommendations when scanning GuardDuty finding logs."
   type        = "detection"
 
   children = [

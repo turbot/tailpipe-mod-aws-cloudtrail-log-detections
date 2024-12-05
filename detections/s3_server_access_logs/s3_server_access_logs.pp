@@ -4,9 +4,9 @@ locals {
   })
 }
 
-detection_benchmark "s3_server_access_logs_detections" {
+benchmark "s3_server_access_logs_detections" {
   title       = "S3 Server Access Log Detections"
-  description = "This detection_benchmark contains recommendations when scanning S3 server access logs."
+  description = "This benchmark contains recommendations when scanning S3 server access logs."
   type        = "detection"
   children = [
     detection.s3_server_access_logs_detect_access_errors,

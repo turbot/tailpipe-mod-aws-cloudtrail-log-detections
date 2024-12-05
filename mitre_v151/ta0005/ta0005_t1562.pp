@@ -4,20 +4,20 @@ locals {
   })
 }
 
-detection_benchmark "mitre_v151_ta0005_t1562" {
+benchmark "mitre_v151_ta0005_t1562" {
   title         = "T1562 Impair Defenses"
-  type          = "benchmark"
+  type          = "detection"
   documentation = file("./mitre_v151/docs/ta0005_t1562.md")
   children = [
-    detection_benchmark.mitre_v151_ta0005_t1562_001
+    benchmark.mitre_v151_ta0005_t1562_001
   ]
 
   tags = local.mitre_v151_ta0005_t1562_common_tags
 }
 
-detection_benchmark "mitre_v151_ta0005_t1562_001" {
+benchmark "mitre_v151_ta0005_t1562_001" {
   title         = "T1562.001 Disable or Modify Tools"
-  type          = "benchmark"
+  type          = "detection"
   documentation = file("./mitre_v151/docs/ta0005_t1562_001.md")
   children = [
     detection.cloudtrail_logs_detect_cloudtrail_trail_updates

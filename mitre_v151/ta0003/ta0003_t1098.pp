@@ -4,9 +4,9 @@ locals {
   })
 }
 
-detection_benchmark "mitre_v151_ta0003_t1098" {
+benchmark "mitre_v151_ta0003_t1098" {
   title         = "T1098 Account Manipulation"
-  type          = "benchmark"
+  type          = "detection"
   documentation = file("./mitre_v151/docs/ta0003_t1098.md")
   children = [
     detection.cloudtrail_logs_detect_iam_user_login_profile_updates

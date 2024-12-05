@@ -48,9 +48,9 @@ locals {
   cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_disable_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "coalesce(request_parameters.dBInstanceIdentifier, request_parameters.dBClusterIdentifier)")
 }
 
-detection_benchmark "cloudtrail_log_detections" {
+benchmark "cloudtrail_log_detections" {
   title       = "CloudTrail Log Detections"
-  description = "This detection_benchmark contains recommendations when scanning CloudTrail logs."
+  description = "This benchmark contains recommendations when scanning CloudTrail logs."
   type        = "detection"
   children = [
     detection.cloudtrail_logs_detect_cloudtrail_trail_updates,

@@ -4,9 +4,9 @@ locals {
   })
 }
 
-detection_benchmark "mitre_v151_ta0001_t1190" {
+benchmark "mitre_v151_ta0001_t1190" {
   title         = "T1190 Exploit Public-Facing Application"
-  type          = "benchmark"
+  type          = "detection"
   documentation = file("./mitre_v151/docs/ta0001_t1190.md")
   children = [
     detection.cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates

@@ -4,9 +4,9 @@ locals {
   })
 }
 
-detection_benchmark "mitre_v151_ta0003_t1136" {
+benchmark "mitre_v151_ta0003_t1136" {
   title         = "T1136 Create Account"
-  type          = "benchmark"
+  type          = "detection"
   documentation = file("./mitre_v151/docs/ta0003_t1136.md")
   children = [
     detection.cloudtrail_logs_detect_iam_entities_created_without_cloudformation

@@ -4,9 +4,9 @@ locals {
   })
 }
 
-detection_benchmark "elb_access_log_detections" {
+benchmark "elb_access_log_detections" {
   title       = "ELB Access Log Detections"
-  description = "This detection_benchmark contains recommendations when scanning ELB access logs."
+  description = "This benchmark contains recommendations when scanning ELB access logs."
   type        = "detection"
 
   children = [
