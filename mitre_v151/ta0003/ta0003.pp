@@ -6,7 +6,7 @@ locals {
 
 benchmark "mitre_v151_ta0003" {
   title         = "TA0003 Persistence"
-  type          = "benchmark"
+  type          = "detection"
   documentation = file("./mitre_v151/docs/ta0003.md")
   children = [
     benchmark.mitre_v151_ta0003_t1098,

@@ -6,7 +6,7 @@ locals {
 
 benchmark "mitre_v151_ta0001" {
   title         = "TA0001 Initial Access"
-  type          = "benchmark"
+  type          = "detection"
   documentation = file("./mitre_v151/docs/ta0001.md")
   children = [
     benchmark.mitre_v151_ta0001_t1078,
