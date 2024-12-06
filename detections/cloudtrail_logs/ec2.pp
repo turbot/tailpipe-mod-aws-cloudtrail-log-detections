@@ -9,6 +9,8 @@ benchmark "cloudtrail_logs_ec2_detections" {
     detection.cloudtrail_logs_detect_ec2_flow_logs_deletion_updates,
     detection.cloudtrail_logs_detect_ec2_snapshot_updates,
     detection.cloudtrail_logs_detect_ec2_ami_updates,
+    detection.cloudtrail_logs_detect_ec2_network_acl_updates,
+    detection.cloudtrail_logs_detect_stopped_ec2_instances,
   ]
 }
 
@@ -22,6 +24,26 @@ detection "cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates" {
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0001:T1190,TA0005:T1562"
   })
+}
+
+detection "cloudtrail_logs_detect_ec2_network_acl_updates" {
+  title       = "Detect EC2 Gateway Updates"
+  description = "Detect EC2 gateway updates to check for changes in network configurations."
+  severity    = "low"
+  query       = query.cloudtrail_logs_detect_ec2_network_acl_updates
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0005:T1562"
+  })
+}
+
+detection "cloudtrail_logs_detect_stopped_ec2_instances" {
+  title       = "Detect Stopped Instances"
+  description = "Detect stopped instances to check for unauthorized changes."
+  severity    = "low"
+  query       = query.cloudtrail_logs_detect_stopped_ec2_instances
+
+  tags = local.cloudtrail_log_detection_common_tags
 }
 
 detection "cloudtrail_logs_detect_ec2_gateway_updates" {
@@ -179,6 +201,21 @@ query "cloudtrail_logs_detect_ec2_ami_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('CopyFpgaImage', 'CopyImage', 'CreateFpgaImage', 'CreateImage', 'CreateRestoreImageTask', 'CreateStoreImageTask', 'ImportImage')
+      and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_stopped_ec2_instances" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_stopped_ec2_instances_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'ec2.amazonaws.com'
+      and event_name = 'StopInstances'
       and error_code is null
     order by
       event_time desc;
