@@ -1,3 +1,11 @@
+locals {
+  cloudtrail_logs_detect_iam_group_read_only_events_sql_columns                  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.groupName")
+  cloudtrail_logs_detect_iam_policy_modified_sql_columns                         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.policyArn")
+  cloudtrail_logs_detect_iam_entities_created_without_cloudformation_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "response_elements.role.arn")
+  cloudtrail_logs_detect_iam_root_console_logins_sql_columns                     = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "''")
+  cloudtrail_logs_detect_iam_user_login_profile_updates_sql_columns              = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.userName")    
+}
+
 benchmark "cloudtrail_logs_iam_detections" {
   title       = "CloudTrail Log IAM Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's IAM logs"
@@ -9,6 +17,11 @@ benchmark "cloudtrail_logs_iam_detections" {
     detection.cloudtrail_logs_detect_iam_group_read_only_events,
     detection.cloudtrail_logs_detect_iam_policy_modified,
   ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    type    = "Benchmark"
+    service = "AWS/IAM"
+  })
 }
 
 detection "cloudtrail_logs_detect_iam_entities_created_without_cloudformation" {

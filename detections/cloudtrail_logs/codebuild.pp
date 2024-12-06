@@ -1,3 +1,7 @@
+locals {
+  cloudtrail_logs_detect_codebuild_project_visibility_updates_sql_columns        = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.projectArn")  
+}
+
 benchmark "cloudtrail_logs_codebuild_detections" {
   title       = "CloudTrail Log CodeBuild Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's CodeBuild logs"
@@ -5,6 +9,11 @@ benchmark "cloudtrail_logs_codebuild_detections" {
   children    = [
     detection.cloudtrail_logs_detect_codebuild_project_visibility_updates,
   ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    type    = "Benchmark"
+    service = "AWS/CodeBuild"
+  })
 }
 
 detection "cloudtrail_logs_detect_codebuild_project_visibility_updates" {

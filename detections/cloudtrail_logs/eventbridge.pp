@@ -1,3 +1,7 @@
+locals {
+  cloudtrail_logs_detect_eventbridge_rule_deletion_updates_sql_columns      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
+}
+
 benchmark "cloudtrail_logs_eventbridge_detections" {
   title       = "CloudTrail Log EventBridge Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's EventBridge logs"
@@ -5,6 +9,11 @@ benchmark "cloudtrail_logs_eventbridge_detections" {
   children    = [
     detection.cloudtrail_logs_detect_eventbridge_rule_disabled_or_deletion_updates,
   ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    type    = "Benchmark"
+    service = "AWS/Eventbridge"
+  })
 }
 
 detection "cloudtrail_logs_detect_eventbridge_rule_disabled_or_deletion_updates" {

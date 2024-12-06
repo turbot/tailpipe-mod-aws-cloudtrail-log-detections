@@ -1,3 +1,8 @@
+locals {
+  cloudtrail_logs_detect_route53_domain_transfered_to_another_account_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.domainName")
+  cloudtrail_logs_detect_route53_associate_vpc_with_hosted_zone_sql_columns       = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.hostedZoneId")  
+}
+
 benchmark "cloudtrail_logs_route53_detections" {
   title       = "CloudTrail Log Route53 Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's Route53 logs"
@@ -7,6 +12,11 @@ benchmark "cloudtrail_logs_route53_detections" {
     detection.cloudtrail_logs_detect_route53_domain_transfer_lock_disabled_updates,
     detection.cloudtrail_logs_detect_route53_associate_vpc_with_hosted_zone,
   ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    type    = "Benchmark"
+    service = "AWS/Route53"
+  })
 }
 
 detection "cloudtrail_logs_detect_route53_domain_transfered_to_another_account" {

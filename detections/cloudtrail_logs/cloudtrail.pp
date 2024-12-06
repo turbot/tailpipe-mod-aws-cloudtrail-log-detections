@@ -1,3 +1,7 @@
+locals {
+  cloudtrail_logs_detect_cloudtrail_trail_updates_sql_columns                  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
+}
+
 benchmark "cloudtrail_logs_cloudtrail_detections" {
   title       = "CloudTrail Log CloudTrail Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's CloudTrail logs"
@@ -5,6 +9,11 @@ benchmark "cloudtrail_logs_cloudtrail_detections" {
   children    = [
     detection.cloudtrail_logs_detect_cloudtrail_trail_updates,
   ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    type    = "Benchmark"
+    service = "AWS/CloudTrail"
+  })
 }
 
 detection "cloudtrail_logs_detect_cloudtrail_trail_updates" {

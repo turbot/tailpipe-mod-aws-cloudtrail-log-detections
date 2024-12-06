@@ -1,3 +1,9 @@
+locals {
+  cloudtrail_logs_detect_cloudwatch_log_group_deletion_updates_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.logGroupName")
+  cloudtrail_logs_detect_cloudwatch_log_stream_deletion_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.logStreamName")
+  cloudtrail_logs_detect_cloudwatch_alarm_deletion_updates_sql_columns      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.alarmNames")    
+}
+
 benchmark "cloudtrail_logs_cloudwatch_detections" {
   title       = "CloudTrail Log CloudWatch Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's CloudWatch logs"
@@ -7,6 +13,11 @@ benchmark "cloudtrail_logs_cloudwatch_detections" {
     detection.cloudtrail_logs_detect_cloudwatch_log_stream_deletion_updates,
     detection.cloudtrail_logs_detect_cloudwatch_alarm_deletion_updates,
   ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    type    = "Benchmark"
+    service = "AWS/CloudWatch"
+  })
 }
 
 detection "cloudtrail_logs_detect_cloudwatch_log_group_deletion_updates" {

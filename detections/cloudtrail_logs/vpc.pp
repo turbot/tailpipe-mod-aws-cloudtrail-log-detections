@@ -1,3 +1,8 @@
+locals {
+  cloudtrail_logs_detect_vpc_updates_sql_columns                                  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.vpcId")
+  cloudtrail_logs_detect_route_table_updates_sql_columns                         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.routeTableId")
+}
+
 benchmark "cloudtrail_logs_vpc_detections" {
   title       = "CloudTrail Log VPC Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's VPC logs"
@@ -6,6 +11,11 @@ benchmark "cloudtrail_logs_vpc_detections" {
     detection.cloudtrail_logs_detect_vpc_updates,
     detection.cloudtrail_logs_detect_route_table_updates,
   ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    type    = "Benchmark"
+    service = "AWS/VPC"
+  })
 }
 
 //TODO: Should the title include VPC?

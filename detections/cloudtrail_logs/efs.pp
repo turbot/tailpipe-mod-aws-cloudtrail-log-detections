@@ -1,3 +1,7 @@
+locals {
+  cloudtrail_logs_detect_efs_deletion_updates_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "coalesce(request_parameters.fileSystemId, request_parameters.mountTargetId)")  
+}
+
 benchmark "cloudtrail_logs_efs_detections" {
   title       = "CloudTrail Log EFS Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's EFS logs"
@@ -5,6 +9,11 @@ benchmark "cloudtrail_logs_efs_detections" {
   children    = [
     detection.cloudtrail_logs_detect_efs_deletion_updates,
   ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    type    = "Benchmark"
+    service = "AWS/EFS"
+  })
 }
 
 detection "cloudtrail_logs_detect_efs_deletion_updates" {

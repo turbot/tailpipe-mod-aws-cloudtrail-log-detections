@@ -1,3 +1,25 @@
+locals {
+  cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.groupId")
+  # TODO: How to handle multiple possible resource paths? Split detection per event type?
+
+
+  cloudtrail_logs_detect_ec2_gateway_updates_sql_columns                         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.internetGatewayId")
+  cloudtrail_logs_detect_ec2_network_acl_updates_sql_columns                     = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.networkAclId")
+
+  # TODO: Get an array of instanceIds. Need to extract it and convert it into a string?
+  cloudtrail_logs_detect_stopped_ec2_instances_sql_columns                            = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.instancesSet.items")
+  cloudtrail_logs_detect_rds_instance_pulicly_accessible_sql_columns              = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dbInstanceIdentifier")
+
+  cloudtrail_logs_detect_ec2_full_network_packet_capture_updates_sql_columns      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "response_elements.trafficMirrorTargetId")
+
+  // TODO: Get an array of flowLogIds. Need to extract it and convert it into a string?
+  cloudtrail_logs_detect_ec2_flow_logs_deletion_updates_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.flowLogIds")
+
+  cloudtrail_logs_detect_ec2_snapshot_updates_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.snapshotId")
+
+  cloudtrail_logs_detect_ec2_ami_updates_sql_columns                        = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")  
+}
+
 benchmark "cloudtrail_logs_ec2_detections" {
   title       = "CloudTrail Log EC2 Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's EC2 logs"
@@ -12,6 +34,11 @@ benchmark "cloudtrail_logs_ec2_detections" {
     detection.cloudtrail_logs_detect_ec2_network_acl_updates,
     detection.cloudtrail_logs_detect_stopped_ec2_instances,
   ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    type    = "Benchmark"
+    service = "AWS/EC2"
+  })
 }
 
 detection "cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates" {

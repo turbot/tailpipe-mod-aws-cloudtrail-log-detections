@@ -1,3 +1,8 @@
+locals {
+  cloudtrail_logs_detect_s3_bucket_deleted_sql_columns                           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
+  cloudtrail_logs_detect_s3_bucket_policy_modified_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
+}
+
 benchmark "cloudtrail_logs_s3_detections" {
   title       = "CloudTrail Log S3 Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's S3 logs"
@@ -6,6 +11,11 @@ benchmark "cloudtrail_logs_s3_detections" {
     detection.cloudtrail_logs_detect_s3_bucket_deleted,
     detection.cloudtrail_logs_detect_s3_bucket_policy_modified,
   ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    type    = "Benchmark"
+    service = "AWS/S3"
+  })
 }
 
 detection "cloudtrail_logs_detect_s3_bucket_deleted" {

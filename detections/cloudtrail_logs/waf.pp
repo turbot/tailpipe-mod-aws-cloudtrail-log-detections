@@ -1,3 +1,8 @@
+locals {
+  cloudtrail_logs_detect_waf_web_acl_deletion_updates_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.id")
+  cloudtrail_logs_detect_waf_disassociation_sql_columns                          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.resourceArn")  
+}
+
 benchmark "cloudtrail_logs_waf_detections" {
   title       = "CloudTrail Log WAF Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's WAF logs"
@@ -6,6 +11,11 @@ benchmark "cloudtrail_logs_waf_detections" {
     detection.cloudtrail_logs_detect_waf_web_acl_deletion_updates,
     detection.cloudtrail_logs_detect_waf_disassociation,
   ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    type    = "Benchmark"
+    service = "AWS/WAF"
+  })
 }
 
 detection "cloudtrail_logs_detect_waf_web_acl_deletion_updates" {

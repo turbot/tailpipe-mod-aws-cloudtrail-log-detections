@@ -1,3 +1,7 @@
+locals {
+  cloudtrail_logs_detect_ec2_ebs_encryption_disabled_updates_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "recipient_account_id")  
+}
+
 benchmark "cloudtrail_logs_ebs_detections" {
   title       = "CloudTrail Log EBS Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's EBS logs"
@@ -5,6 +9,11 @@ benchmark "cloudtrail_logs_ebs_detections" {
   children    = [
     detection.cloudtrail_logs_detect_ec2_ebs_encryption_disabled_updates,
   ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    type    = "Benchmark"
+    service = "AWS/EBS"
+  })
 }
 
 detection "cloudtrail_logs_detect_ec2_ebs_encryption_disabled_updates" {

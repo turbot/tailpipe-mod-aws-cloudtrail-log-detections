@@ -1,3 +1,12 @@
+locals {
+  cloudtrail_logs_detect_rds_manual_snapshot_created_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
+  cloudtrail_logs_detect_rds_master_pass_updated_sql_columns                     = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
+  cloudtrail_logs_detect_rds_publicrestore_sql_columns                           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
+  cloudtrail_logs_detect_rds_db_instance_cluster_stop_sql_columns                = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "coalesce(request_parameters.dBInstanceIdentifier, request_parameters.dBClusterIdentifier)")
+  cloudtrail_logs_detect_rds_db_snapshot_delete_sql_columns                      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBSnapshotIdentifier")
+  cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_disable_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "coalesce(request_parameters.dBInstanceIdentifier, request_parameters.dBClusterIdentifier)")
+}
+
 benchmark "cloudtrail_logs_rds_detections" {
   title       = "CloudTrail Log RDS Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's RDS logs"
@@ -11,6 +20,11 @@ benchmark "cloudtrail_logs_rds_detections" {
     detection.cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_disable,
     detection.cloudtrail_logs_detect_rds_instance_pulicly_accessible,
   ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    type    = "Benchmark"
+    service = "AWS/RDS"
+  })
 }
 
 detection "cloudtrail_logs_detect_rds_instance_pulicly_accessible" {

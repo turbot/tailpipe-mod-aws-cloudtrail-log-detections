@@ -1,3 +1,8 @@
+locals {
+  cloudtrail_logs_detect_config_service_rule_delete_sql_columns                  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.configRuleName")
+  cloudtrail_logs_detect_configuration_recorder_stop_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.configurationRecorderName")  
+}
+
 benchmark "cloudtrail_logs_config_detections" {
   title       = "CloudTrail Log Config Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's Config logs"
@@ -6,6 +11,11 @@ benchmark "cloudtrail_logs_config_detections" {
     detection.cloudtrail_logs_detect_config_service_rule_delete,
     detection.cloudtrail_logs_detect_configuration_recorder_stop,
   ]
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    type    = "Benchmark"
+    service = "AWS/Config"
+  })
 }
 
 detection "cloudtrail_logs_detect_config_service_rule_delete" {
