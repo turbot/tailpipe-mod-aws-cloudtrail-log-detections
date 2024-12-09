@@ -14,7 +14,9 @@ benchmark "mitre_v151" {
   children = [
     benchmark.mitre_v151_ta0001,
     benchmark.mitre_v151_ta0003,
+    benchmark.mitre_v151_ta0004,
     benchmark.mitre_v151_ta0005,
+    benchmark.mitre_v151_ta0006,
     benchmark.mitre_v151_ta0007,
     benchmark.mitre_v151_ta0010,
   ]
