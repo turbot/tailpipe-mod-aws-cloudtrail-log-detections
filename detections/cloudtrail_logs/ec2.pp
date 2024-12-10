@@ -17,7 +17,9 @@ locals {
 
   cloudtrail_logs_detect_ec2_snapshot_updates_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.snapshotId")
 
-  cloudtrail_logs_detect_ec2_ami_updates_sql_columns                        = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")  
+  cloudtrail_logs_detect_ec2_ami_updates_sql_columns                        = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
+  cloudtrail_logs_detect_ec2_user_data_execution_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.userData")
+  cloudtrail_logs_detect_security_group_allow_all_sql_columns                = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.groupId")
 }
 
 benchmark "cloudtrail_logs_ec2_detections" {
@@ -126,6 +128,28 @@ detection "cloudtrail_logs_detect_ec2_ami_updates" {
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0002:T1204"
+  })
+}
+
+detection "cloudtrail_logs_detect_ec2_user_data_execution" {
+  title       = "Detect EC2 Instance User Data Execution"
+  description = "Detect execution of user data scripts during EC2 instance launch."
+  severity    = "high"
+  query       = query.cloudtrail_logs_detect_ec2_user_data_execution
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0002:T1204"
+  })
+}
+
+detection "cloudtrail_logs_detect_security_group_allow_all" {
+  title       = "Detect Security Group Rule Modification to Allow All Traffic"
+  description = "Detect when a security group rule is modified to allow all traffic."
+  severity    = "high"
+  query       = query.cloudtrail_logs_detect_security_group_allow_all
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0005:T1070"
   })
 }
 
@@ -244,6 +268,36 @@ query "cloudtrail_logs_detect_stopped_ec2_instances" {
       event_source = 'ec2.amazonaws.com'
       and event_name = 'StopInstances'
       and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_ec2_user_data_execution" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_ec2_user_data_execution_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'ec2.amazonaws.com'
+      and event_name = 'RunInstances'
+      and cast(request_parameters -> 'userData' as text) IS NOT NULL
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_security_group_allow_all" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_security_group_allow_all_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'ec2.amazonaws.com'
+      and event_name in ('AuthorizeSecurityGroupIngress', 'AuthorizeSecurityGroupEgress')
+      and cast(request_parameters -> 'ipPermissions' as text) like '%0.0.0.0/0%'
     order by
       event_time desc;
   EOQ
