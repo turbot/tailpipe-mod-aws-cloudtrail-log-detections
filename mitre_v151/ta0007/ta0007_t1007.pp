@@ -9,7 +9,7 @@ cloudtrail_logs_detect_service_discovery_sql_columns = replace(local.cloudtrail_
 benchmark "mitre_v151_ta0007_t1007" {
   title         = "T1007 System Service Discovery"
   type          = "detection"
-  # documentation = file("./mitre_v151/docs/ta0007_t1007.md")
+  documentation = file("./mitre_v151/docs/ta0007_t1007.md")
   children = [
     detection.cloudtrail_logs_detect_service_discovery
   ]

@@ -9,7 +9,7 @@ locals {
 benchmark "mitre_v151_ta0007_t1046" {
   title         = "T1046 Network Service Scanning"
   type          = "detection"
-  # documentation = file("./mitre_v151/docs/ta0007_t1046.md")
+  documentation = file("./mitre_v151/docs/ta0007_t1046.md")
   children = [
     detection.cloudtrail_logs_detect_network_service_scanning
   ]

@@ -9,7 +9,7 @@ locals {
 benchmark "mitre_v151_ta0008_t1550_004" {
   title         = "T1550.004 Use Alternate Authentication Material"
   type          = "detection"
-  # documentation = file("./mitre_v151/docs/ta0008_t1550_004.md")
+  documentation = file("./mitre_v151/docs/ta0008_t1550_004.md")
   children = [
     detection.cloudtrail_logs_detect_alternate_auth_material
   ]

@@ -5,13 +5,13 @@ locals {
 
   cloudtrail_logs_detect_session_hijacking_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
 
-  trusted_ip_list = "'192.168.1.1', '10.0.0.1'"  # Ensure proper SQL syntax for lists
+  trusted_ip_list = "'192.168.1.1', '10.0.0.1'"  # TODO: do we need this in the locals?
 }
 
 benchmark "mitre_v151_ta0008_t1563" {
   title         = "T1563 Remote Service Session Hijacking"
   type          = "detection"
-  # documentation = file("./mitre_v151/docs/ta0008_t1563.md")
+  documentation = file("./mitre_v151/docs/ta0008_t1563.md")
   children = [
     detection.cloudtrail_logs_detect_session_hijacking
   ]

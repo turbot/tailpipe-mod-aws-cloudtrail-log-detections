@@ -9,7 +9,7 @@ cloudtrail_logs_detect_network_configuration_discovery_sql_columns = replace(loc
 benchmark "mitre_v151_ta0007_t1016" {
   title         = "T1016 System Network Configuration Discovery"
   type          = "detection"
-  # documentation = file("./mitre_v151/docs/ta0007_t1016.md")
+  documentation = file("./mitre_v151/docs/ta0007_t1016.md")
   children = [
     detection.cloudtrail_logs_detect_network_configuration_discovery
   ]

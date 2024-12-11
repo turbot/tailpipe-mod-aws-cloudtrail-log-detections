@@ -9,7 +9,7 @@ locals {
 benchmark "mitre_v151_ta0008_t1021_001" {
   title         = "T1021.001 Remote Services: AWS Management Console"
   type          = "detection"
-  # documentation = file("./mitre_v151/docs/ta0008_t1021_001.md")
+  documentation = file("./mitre_v151/docs/ta0008_t1021_001.md")
   children = [
     detection.cloudtrail_logs_detect_remote_services
   ]

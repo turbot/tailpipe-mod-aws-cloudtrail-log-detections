@@ -9,7 +9,7 @@ locals {
 benchmark "mitre_v151_ta0008_t1021_004" {
   title         = "T1021.004 Remote Services: SSH"
   type          = "detection"
-  # documentation = file("./mitre_v151/docs/ta0008_t1021_004.md")
+  documentation = file("./mitre_v151/docs/ta0008_t1021_004.md")
   children = [
     detection.cloudtrail_logs_detect_ssh_activity
   ]

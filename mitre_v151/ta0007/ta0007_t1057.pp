@@ -9,7 +9,7 @@ locals {
 benchmark "mitre_v151_ta0007_t1057" {
   title         = "T1057 Process Discovery"
   type          = "detection"
-  # documentation = file("./mitre_v151/docs/ta0007_t1057.md")
+  documentation = file("./mitre_v151/docs/ta0007_t1057.md")
   children = [
     detection.cloudtrail_logs_detect_process_discovery
   ]
