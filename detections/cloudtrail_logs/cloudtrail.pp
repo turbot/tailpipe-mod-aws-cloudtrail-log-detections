@@ -17,8 +17,8 @@ benchmark "cloudtrail_logs_cloudtrail_detections" {
 }
 
 detection "cloudtrail_logs_detect_cloudtrail_trail_updates" {
-  title       = "Detect CloudTrail Trail Updates"
-  description = "Detect CloudTrail trail changes to check if logging was stopped."
+  title       = "Detect CloudTrail Trails Updates"
+  description = "Detect changes to CloudTrail trails to check if logging was stopped."
   severity    = "medium"
   documentation        = file("./detections/docs/cloudtrail_logs_detect_cloudtrail_trail_updates.md")
   query       = query.cloudtrail_logs_detect_cloudtrail_trail_updates

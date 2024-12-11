@@ -10,6 +10,7 @@ locals {
   cloudtrail_logs_detect_user_added_to_admin_group_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.userName")
   cloudtrail_logs_detect_inline_policy_added_sql_columns                         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.userName")
   cloudtrail_logs_detect_managed_policy_attachment_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "coalesce(request_parameters.userName, request_parameters.roleName)")
+  cloudtrail_logs_detect_iam_user_creation_sql_columns                           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.userName")
 }
 
 benchmark "cloudtrail_logs_iam_detections" {
@@ -22,6 +23,7 @@ benchmark "cloudtrail_logs_iam_detections" {
     detection.cloudtrail_logs_detect_iam_user_login_profile_updates,
     detection.cloudtrail_logs_detect_iam_group_read_only_events,
     detection.cloudtrail_logs_detect_iam_policy_modified,
+    detection.cloudtrail_logs_detect_iam_user_creation
   ]
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
@@ -42,8 +44,8 @@ detection "cloudtrail_logs_detect_iam_entities_created_without_cloudformation" {
 }
 
 detection "cloudtrail_logs_detect_iam_user_login_profile_updates" {
-  title       = "Detect IAM User Login Profile Updates"
-  description = "Detect IAM user login profile updates to check for password updates and usage."
+  title       = "Detect IAM Users Login Profile Updates"
+  description = "Detect IAM users login profile updates to check for password updates and usage."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_iam_user_login_profile_updates
 
@@ -53,8 +55,8 @@ detection "cloudtrail_logs_detect_iam_user_login_profile_updates" {
 }
 
 detection "cloudtrail_logs_detect_iam_root_console_logins" {
-  title       = "Detect IAM Root Console Logins"
-  description = "Detect IAM root user console logins to check for any actions performed by the root user."
+  title       = "Detect IAM Root Users Console Logins"
+  description = "Detect IAM root users console logins to check for any actions performed by the root user."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_iam_root_console_logins
 
@@ -64,8 +66,8 @@ detection "cloudtrail_logs_detect_iam_root_console_logins" {
 }
 
 detection "cloudtrail_logs_detect_iam_group_read_only_events" {
-  title       = "Detect IAM Group Read Only Event"
-  description = "Detect IAM group read only event"
+  title       = "Detect IAM Groups Read Only Event"
+  description = "Detect IAM groups read only event"
   severity    = "low"
   query       = query.cloudtrail_logs_detect_iam_group_read_only_events
 
@@ -76,8 +78,8 @@ detection "cloudtrail_logs_detect_iam_group_read_only_events" {
 }
 
 detection "cloudtrail_logs_detect_iam_policy_modified" {
-  title       = "Detect IAM Policy Modified"
-  description = "Detect when IAM policy is modified."
+  title       = "Detect IAM Policies Modified"
+  description = "Detect when IAM policies are modified."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_iam_policy_modified
 
@@ -87,8 +89,8 @@ detection "cloudtrail_logs_detect_iam_policy_modified" {
 }
 
 detection "cloudtrail_logs_detect_iam_access_key_creation" {
-  title       = "Detect IAM Access Key Creation"
-  description = "Detect when a new IAM access key is created for a user."
+  title       = "Detect IAM Access Keys Creation"
+  description = "Detect when new IAM access keys are created for user."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_iam_access_key_creation
 
@@ -98,8 +100,8 @@ detection "cloudtrail_logs_detect_iam_access_key_creation" {
 }
 
 detection "cloudtrail_logs_detect_iam_access_key_deletion" {
-  title       = "Detect IAM Access Key Deletion"
-  description = "Detect when an IAM access key is deleted."
+  title       = "Detect IAM Access Keys Deletion"
+  description = "Detect when IAM access keys are deleted."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_iam_access_key_deletion
 
@@ -109,8 +111,8 @@ detection "cloudtrail_logs_detect_iam_access_key_deletion" {
 }
 
 detection "cloudtrail_logs_detect_iam_user_password_change" {
-  title       = "Detect IAM User Password Change"
-  description = "Detect when an IAM user's password is changed."
+  title       = "Detect IAM Users Password Change"
+  description = "Detect when IAM users password are changed."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_iam_user_password_change
 
@@ -120,8 +122,8 @@ detection "cloudtrail_logs_detect_iam_user_password_change" {
 }
 
 detection "cloudtrail_logs_detect_user_added_to_admin_group" {
-  title       = "Detect IAM User Added to Administrator Group"
-  description = "Detect when an IAM user is added to the Administrators group."
+  title       = "Detect IAM Users Added to Administrator Group"
+  description = "Detect when IAM users are added to the Administrators group."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_user_added_to_admin_group
 
@@ -131,8 +133,8 @@ detection "cloudtrail_logs_detect_user_added_to_admin_group" {
 }
 
 detection "cloudtrail_logs_detect_inline_policy_added" {
-  title       = "Detect Inline Policy Added to IAM User"
-  description = "Detect when an inline policy is added to an IAM user."
+  title       = "Detect Inline Policy Added to IAM Users"
+  description = "Detect when an inline policy is added to IAM users."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_inline_policy_added
 
@@ -142,13 +144,24 @@ detection "cloudtrail_logs_detect_inline_policy_added" {
 }
 
 detection "cloudtrail_logs_detect_managed_policy_attachment" {
-  title       = "Detect Managed Policy Attachment to IAM User or Role"
-  description = "Detect when a managed policy is attached to an IAM user or role."
+  title       = "Detect Managed Policy Attachment to IAM Users or Roles"
+  description = "Detect when a managed policy is attached to IAM users or roles."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_managed_policy_attachment
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0004:T1098"
+  })
+}
+
+detection "cloudtrail_logs_detect_iam_user_creation" {
+  title       = "Detect New IAM Users Creation"
+  description = "Detect when new IAM users are created."
+  severity    = "high"
+  query       = query.cloudtrail_logs_detect_iam_user_creation
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0003:T1136"
   })
 }
 
@@ -315,6 +328,21 @@ query "cloudtrail_logs_detect_managed_policy_attachment" {
     where
       event_source = 'iam.amazonaws.com'
       and event_name in ('AttachUserPolicy', 'AttachRolePolicy')
+      and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_iam_user_creation" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_iam_user_creation_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'iam.amazonaws.com'
+      and event_name = 'CreateUser'
       and error_code is null
     order by
       event_time desc;

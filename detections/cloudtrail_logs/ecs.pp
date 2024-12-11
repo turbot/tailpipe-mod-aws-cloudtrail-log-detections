@@ -17,7 +17,7 @@ benchmark "cloudtrail_logs_ecs_detections" {
 }
 
 detection "cloudtrail_logs_detect_ecs_task_execution" {
-  title       = "Detect ECS Task Execution"
+  title       = "Detect ECS Tasks Execution"
   description = "Detect execution of tasks within an ECS cluster."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_ecs_task_execution

@@ -1,5 +1,5 @@
 locals {
-  cloudtrail_logs_detect_ec2_ebs_encryption_disabled_updates_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "recipient_account_id")  
+  cloudtrail_logs_detect_ec2_ebs_encryption_disabled_updates_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "recipient_account_id")
 }
 
 benchmark "cloudtrail_logs_ebs_detections" {
@@ -17,8 +17,8 @@ benchmark "cloudtrail_logs_ebs_detections" {
 }
 
 detection "cloudtrail_logs_detect_ec2_ebs_encryption_disabled_updates" {
-  title       = "Detect EC2 EBS Encryption Disabled Updates"
-  description = "Detect EC2 EBS encryption disabled updates to check for data at rest encryption."
+  title       = "Detect EC2 EBS Encryptions Disabled Updates"
+  description = "Detect EC2 EBS encryptions disabled updates to check for data at rest encryption."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_ec2_ebs_encryption_disabled_updates
 

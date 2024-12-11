@@ -20,8 +20,8 @@ benchmark "cloudtrail_logs_s3_detections" {
 }
 
 detection "cloudtrail_logs_detect_s3_bucket_deleted" {
-  title       = "Detect S3 Bucket Deleted"
-  description = "Detect a S3 Bucket, Policy, or Website was deleted."
+  title       = "Detect S3 Buckets Deleted"
+  description = "Detect when S3 Buckets policy or website is deleted."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_s3_bucket_deleted
 
@@ -31,8 +31,8 @@ detection "cloudtrail_logs_detect_s3_bucket_deleted" {
 }
 
 detection "cloudtrail_logs_detect_s3_bucket_policy_modified" {
-  title       = "Detect  S3 Bucket Policy Modified"
-  description = "Detect when S3 bucket policy, is modified."
+  title       = "Detect S3 Buckets Policy Modified"
+  description = "Detect when S3 buckets policy, is modified."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_s3_bucket_policy_modified
 
@@ -42,8 +42,8 @@ detection "cloudtrail_logs_detect_s3_bucket_policy_modified" {
 }
 
 detection "cloudtrail_logs_detect_s3_bucket_policy_public" {
-  title       = "Detect S3 Bucket Policy Change to Allow Public Access"
-  description = "Detect when an S3 bucket policy is modified to allow public access."
+  title       = "Detect S3 Buckets Policy Change to Allow Public Access"
+  description = "Detect when S3 buckets policy is modified to allow public access."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_s3_bucket_policy_public
 

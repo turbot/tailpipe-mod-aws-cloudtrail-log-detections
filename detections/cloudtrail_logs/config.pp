@@ -1,6 +1,6 @@
 locals {
   cloudtrail_logs_detect_config_service_rule_delete_sql_columns                  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.configRuleName")
-  cloudtrail_logs_detect_configuration_recorder_stop_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.configurationRecorderName")  
+  cloudtrail_logs_detect_configuration_recorder_stop_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.configurationRecorderName")
 }
 
 benchmark "cloudtrail_logs_config_detections" {
@@ -19,8 +19,8 @@ benchmark "cloudtrail_logs_config_detections" {
 }
 
 detection "cloudtrail_logs_detect_config_service_rule_delete" {
-  title       = "Detect Config Service Rule Deleted"
-  description = "Detect the deletion of config service rule."
+  title       = "Detect Config Service Rules Deletions"
+  description = "Detect the deletions of Config service rules."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_config_service_rule_delete
 
@@ -30,8 +30,8 @@ detection "cloudtrail_logs_detect_config_service_rule_delete" {
 }
 
 detection "cloudtrail_logs_detect_configuration_recorder_stop" {
-  title       = "Detect Configuration Recorder Stopped"
-  description = "Detect when the configuration recorder is stopped."
+  title       = "Detect Configuration Recorders Stopped"
+  description = "Detect when configuration recorders are stopped."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_configuration_recorder_stop
 

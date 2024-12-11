@@ -20,8 +20,8 @@ benchmark "cloudtrail_logs_vpc_detections" {
 
 //TODO: Should the title include VPC?
 detection "cloudtrail_logs_detect_route_table_updates" {
-  title       = "Detect Route Table Updates"
-  description = "Detect route table updates to check for changes in network configurations."
+  title       = "Detect Route Tables Updates"
+  description = "Detect route tables updates to check for changes in network configurations."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_route_table_updates
 
@@ -31,8 +31,8 @@ detection "cloudtrail_logs_detect_route_table_updates" {
 }
 
 detection "cloudtrail_logs_detect_vpc_updates" {
-  title       = "Detect VPC Updates"
-  description = "Detect VPC updates to check for changes in network configurations."
+  title       = "Detect VPCs Updates"
+  description = "Detect VPCs updates to check for changes in network configurations."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_vpc_updates
 

@@ -1,6 +1,6 @@
 locals {
   cloudtrail_logs_detect_route53_domain_transfered_to_another_account_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.domainName")
-  cloudtrail_logs_detect_route53_associate_vpc_with_hosted_zone_sql_columns       = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.hostedZoneId")  
+  cloudtrail_logs_detect_route53_associate_vpc_with_hosted_zone_sql_columns       = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.hostedZoneId")
 }
 
 benchmark "cloudtrail_logs_route53_detections" {
@@ -20,8 +20,8 @@ benchmark "cloudtrail_logs_route53_detections" {
 }
 
 detection "cloudtrail_logs_detect_route53_domain_transfered_to_another_account" {
-  title       = "Detect Route53 Domain Transfered to Another Account"
-  description = "Detect Route53 domain transfered to another account to check for unauthorized domain transfers."
+  title       = "Detect Route53 Domains Transfered to Another Account"
+  description = "Detect Route53 domains transfered to another account to check for unauthorized domain transfers."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_route53_domain_transfered_to_another_account
 
@@ -31,8 +31,8 @@ detection "cloudtrail_logs_detect_route53_domain_transfered_to_another_account" 
 }
 
 detection "cloudtrail_logs_detect_route53_domain_transfer_lock_disabled_updates" {
-  title       = "Detect Route53 Domain Transfer Lock Disabled"
-  description = "Detect Route53 domain transfer lock disabled to check for unauthorized domain transfers."
+  title       = "Detect Route53 Domains Transfer Lock Disabled"
+  description = "Detect Route53 domains transfer lock disabled to check for unauthorized domain transfers."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_route53_domain_transfer_lock_disabled_updates
 
@@ -42,8 +42,8 @@ detection "cloudtrail_logs_detect_route53_domain_transfer_lock_disabled_updates"
 }
 
 detection "cloudtrail_logs_detect_route53_associate_vpc_with_hosted_zone" {
-  title       = "Detect Route53 Associate VPC with Hosted Zone"
-  description = "Detect Route53 associate VPC with hosted zone to check for unauthorized VPC associations."
+  title       = "Detect Route53 Associate VPC with Hosted Zones"
+  description = "Detect Route53 associate VPC with hosted zones to check for unauthorized VPC associations."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_route53_associate_vpc_with_hosted_zone
 

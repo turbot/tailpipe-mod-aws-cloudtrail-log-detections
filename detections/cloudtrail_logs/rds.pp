@@ -28,8 +28,8 @@ benchmark "cloudtrail_logs_rds_detections" {
 }
 
 detection "cloudtrail_logs_detect_rds_instance_pulicly_accessible" {
-  title       = "Detect RDS Instance Publicly Accessible"
-  description = "Detect RDS instance publicly accessible to check for unauthorized access."
+  title       = "Detect RDS Instances Publicly Accessible"
+  description = "Detect RDS instances publicly accessible to check for unauthorized access."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_rds_instance_pulicly_accessible
 
@@ -39,8 +39,8 @@ detection "cloudtrail_logs_detect_rds_instance_pulicly_accessible" {
 }
 
 detection "cloudtrail_logs_detect_rds_manual_snapshot_created" {
-  title       = "Detect RDS Manual Snapshot Created"
-  description = "Detect when RDS manual snapshot is created."
+  title       = "Detect RDS Manual Snapshots Created"
+  description = "Detect when RDS manual snapshots is created."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_rds_manual_snapshot_created
 
@@ -50,8 +50,8 @@ detection "cloudtrail_logs_detect_rds_manual_snapshot_created" {
 }
 
 detection "cloudtrail_logs_detect_rds_master_pass_updated" {
-  title       = "Detect RDS Master Password Updated"
-  description = "Detect when RDS master password is updated."
+  title       = "Detect RDS Instances Master Password Updated"
+  description = "Detect when RDS instances master password is updated."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_rds_master_pass_updated
 
@@ -61,8 +61,8 @@ detection "cloudtrail_logs_detect_rds_master_pass_updated" {
 }
 
 detection "cloudtrail_logs_detect_rds_publicrestore" {
-  title       = "Detect RDS public restore"
-  description = "Detect when RDS public instance is restored from snapshot."
+  title       = "Detect RDS Instances public restore"
+  description = "Detect when RDS public instances are restored from snapshot."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_rds_publicrestore
 
@@ -72,8 +72,8 @@ detection "cloudtrail_logs_detect_rds_publicrestore" {
 }
 
 detection "cloudtrail_logs_detect_rds_db_instance_cluster_stop" {
-  title       = "Detect RDS DB Instance or Cluster Stopped"
-  description = "Detect when the RDS DB instance or cluster is stopped."
+  title       = "Detect RDS DB Instances or Clusters Stopped"
+  description = "Detect when the RDS DB instances or clusters is stopped."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_rds_db_instance_cluster_stop
 
@@ -83,8 +83,8 @@ detection "cloudtrail_logs_detect_rds_db_instance_cluster_stop" {
 }
 
 detection "cloudtrail_logs_detect_rds_db_snapshot_delete" {
-  title       = "Detect RDS DB Snapshot Deleted"
-  description = "Detect when the RDS DB snapshot is deleted."
+  title       = "Detect RDS DB Snapshots Deleted"
+  description = "Detect when the RDS DB snapshots is deleted."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_rds_db_snapshot_delete
 
@@ -94,8 +94,8 @@ detection "cloudtrail_logs_detect_rds_db_snapshot_delete" {
 }
 
 detection "cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_disable" {
-  title       = "Detect RDS DB Instance or Cluster Deletion Protection Disabled"
-  description = "Detect when the RDS DB instance or cluster deletion protection is disabled."
+  title       = "Detect RDS DB Instances or Clusters Deletion Protection Disabled"
+  description = "Detect when the RDS DB instances or clusters deletion protection is disabled."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_disable
 

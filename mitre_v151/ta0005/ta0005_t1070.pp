@@ -9,7 +9,8 @@ benchmark "mitre_v151_ta0005_t1070" {
   type          = "detection"
   // documentation = file("./mitre_v151/docs/ta0005_t1070.md")
   children = [
-    detection.cloudtrail_logs_detect_security_group_allow_all,
+    detection.cloudtrail_logs_detect_security_group_ipv4_allow_all,
+    detection.cloudtrail_logs_detect_security_group_ipv6_allow_all,
     detection.cloudtrail_logs_detect_s3_bucket_policy_public,
     detection.cloudtrail_logs_detect_kms_key_deletion
   ]

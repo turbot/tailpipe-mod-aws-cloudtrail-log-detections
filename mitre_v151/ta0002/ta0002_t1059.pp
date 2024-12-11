@@ -9,8 +9,7 @@ benchmark "mitre_v151_ta0002_t1059" {
   type          = "detection"
   //documentation = file("./mitre_v151/docs/ta0002_t1059.md")
   children = [
-    detection.cloudtrail_logs_detect_lambda_invocation,
-    detection.cloudtrail_logs_detect_step_function_execution,
+    detection.cloudtrail_logs_detect_lambda_invocation_in_short_time,
     detection.cloudtrail_logs_detect_ssm_run_command
   ]
 

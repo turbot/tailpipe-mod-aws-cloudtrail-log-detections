@@ -19,7 +19,7 @@ benchmark "cloudtrail_logs_ssm_detections" {
 }
 
 detection "cloudtrail_logs_detect_ssm_parameter_store_access" {
-  title       = "Detect SSM Parameter Store Secret Access"
+  title       = "Detect SSM Parameters Store Secret Access"
   description = "Detect when a secret is accessed from AWS SSM Parameter Store."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_ssm_parameter_store_access
@@ -30,7 +30,7 @@ detection "cloudtrail_logs_detect_ssm_parameter_store_access" {
 }
 
 detection "cloudtrail_logs_detect_ssm_run_command" {
-  title       = "Detect SSM Run Command Execution"
+  title       = "Detect SSM Run Commands Execution"
   description = "Detect execution of commands on EC2 instances via AWS SSM Run Command."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_ssm_run_command

@@ -1,7 +1,7 @@
 locals {
   cloudtrail_logs_detect_cloudwatch_log_group_deletion_updates_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.logGroupName")
   cloudtrail_logs_detect_cloudwatch_log_stream_deletion_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.logStreamName")
-  cloudtrail_logs_detect_cloudwatch_alarm_deletion_updates_sql_columns      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.alarmNames")    
+  cloudtrail_logs_detect_cloudwatch_alarm_deletion_updates_sql_columns      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.alarmNames")
 }
 
 benchmark "cloudtrail_logs_cloudwatch_detections" {
@@ -21,8 +21,8 @@ benchmark "cloudtrail_logs_cloudwatch_detections" {
 }
 
 detection "cloudtrail_logs_detect_cloudwatch_log_group_deletion_updates" {
-  title       = "Detect CloudWatch Log Group Deletion Updates"
-  description = "Detect CloudWatch log group deletion updates to check for unauthorized changes."
+  title       = "Detect CloudWatch Log Groups Deletion Updates"
+  description = "Detect CloudWatch log groups deletion updates to check for unauthorized changes."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_cloudwatch_log_group_deletion_updates
 
@@ -32,8 +32,8 @@ detection "cloudtrail_logs_detect_cloudwatch_log_group_deletion_updates" {
 }
 
 detection "cloudtrail_logs_detect_cloudwatch_log_stream_deletion_updates" {
-  title       = "Detect CloudWatch Log Stream Deletion Updates"
-  description = "Detect CloudWatch log stream deletion updates to check for unauthorized changes."
+  title       = "Detect CloudWatch Log Streams Deletion Updates"
+  description = "Detect CloudWatch log streams deletion updates to check for unauthorized changes."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_cloudwatch_log_stream_deletion_updates
 
@@ -43,8 +43,8 @@ detection "cloudtrail_logs_detect_cloudwatch_log_stream_deletion_updates" {
 }
 
 detection "cloudtrail_logs_detect_cloudwatch_alarm_deletion_updates" {
-  title       = "Detect CloudWatch Alarm Deletion Updates"
-  description = "Detect CloudWatch alarm deletion updates to check for unauthorized changes."
+  title       = "Detect CloudWatch Alarms Deletion Updates"
+  description = "Detect CloudWatch alarms deletion updates to check for unauthorized changes."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_cloudwatch_alarm_deletion_updates
 

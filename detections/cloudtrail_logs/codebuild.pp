@@ -1,5 +1,5 @@
 locals {
-  cloudtrail_logs_detect_codebuild_project_visibility_updates_sql_columns        = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.projectArn")  
+  cloudtrail_logs_detect_codebuild_project_visibility_updates_sql_columns        = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.projectArn")
 }
 
 benchmark "cloudtrail_logs_codebuild_detections" {
@@ -17,8 +17,8 @@ benchmark "cloudtrail_logs_codebuild_detections" {
 }
 
 detection "cloudtrail_logs_detect_codebuild_project_visibility_updates" {
-  title       = "Detect CodeBuild Project Visibility Updates"
-  description = "Detect CodeBuild project visibility updates to check whether projects are publicly accessible."
+  title       = "Detect CodeBuild Projects Visibility Updates"
+  description = "Detect CodeBuild projects visibility updates to check whether projects are publicly accessible."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_codebuild_project_visibility_updates
 
