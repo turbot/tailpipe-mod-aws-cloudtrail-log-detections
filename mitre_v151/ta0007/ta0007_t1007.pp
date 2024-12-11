@@ -31,7 +31,8 @@ detection "cloudtrail_logs_detect_service_discovery" {
 
 query "cloudtrail_logs_detect_service_discovery" {
   sql = <<-EOQ
-    ${local.cloudtrail_logs_detect_service_discovery_sql_columns}
+    select
+      ${local.cloudtrail_logs_detect_service_discovery_sql_columns}
     from
       aws_cloudtrail_log
     where
