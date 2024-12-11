@@ -10,6 +10,7 @@ benchmark "mitre_v151_ta0005" {
   documentation = file("./mitre_v151/docs/ta0005.md")
   children = [
     benchmark.mitre_v151_ta0005_t1562,
+    benchmark.mitre_v151_ta0005_t1070
   ]
 
   tags = merge(local.mitre_v151_ta0005_common_tags, {

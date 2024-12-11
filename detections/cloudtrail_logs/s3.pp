@@ -1,6 +1,7 @@
 locals {
   cloudtrail_logs_detect_s3_bucket_deleted_sql_columns                           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
   cloudtrail_logs_detect_s3_bucket_policy_modified_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
+  cloudtrail_logs_detect_s3_bucket_policy_public_sql_columns                     = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
 }
 
 benchmark "cloudtrail_logs_s3_detections" {
@@ -40,6 +41,17 @@ detection "cloudtrail_logs_detect_s3_bucket_policy_modified" {
   })
 }
 
+detection "cloudtrail_logs_detect_s3_bucket_policy_public" {
+  title       = "Detect S3 Bucket Policy Change to Allow Public Access"
+  description = "Detect when an S3 bucket policy is modified to allow public access."
+  severity    = "high"
+  query       = query.cloudtrail_logs_detect_s3_bucket_policy_public
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0005:T1070"
+  })
+}
+
 query "cloudtrail_logs_detect_s3_bucket_deleted" {
   sql = <<-EOQ
     select
@@ -63,6 +75,20 @@ query "cloudtrail_logs_detect_s3_bucket_policy_modified" {
     where
       event_name in ('PutBucketPolicy', 'PutBucketAcl', 'PutBucketCors', 'PutBucketLifecycle', 'PutBucketReplication', 'DeleteBucketPolicy', 'DeleteBucketCors', 'DeleteBucketLifecycle', 'DeleteBucketReplication')
       and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_s3_bucket_policy_public" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_s3_bucket_policy_public_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_name = 'PutBucketPolicy'
+      and cast(request_parameters -> 'ipPermissions' as text) like '%"Principal":"*"%'
     order by
       event_time desc;
   EOQ
