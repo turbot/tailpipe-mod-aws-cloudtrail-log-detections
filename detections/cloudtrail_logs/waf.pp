@@ -1,6 +1,6 @@
 locals {
   cloudtrail_logs_detect_waf_web_acl_deletion_updates_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.id")
-  cloudtrail_logs_detect_waf_disassociation_sql_columns                          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.resourceArn")  
+  cloudtrail_logs_detect_waf_disassociation_sql_columns                          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.resourceArn")
 }
 
 benchmark "cloudtrail_logs_waf_detections" {
@@ -19,8 +19,8 @@ benchmark "cloudtrail_logs_waf_detections" {
 }
 
 detection "cloudtrail_logs_detect_waf_web_acl_deletion_updates" {
-  title       = "Detect WAF Web ACL Deletion Updates"
-  description = "Detect WAF web ACL deletion updates to check for unauthorized changes."
+  title       = "Detect WAF Web ACLs Deletion Updates"
+  description = "Detect WAF web ACLs deletion updates to check for unauthorized changes."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_waf_web_acl_deletion_updates
 
@@ -30,8 +30,8 @@ detection "cloudtrail_logs_detect_waf_web_acl_deletion_updates" {
 }
 
 detection "cloudtrail_logs_detect_waf_disassociation" {
-  title       = "Detect WAF Disassociation"
-  description = "Detect when WAF is disassociated."
+  title       = "Detect WAFs Disassociation"
+  description = "Detect when WAFs are disassociated."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_waf_disassociation
 
@@ -48,7 +48,7 @@ query "cloudtrail_logs_detect_waf_web_acl_deletion_updates" {
       aws_cloudtrail_log
     where
       event_name = 'DeleteWebACL'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -62,7 +62,7 @@ query "cloudtrail_logs_detect_waf_disassociation" {
       aws_cloudtrail_log
     where
       event_name = 'DisassociateWebACL'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

@@ -17,8 +17,8 @@ benchmark "cloudtrail_logs_guardduty_detections" {
 }
 
 detection "cloudtrail_logs_detect_guardduty_detector_deletion_updates" {
-  title       = "Detect GuardDuty Detector Deletion Updates"
-  description = "Detect GuardDuty detector deletion updates to check for unauthorized changes."
+  title       = "Detect GuardDuty Detectors Deletion Updates"
+  description = "Detect GuardDuty detectors deletion updates to check for unauthorized changes."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_guardduty_detector_deletion_updates
 
@@ -36,7 +36,7 @@ query "cloudtrail_logs_detect_guardduty_detector_deletion_updates" {
     where
       event_source = 'guardduty.amazonaws.com'
       and event_name = 'DeleteDetector'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

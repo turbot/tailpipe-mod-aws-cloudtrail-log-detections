@@ -26,8 +26,8 @@ benchmark "cloudtrail_logs_ebs_detections" {
 }
 
 detection "cloudtrail_logs_detect_ec2_ebs_encryption_disabled_updates" {
-  title       = "Detect EC2 EBS Encryption Disabled Updates"
-  description = "Detect EC2 EBS encryption disabled updates to check for data at rest encryption."
+  title       = "Detect EC2 EBS Encryptions Disabled Updates"
+  description = "Detect EC2 EBS encryptions disabled updates to check for data at rest encryption."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_ec2_ebs_encryption_disabled_updates
 
@@ -111,7 +111,7 @@ query "cloudtrail_logs_detect_ec2_ebs_encryption_disabled_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name = 'DisableEbsEncryptionByDefault'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

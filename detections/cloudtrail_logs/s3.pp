@@ -26,7 +26,7 @@ benchmark "cloudtrail_logs_s3_detections" {
 
 detection "cloudtrail_logs_detect_s3_bucket_deleted" {
   title       = "Detect S3 Bucket Deleted"
-  description = "Detect an S3 Bucket, Policy, or Website was deleted."
+  description = "Detect when an S3 Bucket is deleted."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_s3_bucket_deleted
 
@@ -47,8 +47,8 @@ detection "cloudtrail_logs_detect_s3_object_deleted" {
 }
 
 detection "cloudtrail_logs_detect_s3_bucket_policy_modified" {
-  title       = "Detect  S3 Bucket Policy Modified"
-  description = "Detect when S3 bucket policy, is modified."
+  title       = "Detect S3 Buckets Policy Modified"
+  description = "Detect when S3 buckets policy, is modified."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_s3_bucket_policy_modified
 
@@ -58,8 +58,8 @@ detection "cloudtrail_logs_detect_s3_bucket_policy_modified" {
 }
 
 detection "cloudtrail_logs_detect_s3_bucket_policy_public" {
-  title       = "Detect S3 Bucket Policy Change to Allow Public Access"
-  description = "Detect when an S3 bucket policy is modified to allow public access."
+  title       = "Detect S3 Buckets Policy Change to Allow Public Access"
+  description = "Detect when S3 buckets policy is modified to allow public access."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_s3_bucket_policy_public
 
@@ -130,7 +130,7 @@ query "cloudtrail_logs_detect_s3_bucket_deleted" {
       aws_cloudtrail_log
     where
       event_name = 'DeleteBucket'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -158,7 +158,7 @@ query "cloudtrail_logs_detect_s3_bucket_policy_modified" {
       aws_cloudtrail_log
     where
       event_name in ('PutBucketPolicy', 'PutBucketAcl', 'PutBucketCors', 'PutBucketLifecycle', 'PutBucketReplication', 'DeleteBucketPolicy', 'DeleteBucketCors', 'DeleteBucketLifecycle', 'DeleteBucketReplication')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -172,7 +172,8 @@ query "cloudtrail_logs_detect_s3_bucket_policy_public" {
       aws_cloudtrail_log
     where
       event_name = 'PutBucketPolicy'
-      and cast(request_parameters -> 'ipPermissions' as text) like '%"Principal":"*"%'
+      and cast(request_parameters -> 'policy' as text) like '%"Principal":"*"%'
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

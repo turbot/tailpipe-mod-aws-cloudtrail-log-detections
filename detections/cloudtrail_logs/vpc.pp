@@ -20,8 +20,8 @@ benchmark "cloudtrail_logs_vpc_detections" {
 
 //TODO: Should the title include VPC?
 detection "cloudtrail_logs_detect_route_table_updates" {
-  title       = "Detect Route Table Updates"
-  description = "Detect route table updates to check for changes in network configurations."
+  title       = "Detect Route Tables Updates"
+  description = "Detect route tables updates to check for changes in network configurations."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_route_table_updates
 
@@ -31,8 +31,8 @@ detection "cloudtrail_logs_detect_route_table_updates" {
 }
 
 detection "cloudtrail_logs_detect_vpc_updates" {
-  title       = "Detect VPC Updates"
-  description = "Detect VPC updates to check for changes in network configurations."
+  title       = "Detect VPCs Updates"
+  description = "Detect VPCs updates to check for changes in network configurations."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_vpc_updates
 
@@ -50,7 +50,7 @@ query "cloudtrail_logs_detect_route_table_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('DisassociateRouteTable', 'DeleteRoute', 'DeleteRouteTable', 'ReplaceRoute', 'ReplaceRouteTableAssociation')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -65,7 +65,7 @@ query "cloudtrail_logs_detect_vpc_updates" {
       aws_cloudtrail_log
     where
       event_name in ('DeleteVpc', 'ModifyVpcAttribute', 'AcceptVpcPeeringConnection', 'DeleteVpcPeeringConnection', 'RejectVpcPeeringConnection', 'CreateVpcPeeringConnection', 'AttachClassicLinkVpc', 'DetachClassicLinkVpc', 'EnableVpcClassicLink', 'DisableVpcClassicLink')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

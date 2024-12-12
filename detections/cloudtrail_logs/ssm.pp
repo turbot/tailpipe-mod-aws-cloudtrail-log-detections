@@ -23,7 +23,7 @@ benchmark "cloudtrail_logs_ssm_detections" {
 }
 
 detection "cloudtrail_logs_detect_ssm_parameter_store_access" {
-  title       = "Detect SSM Parameter Store Secret Access"
+  title       = "Detect SSM Parameters Store Secret Access"
   description = "Detect when a secret is accessed from AWS SSM Parameter Store."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_ssm_parameter_store_access
@@ -77,7 +77,7 @@ query "cloudtrail_logs_detect_ssm_unauthorized_data_access_from_local_systems" {
     where
       event_source = 'ssm.amazonaws.com'
       and event_name in ('SendCommand', 'GetCommandInvocation')
-      and request_parameters.documentName = 'AWS-RunShellScript'
+      and cast(request_parameters ->> 'documentName' as text) = 'AWS-RunShellScript'
       and error_code is null
     order by
       event_time desc;
@@ -110,7 +110,7 @@ query "cloudtrail_logs_detect_ssm_parameter_store_access" {
       event_source = 'ssm.amazonaws.com'
       and event_name = 'GetParameter'
       and cast(request_parameters ->> 'withDecryption' as text) = 'true'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

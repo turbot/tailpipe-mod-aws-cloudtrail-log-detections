@@ -17,8 +17,8 @@ benchmark "cloudtrail_logs_eventbridge_detections" {
 }
 
 detection "cloudtrail_logs_detect_eventbridge_rule_disabled_or_deletion_updates" {
-  title       = "Detect EventBridge Rule Disabled or Deletion Updates"
-  description = "Detect EventBridge rule disabled or deletion updates to check for unauthorized changes."
+  title       = "Detect EventBridge Rules Disabled or Deletion Updates"
+  description = "Detect EventBridge rules disabled or deletion updates to check for unauthorized changes."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_eventbridge_rule_disabled_or_deletion_updates
 
@@ -36,7 +36,7 @@ query "cloudtrail_logs_detect_eventbridge_rule_disabled_or_deletion_updates" {
     where
       event_source = 'eventbridge.amazonaws.com'
       and event_name in ('DeleteRule', 'DisableRule')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

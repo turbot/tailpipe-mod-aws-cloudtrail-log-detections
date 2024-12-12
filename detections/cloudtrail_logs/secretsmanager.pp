@@ -17,8 +17,8 @@ benchmark "cloudtrail_logs_secretsmanager_detections" {
 }
 
 detection "cloudtrail_logs_detect_secrets_manager_secret_access" {
-  title       = "Detect Secrets Manager Secret Access"
-  description = "Detect when a secret is accessed from AWS Secrets Manager."
+  title       = "Detect Secrets Manager Secrets Access"
+  description = "Detect when secrets are accessed from AWS Secrets Manager."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_secrets_manager_secret_access
 
@@ -36,7 +36,7 @@ query "cloudtrail_logs_detect_secrets_manager_secret_access" {
     where
       event_source = 'secretsmanager.amazonaws.com'
       and event_name = 'GetSecretValue'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

@@ -21,6 +21,8 @@ locals {
   cloudtrail_logs_detect_ec2_user_data_execution_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.userData")
   cloudtrail_logs_detect_security_group_allow_all_sql_columns                = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.groupId")
   cloudtrail_logs_detect_ec2_instance_updates_sql_columns                  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.instancesSet.items")
+  cloudtrail_logs_detect_security_group_ipv4_allow_all_sql_columns                = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.groupId")
+  cloudtrail_logs_detect_security_group_ipv6_allow_all_sql_columns                = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.groupId")
 }
 
 benchmark "cloudtrail_logs_ec2_detections" {
@@ -37,6 +39,7 @@ benchmark "cloudtrail_logs_ec2_detections" {
     detection.cloudtrail_logs_detect_ec2_network_acl_updates,
     detection.cloudtrail_logs_detect_stopped_ec2_instances,
     detection.cloudtrail_logs_detect_ec2_instance_updates,
+    detection.cloudtrail_logs_detect_security_group_ipv6_allow_all
   ]
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
@@ -46,8 +49,8 @@ benchmark "cloudtrail_logs_ec2_detections" {
 }
 
 detection "cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates" {
-  title       = "Detect EC2 Security Group Ingress/Egress Updates"
-  description = "Detect EC2 security group ingress and egress rule updates to check for unauthorized VPC access or export of data."
+  title       = "Detect EC2 Security Groups Ingress/Egress Updates"
+  description = "Detect EC2 security groups ingress and egress rule updates to check for unauthorized VPC access or export of data."
   severity    = "medium"
   documentation = file("./detections/docs/cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates.md")
   query       = query.cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates
@@ -58,8 +61,8 @@ detection "cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates" {
 }
 
 detection "cloudtrail_logs_detect_ec2_network_acl_updates" {
-  title       = "Detect EC2 Gateway Updates"
-  description = "Detect EC2 gateway updates to check for changes in network configurations."
+  title       = "Detect EC2 Gateways Updates"
+  description = "Detect EC2 gateways updates to check for changes in network configurations."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_ec2_network_acl_updates
 
@@ -69,8 +72,8 @@ detection "cloudtrail_logs_detect_ec2_network_acl_updates" {
 }
 
 detection "cloudtrail_logs_detect_stopped_ec2_instances" {
-  title       = "Detect Stopped Instances"
-  description = "Detect stopped instances to check for unauthorized changes."
+  title       = "Detect Stopped EC2 Instances"
+  description = "Detect stopped EC2 instances to check for unauthorized changes."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_stopped_ec2_instances
 
@@ -78,8 +81,8 @@ detection "cloudtrail_logs_detect_stopped_ec2_instances" {
 }
 
 detection "cloudtrail_logs_detect_ec2_gateway_updates" {
-  title       = "Detect EC2 Gateway Updates"
-  description = "Detect EC2 gateway updates to check for changes in network configurations."
+  title       = "Detect EC2 Gateways Updates"
+  description = "Detect EC2 gateways updates to check for changes in network configurations."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_ec2_gateway_updates
 
@@ -89,7 +92,7 @@ detection "cloudtrail_logs_detect_ec2_gateway_updates" {
 }
 
 detection "cloudtrail_logs_detect_ec2_full_network_packet_capture_updates" {
-  title       = "Detect EC2 Full Network Packet Capture Updates"
+  title       = "Detect EC2 Full Network Packet Captures Updates"
   description = "Detect updates to EC2 full network packet capture configurations to identify potential misuse of Traffic Mirroring, which could be exploited to exfiltrate sensitive data from unencrypted internal traffic."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_ec2_full_network_packet_capture_updates
@@ -101,8 +104,8 @@ detection "cloudtrail_logs_detect_ec2_full_network_packet_capture_updates" {
 
 //TODO: should this be in vpc?
 detection "cloudtrail_logs_detect_ec2_flow_logs_deletion_updates" {
-  title       = "Detect EC2 Flow Logs Deletion Updates"
-  description = "Detect EC2 flow logs deletion updates to check for unauthorized changes."
+  title       = "Detect EC2 Flow Logs Deletions Updates"
+  description = "Detect EC2 flow logs deletions updates to check for unauthorized changes."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_ec2_flow_logs_deletion_updates
 
@@ -112,8 +115,8 @@ detection "cloudtrail_logs_detect_ec2_flow_logs_deletion_updates" {
 }
 
 detection "cloudtrail_logs_detect_ec2_snapshot_updates" {
-  title       = "Detect EC2 Snapshot Updates"
-  description = "Detect EC2 snapshot updates to check for unauthorized changes."
+  title       = "Detect EC2 Snapshots Updates"
+  description = "Detect EC2 snapshots updates to check for unauthorized changes."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_ec2_snapshot_updates
 
@@ -123,8 +126,8 @@ detection "cloudtrail_logs_detect_ec2_snapshot_updates" {
 }
 
 detection "cloudtrail_logs_detect_ec2_ami_updates" {
-  title       = "Detect EC2 AMI Updates"
-  description = "Detect EC2 AMI updates to check for unauthorized changes."
+  title       = "Detect EC2 AMIs Updates"
+  description = "Detect EC2 AMIs updates to check for unauthorized changes."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_ec2_ami_updates
 
@@ -133,22 +136,22 @@ detection "cloudtrail_logs_detect_ec2_ami_updates" {
   })
 }
 
-detection "cloudtrail_logs_detect_ec2_user_data_execution" {
-  title       = "Detect EC2 Instance User Data Execution"
-  description = "Detect execution of user data scripts during EC2 instance launch."
+detection "cloudtrail_logs_detect_security_group_ipv4_allow_all" {
+  title       = "Detect Security Groups Rule Modifications to Allow All Traffic to IPv4"
+  description = "Detect when security group rules are modified to allow all traffic to IPv4."
   severity    = "high"
-  query       = query.cloudtrail_logs_detect_ec2_user_data_execution
+  query       = query.cloudtrail_logs_detect_security_group_ipv4_allow_all
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = "TA0002:T1204"
+    mitre_attack_ids = "TA0005:T1070"
   })
 }
 
-detection "cloudtrail_logs_detect_security_group_allow_all" {
-  title       = "Detect Security Group Rule Modification to Allow All Traffic"
-  description = "Detect when a security group rule is modified to allow all traffic."
+detection "cloudtrail_logs_detect_security_group_ipv6_allow_all" {
+  title       = "Detect Security Group Rule Modification to Allow All Traffic to IPv6"
+  description = "Detect when a security group rule is modified to allow all traffic to to IPv6."
   severity    = "high"
-  query       = query.cloudtrail_logs_detect_security_group_allow_all
+  query       = query.cloudtrail_logs_detect_security_group_ipv6_allow_all
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0005:T1070"
@@ -192,7 +195,7 @@ query "cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('AuthorizeSecurityGroupEgress', 'AuthorizeSecurityGroupIngress', 'RevokeSecurityGroupEgress', 'RevokeSecurityGroupIngress')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -207,7 +210,7 @@ query "cloudtrail_logs_detect_ec2_gateway_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('DeleteCustomerGateway', 'AttachInternetGateway', 'DeleteInternetGateway', 'DetachInternetGateway')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -222,7 +225,7 @@ query "cloudtrail_logs_detect_ec2_network_acl_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('DeleteNetworkAcl', 'DeleteNetworkAclEntry', 'ReplaceNetworkAclEntry', 'ReplaceNetworkAclAssociation')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -237,7 +240,7 @@ query "cloudtrail_logs_detect_ec2_full_network_packet_capture_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('CreateTrafficMirrorTarget', 'CreateTrafficMirrorFilter', 'CreateTrafficMirrorSession', 'CreateTrafficMirrorFilterRule')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -252,7 +255,7 @@ query "cloudtrail_logs_detect_ec2_snapshot_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('DeleteSnapshot', 'ModifySnapshotAttribute')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -267,7 +270,7 @@ query "cloudtrail_logs_detect_ec2_flow_logs_deletion_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name = 'DeleteFlowLogs'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -282,7 +285,7 @@ query "cloudtrail_logs_detect_ec2_ami_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('CopyFpgaImage', 'CopyImage', 'CreateFpgaImage', 'CreateImage', 'CreateRestoreImageTask', 'CreateStoreImageTask', 'ImportImage')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -297,37 +300,39 @@ query "cloudtrail_logs_detect_stopped_ec2_instances" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name = 'StopInstances'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
 }
 
-query "cloudtrail_logs_detect_ec2_user_data_execution" {
+query "cloudtrail_logs_detect_security_group_ipv4_allow_all" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_ec2_user_data_execution_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'ec2.amazonaws.com'
-      and event_name = 'RunInstances'
-      and cast(request_parameters -> 'userData' as text) IS NOT NULL
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "cloudtrail_logs_detect_security_group_allow_all" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_security_group_allow_all_sql_columns}
+      ${local.cloudtrail_logs_detect_security_group_ipv4_allow_all_sql_columns}
     from
       aws_cloudtrail_log
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('AuthorizeSecurityGroupIngress', 'AuthorizeSecurityGroupEgress')
       and cast(request_parameters -> 'ipPermissions' as text) like '%0.0.0.0/0%'
+      ${local.cloudtrail_log_detections_where_conditions}
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_security_group_ipv6_allow_all" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_security_group_ipv6_allow_all_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'ec2.amazonaws.com'
+      and event_name in ('AuthorizeSecurityGroupIngress', 'AuthorizeSecurityGroupEgress')
+      and cast(request_parameters -> 'ipPermissions' as text) like '%::/0%'
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

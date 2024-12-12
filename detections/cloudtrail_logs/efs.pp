@@ -1,5 +1,5 @@
 locals {
-  cloudtrail_logs_detect_efs_deletion_updates_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "coalesce(request_parameters.fileSystemId, request_parameters.mountTargetId)")  
+  cloudtrail_logs_detect_efs_deletion_updates_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "coalesce(request_parameters.fileSystemId, request_parameters.mountTargetId)")
 }
 
 benchmark "cloudtrail_logs_efs_detections" {
@@ -17,8 +17,8 @@ benchmark "cloudtrail_logs_efs_detections" {
 }
 
 detection "cloudtrail_logs_detect_efs_deletion_updates" {
-  title       = "Detect EFS Deletion Updates"
-  description = "Detect EFS deletion events to monitor for unauthorized changes or potential disruptions. This includes tracking the deletion of file systems, mount targets, and related resources to ensure any unexpected activity is identified and addressed promptly."
+  title       = "Detect EFS Files Deletion Updates"
+  description = "Detect EFS files deletion events to monitor for unauthorized changes or potential disruptions. This includes tracking the deletion of file systems, mount targets, and related resources to ensure any unexpected activity is identified and addressed promptly."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_efs_deletion_updates
 
@@ -36,7 +36,7 @@ query "cloudtrail_logs_detect_efs_deletion_updates" {
     where
       event_source = 'elasticfilesystem.amazonaws.com'
       and event_name in ('DeleteMountTarget', 'DeleteFileSystem', 'DeleteTags', 'DeleteFile', 'DeleteMountTargetSecurityGroups')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

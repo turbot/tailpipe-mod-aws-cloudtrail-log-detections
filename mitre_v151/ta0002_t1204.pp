@@ -7,10 +7,8 @@ locals {
 benchmark "mitre_v151_ta0002_t1204" {
   title         = "T1204 User Execution"
   type          = "detection"
-  //documentation = file("./mitre_v151/docs/ta0002_t1204.md")
-  children = [
-    detection.cloudtrail_logs_detect_ec2_user_data_execution
-  ]
+  documentation = file("./mitre_v151/docs/ta0002_t1204.md")
+  children = []
 
   tags = local.mitre_v151_ta0002_t1204_common_tags
 }

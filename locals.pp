@@ -69,4 +69,8 @@ locals {
   tp_id as source_id,
   *
   EOQ
+
+  cloudtrail_log_detections_where_conditions = <<-EOQ
+    and error_code is null
+  EOQ
 }

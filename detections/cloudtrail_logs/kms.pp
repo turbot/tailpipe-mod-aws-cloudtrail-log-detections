@@ -17,7 +17,7 @@ benchmark "cloudtrail_logs_kms_detections" {
 }
 
 detection "cloudtrail_logs_detect_kms_key_deletion" {
-  title       = "Detect AWS KMS Key Deletion"
+  title       = "Detect AWS KMS Keys Deletion"
   description = "Detect when a KMS key is scheduled for deletion."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_kms_key_deletion
@@ -36,7 +36,7 @@ query "cloudtrail_logs_detect_kms_key_deletion" {
     where
       event_source = 'kms.amazonaws.com'
       and event_name = 'ScheduleKeyDeletion'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
