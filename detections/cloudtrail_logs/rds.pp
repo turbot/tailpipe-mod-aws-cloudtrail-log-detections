@@ -5,6 +5,7 @@ locals {
   cloudtrail_logs_detect_rds_db_instance_cluster_stop_sql_columns                = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "coalesce(request_parameters.dBInstanceIdentifier, request_parameters.dBClusterIdentifier)")
   cloudtrail_logs_detect_rds_db_snapshot_delete_sql_columns                      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBSnapshotIdentifier")
   cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_disable_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "coalesce(request_parameters.dBInstanceIdentifier, request_parameters.dBClusterIdentifier)")
+  cloudtrail_logs_detect_rds_db_instance_disable_iam_authentication_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
 }
 
 benchmark "cloudtrail_logs_rds_detections" {
@@ -103,6 +104,34 @@ detection "cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_di
     mitre_attack_ids = "TA0040.T1485"
   })
 }
+
+detection "cloudtrail_logs_detect_rds_db_instance_disable_iam_authentication_updates" {
+  title       = "Detect Exploitation of Remote Services"
+  description = "Detect lateral movement via the exploitation of misconfigured or vulnerable services."
+  severity    = "critical"
+  # documentation = file("./detections/docs/cloudtrail_logs_detect_rds_db_instance_disable_iam_authentication_updates.md")
+  query       = query.cloudtrail_logs_detect_rds_db_instance_disable_iam_authentication_updates
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0008:T1210"
+  })
+}
+
+query "cloudtrail_logs_detect_rds_db_instance_disable_iam_authentication_updates" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_rds_db_instance_disable_iam_authentication_updates_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'rds.amazonaws.com'
+      and event_name = 'ModifyDBInstance'
+      and request_parameters.enableIAMDatabaseAuthentication = 'false'
+    order by
+      event_time desc;
+  EOQ
+}
+
 
 query "cloudtrail_logs_detect_rds_instance_pulicly_accessible" {
   sql = <<-EOQ

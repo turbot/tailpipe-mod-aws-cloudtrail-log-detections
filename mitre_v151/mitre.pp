@@ -18,8 +18,8 @@ benchmark "mitre_v151" {
     benchmark.mitre_v151_ta0004,
     benchmark.mitre_v151_ta0005,
     benchmark.mitre_v151_ta0006,
-    benchmark.mitre_v151_ta0007,
     benchmark.mitre_v151_ta0008,
+    benchmark.mitre_v151_ta0009,
     benchmark.mitre_v151_ta0010,
     benchmark.mitre_v151_ta0040,
   ]

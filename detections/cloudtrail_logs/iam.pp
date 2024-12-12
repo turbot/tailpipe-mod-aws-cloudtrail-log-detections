@@ -10,6 +10,9 @@ locals {
   cloudtrail_logs_detect_user_added_to_admin_group_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.userName")
   cloudtrail_logs_detect_inline_policy_added_sql_columns                         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.userName")
   cloudtrail_logs_detect_managed_policy_attachment_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "coalesce(request_parameters.userName, request_parameters.roleName)")
+  cloudtrail_logs_detect_iam_role_policy_updates_sql_columns                     = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
+  cloudtrail_logs_detect_iam_user_policy_updates_sql_columns                     = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
+  cloudtrail_logs_detect_iam_group_policy_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
 }
 
 benchmark "cloudtrail_logs_iam_detections" {
@@ -22,6 +25,10 @@ benchmark "cloudtrail_logs_iam_detections" {
     detection.cloudtrail_logs_detect_iam_user_login_profile_updates,
     detection.cloudtrail_logs_detect_iam_group_read_only_events,
     detection.cloudtrail_logs_detect_iam_policy_modified,
+    detection.cloudtrail_logs_detect_iam_access_key_creation,
+    detection.cloudtrail_logs_detect_iam_role_policy_updates,
+    detection.cloudtrail_logs_detect_iam_user_policy_updates,
+    detection.cloudtrail_logs_detect_iam_group_policy_updates,
   ]
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
@@ -150,6 +157,87 @@ detection "cloudtrail_logs_detect_managed_policy_attachment" {
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0004:T1098"
   })
+}
+
+detection "cloudtrail_logs_detect_iam_role_policy_updates" {
+  title       = "Detect Domain Policy Modifications"
+  description = "Detect unauthorized modifications to IAM policies or access rules."
+  severity    = "high"
+  # documentation = file("./detections/docs/cloudtrail_logs_detect_iam_role_policy_updates.md")
+  query       = query.cloudtrail_logs_detect_iam_role_policy_updates
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0040:T1484.001"
+  })
+}
+
+detection "cloudtrail_logs_detect_iam_user_policy_updates" {
+  title       = "Detect Domain Policy Modifications"
+  description = "Detect unauthorized modifications to IAM policies or access rules."
+  severity    = "high"
+  # documentation = file("./detections/docs/cloudtrail_logs_detect_iam_user_policy_updates.md")
+  query       = query.cloudtrail_logs_detect_iam_user_policy_updates
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0040:T1484.001"
+  })
+}
+
+detection "cloudtrail_logs_detect_iam_group_policy_updates" {
+  title       = "Detect Group Policy Modifications"
+  description = "Detect unauthorized modifications to IAM group policies."
+  severity    = "high"
+  # documentation = file("./detections/docs/cloudtrail_logs_detect_iam_group_policy_updates.md")
+  query       = query.cloudtrail_logs_detect_iam_group_policy_updates
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0040:T1484.002"
+  })
+}
+
+query "cloudtrail_logs_detect_iam_group_policy_updates" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_iam_group_policy_updates_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'iam.amazonaws.com'
+      and event_name in ('PutGroupPolicy', 'AttachGroupPolicy')
+      and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_iam_role_policy_updates" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_iam_role_policy_updates_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'iam.amazonaws.com'
+      and event_name = 'PutRolePolicy'
+      and error_code is null
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_iam_user_policy_updates" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_iam_user_policy_updates_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'iam.amazonaws.com'
+      and event_name = 'PutUserPolicy'
+      and error_code is null
+    order by
+      event_time desc;
+  EOQ
 }
 
 query "cloudtrail_logs_detect_iam_entities_created_without_cloudformation" {
