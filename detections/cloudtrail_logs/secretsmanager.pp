@@ -36,7 +36,7 @@ query "cloudtrail_logs_detect_secrets_manager_secret_access" {
     where
       event_source = 'secretsmanager.amazonaws.com'
       and event_name = 'GetSecretValue'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

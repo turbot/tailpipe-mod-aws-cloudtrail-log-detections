@@ -36,7 +36,7 @@ query "cloudtrail_logs_detect_guardduty_detector_deletion_updates" {
     where
       event_source = 'guardduty.amazonaws.com'
       and event_name = 'DeleteDetector'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

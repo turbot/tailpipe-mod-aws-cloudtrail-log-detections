@@ -48,7 +48,7 @@ query "cloudtrail_logs_detect_waf_web_acl_deletion_updates" {
       aws_cloudtrail_log
     where
       event_name = 'DeleteWebACL'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -62,7 +62,7 @@ query "cloudtrail_logs_detect_waf_disassociation" {
       aws_cloudtrail_log
     where
       event_name = 'DisassociateWebACL'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

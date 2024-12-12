@@ -60,7 +60,7 @@ query "cloudtrail_logs_detect_s3_bucket_deleted" {
       aws_cloudtrail_log
     where
       event_name = 'DeleteBucket'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -74,7 +74,7 @@ query "cloudtrail_logs_detect_s3_bucket_policy_modified" {
       aws_cloudtrail_log
     where
       event_name in ('PutBucketPolicy', 'PutBucketAcl', 'PutBucketCors', 'PutBucketLifecycle', 'PutBucketReplication', 'DeleteBucketPolicy', 'DeleteBucketCors', 'DeleteBucketLifecycle', 'DeleteBucketReplication')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -88,7 +88,8 @@ query "cloudtrail_logs_detect_s3_bucket_policy_public" {
       aws_cloudtrail_log
     where
       event_name = 'PutBucketPolicy'
-      and cast(request_parameters -> 'ipPermissions' as text) like '%"Principal":"*"%'
+      and cast(request_parameters -> 'policy' as text) like '%"Principal":"*"%'
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

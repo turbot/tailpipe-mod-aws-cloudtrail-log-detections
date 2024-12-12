@@ -62,7 +62,7 @@ query "cloudtrail_logs_detect_cloudwatch_log_group_deletion_updates" {
     where
       event_source = 'logs.amazonaws.com'
       and event_name = 'DeleteLogGroup'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -77,7 +77,7 @@ query "cloudtrail_logs_detect_cloudwatch_log_stream_deletion_updates" {
     where
       event_source = 'logs.amazonaws.com'
       and event_name = 'DeleteLogStream'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -92,7 +92,7 @@ query "cloudtrail_logs_detect_cloudwatch_alarm_deletion_updates" {
     where
       event_source = 'monitoring.amazonaws.com'
       and event_name = 'DeleteAlarms'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

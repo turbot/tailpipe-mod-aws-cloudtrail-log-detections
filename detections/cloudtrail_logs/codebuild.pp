@@ -37,7 +37,7 @@ query "cloudtrail_logs_detect_codebuild_project_visibility_updates" {
       event_source = 'codebuild.amazonaws.com'
       and event_name = 'UpdateProjectVisibility'
       and (request_parameters.projectVisibility) = 'PUBLIC_READ'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

@@ -61,7 +61,7 @@ query "cloudtrail_logs_detect_route53_domain_transfered_to_another_account" {
     where
       event_source = 'route53.amazonaws.com'
       and event_name = 'TransferDomainToAnotherAwsAccount'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -76,7 +76,7 @@ query "cloudtrail_logs_detect_route53_domain_transfer_lock_disabled_updates" {
     where
       event_source = 'route53.amazonaws.com'
       and event_name = 'DisableDomainTransferLock'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -91,7 +91,7 @@ query "cloudtrail_logs_detect_route53_associate_vpc_with_hosted_zone" {
     where
       event_source = 'route53.amazonaws.com'
       and event_name = 'AssociateVPCWithHostedZone'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

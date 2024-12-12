@@ -36,7 +36,7 @@ query "cloudtrail_logs_detect_efs_deletion_updates" {
     where
       event_source = 'elasticfilesystem.amazonaws.com'
       and event_name in ('DeleteMountTarget', 'DeleteFileSystem', 'DeleteTags', 'DeleteFile', 'DeleteMountTargetSecurityGroups')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

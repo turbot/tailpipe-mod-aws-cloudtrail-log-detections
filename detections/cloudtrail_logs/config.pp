@@ -49,7 +49,7 @@ query "cloudtrail_logs_detect_config_service_rule_delete" {
     where
       event_source = 'config.amazonaws.com'
       and event_name in ('DeleteConfigRule', 'DeleteOrganizationConfigRule', 'DeleteConfigurationAggregator', 'DeleteConfigurationRecorder', 'DeleteConformancePack', 'DeleteOrganizationConformancePack', 'DeleteDeliveryChannel', 'DeleteRemediationConfiguration', 'DeleteRetentionConfiguration')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -64,7 +64,7 @@ query "cloudtrail_logs_detect_configuration_recorder_stop" {
     where
       event_source = 'config.amazonaws.com'
       and event_name = 'StopConfigurationRecorder'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

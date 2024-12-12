@@ -175,7 +175,7 @@ query "cloudtrail_logs_detect_iam_entities_created_without_cloudformation" {
       event_source = 'iam.amazonaws.com'
       and (user_identity.invoked_by) != 'cloudformation.amazonaws.com'
       and event_name in ('BatchCreateUser', 'CreateGroup', 'CreateInstanceProfile', 'CreatePolicy', 'CreatePolicyVersion', 'CreateRole', 'CreateServiceLinkedRole', 'CreateUser')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -192,7 +192,7 @@ query "cloudtrail_logs_detect_iam_root_console_logins" {
       and event_name = 'ConsoleLogin'
       and (user_identity.type) = 'Root'
       and (response_elements.ConsoleLogin) = 'Success'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -207,7 +207,7 @@ query "cloudtrail_logs_detect_iam_user_login_profile_updates" {
     where
       event_source = 'iam.amazonaws.com'
       and event_name = 'UpdateLoginProfile'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -222,7 +222,7 @@ query "cloudtrail_logs_detect_iam_group_read_only_events" {
       aws_cloudtrail_log
     where
       event_name in ('GetGroup', 'GetGroupPolicy', 'ListAttachedGroupPolicies', 'ListGroupPolicies', 'ListGroups', 'ListGroupsForUser')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -237,7 +237,7 @@ query "cloudtrail_logs_detect_iam_policy_modified" {
       aws_cloudtrail_log
     where
       event_name in ('DeleteGroupPolicy', 'DeleteRolePolicy', 'DeleteUserPolicy', 'PutGroupPolicy', 'PutRolePolicy', 'PutUserPolicy', 'CreatePolicy', 'DeletePolicy', 'CreatePolicyVersion', 'DeletePolicyVersion', 'AttachRolePolicy', 'DetachRolePolicy', 'AttachUserPolicy', 'DetachUserPolicy', 'AttachGroupPolicy', 'DetachGroupPolicy')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -252,7 +252,7 @@ query "cloudtrail_logs_detect_iam_access_key_creation" {
     where
       event_source = 'iam.amazonaws.com'
       and event_name = 'CreateAccessKey'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -267,7 +267,7 @@ query "cloudtrail_logs_detect_iam_access_key_deletion" {
     where
       event_source = 'iam.amazonaws.com'
       and event_name = 'DeleteAccessKey'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -282,7 +282,7 @@ query "cloudtrail_logs_detect_iam_user_password_change" {
     where
       event_source = 'iam.amazonaws.com'
       and event_name = 'ChangePassword'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -298,7 +298,7 @@ query "cloudtrail_logs_detect_user_added_to_admin_group" {
       event_source = 'iam.amazonaws.com'
       and event_name = 'AddUserToGroup'
       and cast(request_parameters ->> 'groupName' as text) ilike '%admin%'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -313,7 +313,7 @@ query "cloudtrail_logs_detect_inline_policy_added" {
     where
       event_source = 'iam.amazonaws.com'
       and event_name = 'PutUserPolicy'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -328,7 +328,7 @@ query "cloudtrail_logs_detect_managed_policy_attachment" {
     where
       event_source = 'iam.amazonaws.com'
       and event_name in ('AttachUserPolicy', 'AttachRolePolicy')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -343,7 +343,7 @@ query "cloudtrail_logs_detect_iam_user_creation" {
     where
       event_source = 'iam.amazonaws.com'
       and event_name = 'CreateUser'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

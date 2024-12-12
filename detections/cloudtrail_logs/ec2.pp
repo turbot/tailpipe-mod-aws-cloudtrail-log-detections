@@ -175,7 +175,7 @@ query "cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('AuthorizeSecurityGroupEgress', 'AuthorizeSecurityGroupIngress', 'RevokeSecurityGroupEgress', 'RevokeSecurityGroupIngress')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -190,7 +190,7 @@ query "cloudtrail_logs_detect_ec2_gateway_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('DeleteCustomerGateway', 'AttachInternetGateway', 'DeleteInternetGateway', 'DetachInternetGateway')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -205,7 +205,7 @@ query "cloudtrail_logs_detect_ec2_network_acl_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('DeleteNetworkAcl', 'DeleteNetworkAclEntry', 'ReplaceNetworkAclEntry', 'ReplaceNetworkAclAssociation')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -220,7 +220,7 @@ query "cloudtrail_logs_detect_ec2_full_network_packet_capture_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('CreateTrafficMirrorTarget', 'CreateTrafficMirrorFilter', 'CreateTrafficMirrorSession', 'CreateTrafficMirrorFilterRule')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -235,7 +235,7 @@ query "cloudtrail_logs_detect_ec2_snapshot_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('DeleteSnapshot', 'ModifySnapshotAttribute')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -250,7 +250,7 @@ query "cloudtrail_logs_detect_ec2_flow_logs_deletion_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name = 'DeleteFlowLogs'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -265,7 +265,7 @@ query "cloudtrail_logs_detect_ec2_ami_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('CopyFpgaImage', 'CopyImage', 'CreateFpgaImage', 'CreateImage', 'CreateRestoreImageTask', 'CreateStoreImageTask', 'ImportImage')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -280,7 +280,7 @@ query "cloudtrail_logs_detect_stopped_ec2_instances" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name = 'StopInstances'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -296,7 +296,7 @@ query "cloudtrail_logs_detect_ec2_user_data_execution_with_suspicious_commands" 
       event_source = 'ec2.amazonaws.com'
       and event_name = 'RunInstances'
       and CAST(request_parameters ->> 'userData' AS text) ~* '(curl|wget|base64|nc|ncat|bash -i|chmod \+x|/bin/sh|/bin/bash)'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -312,6 +312,7 @@ query "cloudtrail_logs_detect_security_group_ipv4_allow_all" {
       event_source = 'ec2.amazonaws.com'
       and event_name in ('AuthorizeSecurityGroupIngress', 'AuthorizeSecurityGroupEgress')
       and cast(request_parameters -> 'ipPermissions' as text) like '%0.0.0.0/0%'
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -327,6 +328,7 @@ query "cloudtrail_logs_detect_security_group_ipv6_allow_all" {
       event_source = 'ec2.amazonaws.com'
       and event_name in ('AuthorizeSecurityGroupIngress', 'AuthorizeSecurityGroupEgress')
       and cast(request_parameters -> 'ipPermissions' as text) like '%::/0%'
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

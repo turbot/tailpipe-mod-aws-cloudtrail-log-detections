@@ -37,7 +37,7 @@ query "cloudtrail_logs_detect_cloudtrail_trail_updates" {
     where
       event_source = 'cloudtrail.amazonaws.com'
       and event_name in ('DeleteTrail', 'StopLogging', 'UpdateTrail')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

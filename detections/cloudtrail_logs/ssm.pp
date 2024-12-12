@@ -37,7 +37,7 @@ query "cloudtrail_logs_detect_ssm_parameter_store_access" {
       event_source = 'ssm.amazonaws.com'
       and event_name = 'GetParameter'
       and cast(request_parameters ->> 'withDecryption' as text) = 'true'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

@@ -36,7 +36,7 @@ query "cloudtrail_logs_detect_eventbridge_rule_disabled_or_deletion_updates" {
     where
       event_source = 'eventbridge.amazonaws.com'
       and event_name in ('DeleteRule', 'DisableRule')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
