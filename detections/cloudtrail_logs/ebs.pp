@@ -81,7 +81,7 @@ query "cloudtrail_logs_detect_ebs_volume_updates" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('ModifyVolume', 'DetachVolume')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -96,7 +96,7 @@ query "cloudtrail_logs_detect_ebs_volume_deleted" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name = 'DeleteVolume'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -126,7 +126,7 @@ query "cloudtrail_logs_detect_ebs_snapshot_deleted" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('DeleteSnapshot', 'DeleteRecoveryPoint')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

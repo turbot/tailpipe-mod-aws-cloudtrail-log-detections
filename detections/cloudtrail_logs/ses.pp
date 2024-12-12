@@ -42,7 +42,7 @@ query "cloudtrail_logs_detect_ses_unauthorized_email_collections" {
         'DeleteIdentity'
       )
       and (user_identity.type = 'IAMUser' or user_identity.type = 'AssumedRole')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

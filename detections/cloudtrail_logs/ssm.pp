@@ -78,7 +78,7 @@ query "cloudtrail_logs_detect_ssm_unauthorized_data_access_from_local_systems" {
       event_source = 'ssm.amazonaws.com'
       and event_name in ('SendCommand', 'GetCommandInvocation')
       and cast(request_parameters ->> 'documentName' as text) = 'AWS-RunShellScript'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -94,7 +94,7 @@ query "cloudtrail_logs_detect_ssm_unauthorized_input_captures" {
       event_source = 'ssm.amazonaws.com'
       and event_name = 'StartSession'
       and request_parameters.documentName = 'AWS-StartPortForwardingSession'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -125,7 +125,7 @@ query "cloudtrail_logs_detect_ssm_run_command" {
     where
       event_source = 'ssm.amazonaws.com'
       and event_name = 'SendCommand'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

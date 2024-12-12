@@ -5,6 +5,7 @@ locals {
   cloudtrail_logs_detect_s3_bucket_policy_public_sql_columns   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
   cloudtrail_logs_detect_s3_tool_uploads_sql_columns           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
   cloudtrail_logs_detect_s3_data_archiving_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
+  cloudtrail_logs_detect_s3_large_file_downloads_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
 }
 
 benchmark "cloudtrail_logs_s3_detections" {
@@ -16,6 +17,7 @@ benchmark "cloudtrail_logs_s3_detections" {
     detection.cloudtrail_logs_detect_s3_bucket_policy_modified,
     detection.cloudtrail_logs_detect_s3_tool_uploads,
     detection.cloudtrail_logs_detect_s3_data_archiving,
+    detection.cloudtrail_logs_detect_s3_large_file_downloads
   ]
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
@@ -92,6 +94,18 @@ detection "cloudtrail_logs_detect_s3_data_archiving" {
   })
 }
 
+detection "cloudtrail_logs_detect_s3_large_file_downloads" {
+  title       = "Detect Large Data Transfers"
+  description = "Detect unusually large data transfers indicative of exfiltration."
+  severity    = "critical"
+  # documentation = file("./detections/docs/cloudtrail_logs_detect_s3_large_file_downloads.md")
+  query       = query.cloudtrail_logs_detect_s3_large_file_downloads
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0010:T1530"
+  })
+}
+
 query "cloudtrail_logs_detect_s3_data_archiving" {
   sql = <<-EOQ
     select
@@ -144,7 +158,7 @@ query "cloudtrail_logs_detect_s3_object_deleted" {
       aws_cloudtrail_log
     where
       event_name = 'DeleteObject'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -173,6 +187,22 @@ query "cloudtrail_logs_detect_s3_bucket_policy_public" {
     where
       event_name = 'PutBucketPolicy'
       and cast(request_parameters -> 'policy' as text) like '%"Principal":"*"%'
+      ${local.cloudtrail_log_detections_where_conditions}
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_s3_large_file_downloads" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_s3_large_file_downloads_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 's3.amazonaws.com'
+      and event_name = 'GetObject'
+      and cast(request_parameters->>'size' as integer) > 104857600 -- Size greater than 100MB
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;

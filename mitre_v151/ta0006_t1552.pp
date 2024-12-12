@@ -38,7 +38,6 @@ benchmark "mitre_v151_ta0006_t1552_007" {
   children = [
     detection.cloudtrail_logs_detect_secrets_manager_secret_access,
     detection.cloudtrail_logs_detect_ssm_parameter_store_access
-
   ]
 
   tags = merge(local.mitre_v151_ta0006_t1552_common_tags, {

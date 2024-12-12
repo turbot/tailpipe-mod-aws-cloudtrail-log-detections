@@ -180,7 +180,7 @@ query "cloudtrail_logs_detect_ec2_instance_updates" {
       event_source = 'ec2.amazonaws.com'
       and event_name in ('ModifyInstanceAttribute', 'ResetImageAttribute')
       and request_parameters.attribute in ('sourceDestCheck', 'instanceInitiatedShutdownBehavior', 'launchPermission')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

@@ -206,7 +206,7 @@ query "cloudtrail_logs_detect_iam_group_policy_updates" {
     where
       event_source = 'iam.amazonaws.com'
       and event_name in ('PutGroupPolicy', 'AttachGroupPolicy')
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -221,7 +221,7 @@ query "cloudtrail_logs_detect_iam_role_policy_updates" {
     where
       event_source = 'iam.amazonaws.com'
       and event_name = 'PutRolePolicy'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -236,7 +236,7 @@ query "cloudtrail_logs_detect_iam_user_policy_updates" {
     where
       event_source = 'iam.amazonaws.com'
       and event_name = 'PutUserPolicy'
-      and error_code is null
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
