@@ -14,3 +14,4 @@ benchmark "mitre_v151_ta0001_t1190" {
 
   tags = local.mitre_v151_ta0001_t1190_common_tags
 }
+ 

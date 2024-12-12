@@ -18,7 +18,9 @@ locals {
   cloudtrail_logs_detect_ec2_snapshot_updates_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.snapshotId")
 
   cloudtrail_logs_detect_ec2_ami_updates_sql_columns                        = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
-  cloudtrail_logs_detect_ec2_user_data_execution_with_suspicious_commands_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.userData")
+  cloudtrail_logs_detect_ec2_user_data_execution_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.userData")
+  cloudtrail_logs_detect_security_group_allow_all_sql_columns                = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.groupId")
+  cloudtrail_logs_detect_ec2_instance_updates_sql_columns                  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.instancesSet.items")
   cloudtrail_logs_detect_security_group_ipv4_allow_all_sql_columns                = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.groupId")
   cloudtrail_logs_detect_security_group_ipv6_allow_all_sql_columns                = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.groupId")
 }
@@ -36,6 +38,7 @@ benchmark "cloudtrail_logs_ec2_detections" {
     detection.cloudtrail_logs_detect_ec2_ami_updates,
     detection.cloudtrail_logs_detect_ec2_network_acl_updates,
     detection.cloudtrail_logs_detect_stopped_ec2_instances,
+    detection.cloudtrail_logs_detect_ec2_instance_updates,
     detection.cloudtrail_logs_detect_security_group_ipv6_allow_all
   ]
 
@@ -133,17 +136,6 @@ detection "cloudtrail_logs_detect_ec2_ami_updates" {
   })
 }
 
-detection "cloudtrail_logs_detect_ec2_user_data_execution_with_suspicious_commands" {
-  title       = "Detect EC2 Instances User Data Executions with Suspicious Commands"
-  description = "Detect executions of user data scripts during EC2 instances launch with suspicious commands."
-  severity    = "high"
-  query       = query.cloudtrail_logs_detect_ec2_user_data_execution_with_suspicious_commands
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = "TA0002:T1204"
-  })
-}
-
 detection "cloudtrail_logs_detect_security_group_ipv4_allow_all" {
   title       = "Detect Security Groups Rule Modifications to Allow All Traffic to IPv4"
   description = "Detect when security group rules are modified to allow all traffic to IPv4."
@@ -164,6 +156,34 @@ detection "cloudtrail_logs_detect_security_group_ipv6_allow_all" {
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0005:T1070"
   })
+}
+
+detection "cloudtrail_logs_detect_ec2_instance_updates" {
+  title       = "Detect Firmware Corruption"
+  description = "Detect attempts to alter EC2 instance metadata or AMI configurations."
+  severity    = "high"
+  # documentation = file("./detections/docs/cloudtrail_logs_detect_ec2_instance_updates.md")
+  query       = query.cloudtrail_logs_detect_ec2_instance_updates
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0040:T1495"
+  })
+}
+
+query "cloudtrail_logs_detect_ec2_instance_updates" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_ec2_instance_updates_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'ec2.amazonaws.com'
+      and event_name in ('ModifyInstanceAttribute', 'ResetImageAttribute')
+      and request_parameters.attribute in ('sourceDestCheck', 'instanceInitiatedShutdownBehavior', 'launchPermission')
+      and error_code is null
+    order by
+      event_time desc;
+  EOQ
 }
 
 query "cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates" {
@@ -280,22 +300,6 @@ query "cloudtrail_logs_detect_stopped_ec2_instances" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name = 'StopInstances'
-      ${local.cloudtrail_log_detections_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "cloudtrail_logs_detect_ec2_user_data_execution_with_suspicious_commands" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_ec2_user_data_execution_with_suspicious_commands_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'ec2.amazonaws.com'
-      and event_name = 'RunInstances'
-      and CAST(request_parameters ->> 'userData' AS text) ~* '(curl|wget|base64|nc|ncat|bash -i|chmod \+x|/bin/sh|/bin/bash)'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
