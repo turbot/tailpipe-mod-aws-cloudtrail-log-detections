@@ -7,7 +7,7 @@ locals {
 benchmark "mitre_v151_ta0040" {
   title         = "TA0040 Impact"
   type          = "detection"
-  # documentation = file("./mitre_v151/docs/ta0040.md")
+  documentation = file("./mitre_v151/docs/ta0040.md")
   children = [
     benchmark.mitre_v151_ta0040_t1484_001,
     benchmark.mitre_v151_ta0040_t1484_002,

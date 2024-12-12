@@ -2,8 +2,6 @@ locals {
   mitre_v151_ta0009_t1005_common_tags = merge(local.mitre_v151_ta0009_common_tags, {
     mitre_technique_id = "T1005"
   })
-
-
 }
 
 benchmark "mitre_v151_ta0009_t1005" {

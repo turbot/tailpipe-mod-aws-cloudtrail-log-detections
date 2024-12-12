@@ -7,7 +7,7 @@ locals {
 benchmark "mitre_v151_ta0010" {
   title         = "TA0010 Exfiltration"
   type          = "detection"
-  # documentation = file("./mitre_v151/docs/ta0010.md")
+  documentation = file("./mitre_v151/docs/ta0010.md")
   children = [
     benchmark.mitre_v151_ta0010_t1029,
     benchmark.mitre_v151_ta0010_t1048,

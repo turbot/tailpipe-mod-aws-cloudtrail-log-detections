@@ -7,7 +7,7 @@ locals {
 benchmark "mitre_v151_ta0040_t1498" {
   title         = "T1498 Network Denial of Service"
   type          = "detection"
-  # documentation = file("./mitre_v151/docs/ta0040_t1498.md")
+  documentation = file("./mitre_v151/docs/ta0040_t1498.md")
   children = [
     detection.cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates
   ]

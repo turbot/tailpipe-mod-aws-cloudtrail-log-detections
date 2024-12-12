@@ -116,6 +116,7 @@ query "cloudtrail_logs_detect_s3_data_archiving" {
       event_source = 's3.amazonaws.com'
       and event_name = 'PutObject'
       and request_parameters.key like '%.zip%'
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -131,6 +132,7 @@ query "cloudtrail_logs_detect_s3_tool_uploads" {
       event_source = 's3.amazonaws.com'
       and event_name in ('PutObject', 'CopyObject')
       and request_parameters.key like '%.exe%'
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ

@@ -143,6 +143,7 @@ query "cloudtrail_logs_detect_rds_db_instance_disable_iam_authentication_updates
       event_source = 'rds.amazonaws.com'
       and event_name = 'ModifyDBInstance'
       and request_parameters.enableIAMDatabaseAuthentication = 'false'
+      ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -216,7 +217,7 @@ query "cloudtrail_logs_detect_rds_publicrestore" {
     where
       event_source = 'rds.amazonaws.com'
       and event_name = 'RestoreDBInstanceFromDBSnapshot'
-      and CAST(response_elements ->> 'publiclyAccessible' AS BOOLEAN) = true
+      and cast(response_elements ->> 'publiclyAccessible' AS BOOLEAN) = true
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
