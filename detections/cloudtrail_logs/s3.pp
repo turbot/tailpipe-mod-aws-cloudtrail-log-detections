@@ -6,6 +6,7 @@ locals {
   cloudtrail_logs_detect_s3_tool_uploads_sql_columns           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
   cloudtrail_logs_detect_s3_data_archiving_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
   cloudtrail_logs_detect_s3_large_file_downloads_sql_columns   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
+  cloudtrail_logs_detect_s3_object_compressed_uploads_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
 }
 
 benchmark "cloudtrail_logs_s3_detections" {
@@ -103,6 +104,18 @@ detection "cloudtrail_logs_detect_s3_large_file_downloads" {
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0010:T1530"
+  })
+}
+
+detection "cloudtrail_logs_detect_s3_object_compressed_uploads" {
+  title       = "Detect Data Compression Before Exfiltration"
+  description = "Detect data compression operations in preparation for exfiltration."
+  severity    = "medium"
+  # documentation = file("./detections/docs/cloudtrail_logs_detect_s3_object_compressed_uploads.md")
+  query       = query.cloudtrail_logs_detect_s3_object_compressed_uploads
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0010:T1029"
   })
 }
 
@@ -206,6 +219,22 @@ query "cloudtrail_logs_detect_s3_large_file_downloads" {
       and event_name = 'GetObject'
       and cast(request_parameters->>'size' as integer) > 104857600 -- Size greater than 100MB
       ${local.cloudtrail_log_detections_where_conditions}
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_s3_object_compressed_uploads" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_s3_object_compressed_uploads_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 's3.amazonaws.com'
+      and event_name in ('PutObject', 'UploadPart')
+      and request_parameters.compressionFormat is not null
+      and (user_identity.type = 'IAMUser' or user_identity.type = 'AssumedRole')
     order by
       event_time desc;
   EOQ
