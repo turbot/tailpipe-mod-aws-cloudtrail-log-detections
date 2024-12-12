@@ -19,9 +19,13 @@ benchmark "cloudtrail_log_detections" {
     benchmark.cloudtrail_logs_eventbridge_detections,
     benchmark.cloudtrail_logs_guardduty_detections,
     benchmark.cloudtrail_logs_iam_detections,
+    benchmark.cloudtrail_logs_kms_detections,
     benchmark.cloudtrail_logs_rds_detections,
     benchmark.cloudtrail_logs_route53_detections,
     benchmark.cloudtrail_logs_s3_detections,
+    benchmark.cloudtrail_logs_secretsmanager_detections,
+    benchmark.cloudtrail_logs_ses_detections,
+    benchmark.cloudtrail_logs_ssm_detections,
     benchmark.cloudtrail_logs_vpc_detections,
     benchmark.cloudtrail_logs_waf_detections,
   ]
