@@ -9,6 +9,7 @@ benchmark "cloudtrail_log_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs."
   type        = "detection"
   children = [
+    benchmark.cloudtrail_logs_apigateway_detections,
     benchmark.cloudtrail_logs_cloudtrail_detections,
     benchmark.cloudtrail_logs_cloudwatch_detections,
     benchmark.cloudtrail_logs_codebuild_detections,
@@ -23,7 +24,6 @@ benchmark "cloudtrail_log_detections" {
     benchmark.cloudtrail_logs_rds_detections,
     benchmark.cloudtrail_logs_route53_detections,
     benchmark.cloudtrail_logs_s3_detections,
-    benchmark.cloudtrail_logs_secretsmanager_detections,
     benchmark.cloudtrail_logs_ses_detections,
     benchmark.cloudtrail_logs_ssm_detections,
     benchmark.cloudtrail_logs_vpc_detections,

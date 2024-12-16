@@ -14,6 +14,7 @@ locals {
   cloudtrail_logs_detect_iam_user_policy_updates_sql_columns                     = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
   cloudtrail_logs_detect_iam_group_policy_updates_sql_columns                    = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
   cloudtrail_logs_detect_iam_user_creation_sql_columns                           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.userName")
+  cloudtrail_logs_detect_iam_user_login_profile_creation_sql_columns             = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.userName")
 }
 
 benchmark "cloudtrail_logs_iam_detections" {
@@ -30,7 +31,8 @@ benchmark "cloudtrail_logs_iam_detections" {
     detection.cloudtrail_logs_detect_iam_role_policy_updates,
     detection.cloudtrail_logs_detect_iam_user_policy_updates,
     detection.cloudtrail_logs_detect_iam_group_policy_updates,
-    detection.cloudtrail_logs_detect_iam_user_creation
+    detection.cloudtrail_logs_detect_iam_user_creation,
+    detection.cloudtrail_logs_detect_iam_user_login_profile_creation,
   ]
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
@@ -194,6 +196,17 @@ detection "cloudtrail_logs_detect_iam_group_policy_updates" {
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0040:T1484.002"
+  })
+}
+
+detection "cloudtrail_logs_detect_iam_user_login_profile_creation" {
+  title       = "Detect IAM User Login Profile Creation"
+  description = "Detect when a login profile is created for an IAM user, enabling console access and potential persistence."
+  severity    = "medium"
+  query       = query.cloudtrail_logs_detect_iam_user_login_profile_creation
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0003:T1078"
   })
 }
 
@@ -431,6 +444,21 @@ query "cloudtrail_logs_detect_iam_user_creation" {
     where
       event_source = 'iam.amazonaws.com'
       and event_name = 'CreateUser'
+      ${local.cloudtrail_log_detections_where_conditions}
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_iam_user_login_profile_creation" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_iam_user_login_profile_creation_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'iam.amazonaws.com'
+      and event_name = 'CreateLoginProfile'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;

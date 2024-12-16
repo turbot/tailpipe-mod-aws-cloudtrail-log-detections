@@ -9,7 +9,6 @@ benchmark "cloudtrail_logs_ssm_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail's SSM logs."
   type        = "detection"
   children    = [
-    detection.cloudtrail_logs_detect_secrets_manager_secret_access,
     detection.cloudtrail_logs_detect_ssm_run_command,
     detection.cloudtrail_logs_detect_ssm_unauthorized_input_captures,
     detection.cloudtrail_logs_detect_ssm_unauthorized_data_access_from_local_systems
