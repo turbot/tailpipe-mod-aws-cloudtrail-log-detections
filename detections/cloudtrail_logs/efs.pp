@@ -20,6 +20,7 @@ detection "cloudtrail_logs_detect_efs_deletion_updates" {
   title       = "Detect EFS Files Deletion Updates"
   description = "Detect EFS files deletion events to monitor for unauthorized changes or potential disruptions. This includes tracking the deletion of file systems, mount targets, and related resources to ensure any unexpected activity is identified and addressed promptly."
   severity    = "medium"
+  documentation = file("./detections/docs/cloudtrail_logs_detect_efs_deletion_updates.md")
   query       = query.cloudtrail_logs_detect_efs_deletion_updates
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
