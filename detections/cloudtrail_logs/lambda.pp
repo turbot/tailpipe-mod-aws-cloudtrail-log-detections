@@ -7,7 +7,7 @@ benchmark "cloudtrail_logs_lambda_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail's Lambda logs"
   type        = "detection"
   children    = [
-    detection.cloudtrail_logs_detect_efs_deletion_updates,
+    detection.cloudtrail_logs_detect_lambda_funtion_public_permission_added,
   ]
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
@@ -35,7 +35,7 @@ query "cloudtrail_logs_detect_lambda_funtion_public_permission_added" {
       aws_cloudtrail_log
     where
       event_source = 'lambda.amazonaws.com'
-      and event_name like 'AddPermission%
+      and event_name like 'AddPermission%'
       and (request_parameters ->> 'principal') = '*'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
