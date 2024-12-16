@@ -4,12 +4,13 @@ locals {
   })
 }
 
-benchmark "cloudtrail_log_detections" {
-  title       = "CloudTrail Log Detections"
+benchmark "cloudtrail_logs_detections" {
+  title       = "CloudTrail Logs Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs."
   type        = "detection"
   children = [
     benchmark.cloudtrail_logs_apigateway_detections,
+    benchmark.cloudtrail_logs_cloudfront_detections,
     benchmark.cloudtrail_logs_cloudtrail_detections,
     benchmark.cloudtrail_logs_cloudwatch_detections,
     benchmark.cloudtrail_logs_codebuild_detections,
@@ -21,6 +22,7 @@ benchmark "cloudtrail_log_detections" {
     benchmark.cloudtrail_logs_guardduty_detections,
     benchmark.cloudtrail_logs_iam_detections,
     benchmark.cloudtrail_logs_kms_detections,
+    benchmark.cloudtrail_logs_lambda_detections,
     benchmark.cloudtrail_logs_rds_detections,
     benchmark.cloudtrail_logs_route53_detections,
     benchmark.cloudtrail_logs_s3_detections,

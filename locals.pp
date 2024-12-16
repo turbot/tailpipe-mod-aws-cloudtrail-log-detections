@@ -23,7 +23,7 @@ locals {
   EOQ
 
   // Keep same order as SQL statement for easier readability
-  cloudtrail_log_detection_default_columns = [
+  cloudtrail_log_detection_display_columns = [
     "timestamp",
     "operation",
     "resource",
@@ -33,6 +33,10 @@ locals {
     "region",
     "source_id"
   ]
+
+  cloudtrail_log_detections_where_conditions = <<-EOQ
+  and error_code is null
+  EOQ
 
   elb_access_log_detection_sql_columns = <<-EOQ
   tp_timestamp as timestamp,
@@ -68,9 +72,5 @@ locals {
   'us-east-1' as region, -- TODO: Use tp_location when available
   tp_id as source_id,
   *
-  EOQ
-
-  cloudtrail_log_detections_where_conditions = <<-EOQ
-    and error_code is null
   EOQ
 }

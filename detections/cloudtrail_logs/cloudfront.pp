@@ -3,8 +3,8 @@ locals {
 }
 
 benchmark "cloudtrail_logs_cloudfront_detections" {
-  title       = "CloudTrail Log Cloudfront Detections"
-  description = "This benchmark contains recommendations when scanning CloudTrail's Cloudfront logs"
+  title       = "CloudTrail Log CloudFront Detections"
+  description = "This benchmark contains recommendations when scanning CloudTrail's CloudFront logs"
   type        = "detection"
   children    = [
     detection.cloudtrail_logs_detect_cloudfront_distribution_updates
@@ -12,7 +12,7 @@ benchmark "cloudtrail_logs_cloudfront_detections" {
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     type    = "Benchmark"
-    service = "AWS/Cloudfront"
+    service = "AWS/CloudFront"
   })
 }
 
