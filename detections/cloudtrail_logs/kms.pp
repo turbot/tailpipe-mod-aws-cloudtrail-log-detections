@@ -1,36 +1,39 @@
 locals {
-  cloudtrail_logs_detect_kms_key_deletion_sql_columns    = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.keyId")
+  cloudtrail_log_detection_kms_common_tags = merge(local.cloudtrail_log_detection_common_tags, {
+    service = "AWS/KMS"
+  })
+
+  cloudtrail_logs_detect_kms_key_deletions_sql_columns    = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.keyId")
 }
 
 benchmark "cloudtrail_logs_kms_detections" {
-  title       = "CloudTrail Log KMS Detections"
-  description = "This benchmark contains recommendations when scanning CloudTrail's KMS logs."
+  title       = "KMS"
+  description = "This benchmark contains recommendations when scanning CloudTrail logs for KMS events."
   type        = "detection"
   children    = [
-    detection.cloudtrail_logs_detect_kms_key_deletion,
+    detection.cloudtrail_logs_detect_kms_key_deletions,
   ]
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_kms_common_tags, {
     type    = "Benchmark"
-    service = "AWS/KMS"
   })
 }
 
-detection "cloudtrail_logs_detect_kms_key_deletion" {
+detection "cloudtrail_logs_detect_kms_key_deletions" {
   title       = "Detect AWS KMS Keys Deletion"
   description = "Detect when a KMS key is scheduled for deletion."
   severity    = "high"
-  query       = query.cloudtrail_logs_detect_kms_key_deletion
+  query       = query.cloudtrail_logs_detect_kms_key_deletions
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_kms_common_tags, {
     mitre_attack_ids = "TA0005:T1070"
   })
 }
 
-query "cloudtrail_logs_detect_kms_key_deletion" {
+query "cloudtrail_logs_detect_kms_key_deletions" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_kms_key_deletion_sql_columns}
+      ${local.cloudtrail_logs_detect_kms_key_deletions_sql_columns}
     from
       aws_cloudtrail_log
     where

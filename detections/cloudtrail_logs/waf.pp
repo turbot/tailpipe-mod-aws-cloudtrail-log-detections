@@ -40,7 +40,7 @@ detection "cloudtrail_logs_detect_waf_web_acl_disassociations" {
   display_columns = local.cloudtrail_log_detection_display_columns
   query           = query.cloudtrail_logs_detect_waf_web_acl_disassociations
 
-  tags = merge(local.cloudtrail_log_detection_waf_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0004:T1498"
   })
 }
