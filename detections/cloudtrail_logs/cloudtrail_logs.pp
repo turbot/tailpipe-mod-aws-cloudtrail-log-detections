@@ -9,8 +9,8 @@ benchmark "cloudtrail_log_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs."
   type        = "detection"
   children = [
-    benchmark.cloudtrail_log_detections_lambda,
-    benchmark.cloudtrail_log_detections_waf,
+    benchmark.cloudtrail_logs_detections_lambda,
+    benchmark.cloudtrail_logs_waf_detections,
     benchmark.cloudtrail_logs_apigateway_detections,
     benchmark.cloudtrail_logs_cloudfront_detections,
     benchmark.cloudtrail_logs_cloudtrail_detections,

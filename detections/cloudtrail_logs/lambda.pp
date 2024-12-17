@@ -6,7 +6,7 @@ locals {
   cloudtrail_logs_detect_public_access_granted_to_lambda_functions_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.functionName")
 }
 
-benchmark "cloudtrail_log_detections_lambda" {
+benchmark "cloudtrail_logs_detections_lambda" {
   title       = "Lambda Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs for Lambda events."
   type        = "detection"

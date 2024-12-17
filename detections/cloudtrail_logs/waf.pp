@@ -7,7 +7,7 @@ locals {
   cloudtrail_logs_detect_waf_web_acl_disassociations_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.resourceArn")
 }
 
-benchmark "cloudtrail_log_detections_waf" {
+benchmark "cloudtrail_logs_waf_detections" {
   title       = "WAF Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs for WAF events."
   type        = "detection"
