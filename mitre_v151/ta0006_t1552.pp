@@ -20,8 +20,8 @@ benchmark "mitre_v151_ta0006_t1552_004" {
   type          = "detection"
   documentation = file("./mitre_v151/docs/ta0006_t1552_004.md")
   children = [
-    detection.cloudtrail_logs_detect_iam_access_key_creations,
-    detection.cloudtrail_logs_detect_iam_access_key_deletions,
+    detection.cloudtrail_logs_detect_iam_access_keys_creations,
+    detection.cloudtrail_logs_detect_iam_access_keys_deletions,
     detection.cloudtrail_logs_detect_iam_user_login_profile_creations,
   ]
 

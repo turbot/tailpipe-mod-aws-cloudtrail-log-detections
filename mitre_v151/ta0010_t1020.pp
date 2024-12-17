@@ -9,7 +9,7 @@ benchmark "mitre_v151_ta0010_t1020" {
   type          = "detection"
   documentation = file("./mitre_v151/docs/ta0010_t1020.md")
   children = [
-    detection.cloudtrail_logs_detect_rds_db_instance_public_restores
+    detection.cloudtrail_logs_detect_rds_db_instances_public_restore
   ]
 
   tags = local.mitre_v151_ta0010_t1020_common_tags

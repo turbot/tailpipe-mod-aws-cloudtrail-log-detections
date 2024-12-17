@@ -3,7 +3,7 @@ locals {
     service = "AWS/GuardDuty"
   })
 
-  cloudtrail_logs_detect_guardduty_detector_deletions_sql_columns    = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.detectorId")
+  cloudtrail_logs_detect_guardduty_detector_deletions_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.detectorId")
 }
 
 benchmark "cloudtrail_logs_guardduty_detections" {
@@ -20,8 +20,8 @@ benchmark "cloudtrail_logs_guardduty_detections" {
 }
 
 detection "cloudtrail_logs_detect_guardduty_detector_deletions" {
-  title       = "Detect GuardDuty Detectors Deletion Updates"
-  description = "Detect GuardDuty detectors deletion updates to check for unauthorized changes."
+  title       = "Detect GuardDuty Detector Deletios"
+  description = "Detect when GuardDuty detectors are deleted. Deleting GuardDuty detectors disables threat detection capabilities, which can allow malicious activities to go undetected and impair your ability to respond to security incidents."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_guardduty_detector_deletions
 

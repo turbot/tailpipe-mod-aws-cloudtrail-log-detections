@@ -9,8 +9,8 @@ benchmark "mitre_v151_ta0040_t1484_001" {
   type          = "detection"
   documentation = file("./mitre_v151/docs/ta0040_t1484_001.md")
   children = [
-    detection.cloudtrail_logs_detect_iam_role_policy_updates,
-    detection.cloudtrail_logs_detect_iam_user_policy_updates
+    detection.cloudtrail_logs_detect_iam_role_policies_modifications,
+    detection.cloudtrail_logs_detect_iam_user_policies_modifications
   ]
 
   tags = local.mitre_v151_ta0040_t1484_001_common_tags

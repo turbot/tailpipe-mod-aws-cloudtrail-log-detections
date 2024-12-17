@@ -9,7 +9,7 @@ benchmark "mitre_v151_ta0006_t1110" {
   type          = "detection"
   documentation = file("./mitre_v151/docs/ta0006_t1110.md")
   children = [
-    detection.cloudtrail_logs_detect_iam_user_password_changes
+    detection.cloudtrail_logs_detect_iam_users_with_password_change
   ]
 
   tags = local.mitre_v151_ta0006_t1110_common_tags

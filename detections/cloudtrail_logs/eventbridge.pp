@@ -3,8 +3,8 @@ locals {
     service = "AWS/EventBridge"
   })
 
-  cloudtrail_logs_detect_disabled_eventbridge_rules_sql_columns      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
-  cloudtrail_logs_detect_eventbridge_rule_deletions_sql_columns      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
+  cloudtrail_logs_detect_disabled_eventbridge_rules_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
+  cloudtrail_logs_detect_eventbridge_rule_deletions_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
 }
 
 benchmark "cloudtrail_logs_eventbridge_detections" {
@@ -22,8 +22,8 @@ benchmark "cloudtrail_logs_eventbridge_detections" {
 }
 
 detection "cloudtrail_logs_detect_disabled_eventbridge_rules" {
-  title       = "Detect EventBridge Rules Disabled"
-  description = "Detect EventBridge rules disabled updates to check for unauthorized changes."
+  title       = "Detect Disabled EventBridge Rules"
+  description = "Detect when EventBridge rules are disabled. Disabling EventBridge rules can disrupt automated workflows, scheduled tasks, and alerting mechanisms, potentially preventing the detection or mitigation of malicious activities."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_disabled_eventbridge_rules
 
@@ -33,8 +33,8 @@ detection "cloudtrail_logs_detect_disabled_eventbridge_rules" {
 }
 
 detection "cloudtrail_logs_detect_eventbridge_rule_deletions" {
-  title       = "Detect EventBridge Rules Deletion"
-  description = "Detect EventBridge rules deletion updates to check for unauthorized changes."
+  title       = "Detect EventBridge Rule Deletion"
+  description = "Detect when EventBridge rules are deleted. Deleting EventBridge rules can disrupt critical automation and monitoring workflows, potentially allowing malicious activities to go undetected or unmitigated."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_eventbridge_rule_deletions
 

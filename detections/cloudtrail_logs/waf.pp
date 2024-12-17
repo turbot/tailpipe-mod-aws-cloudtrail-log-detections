@@ -3,7 +3,7 @@ locals {
     service = "AWS/WAF"
   })
 
-  cloudtrail_logs_detect_waf_web_acl_deletions_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.id")
+  cloudtrail_logs_detect_waf_web_acl_deletions_sql_columns       = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.id")
   cloudtrail_logs_detect_waf_web_acl_disassociations_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.resourceArn")
 }
 
@@ -22,7 +22,7 @@ benchmark "cloudtrail_log_detections_waf" {
 }
 
 detection "cloudtrail_logs_detect_waf_web_acl_deletions" {
-  title           = "Detect WAF Web ACLs Deletions"
+  title           = "Detect WAF Web ACL Deletions"
   description     = "Detect when a WAF web ACL is deleted to check for potential disruptions to web application protections, which could expose applications to malicious traffic or DDoS attacks."
   severity        = "medium"
   display_columns = local.cloudtrail_log_detection_display_columns

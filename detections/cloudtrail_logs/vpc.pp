@@ -2,15 +2,13 @@ locals {
   cloudtrail_log_detection_vpc_common_tags = merge(local.cloudtrail_log_detection_common_tags, {
     service = "AWS/VPC"
   })
-  cloudtrail_logs_detect_vpc_updates_sql_columns                                  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.vpcId")
-
 
   cloudtrail_logs_detect_vpc_deletions_sql_columns                         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.vpcId")
-  cloudtrail_logs_detect_vpcs_with_classic_link_enabled_sql_columns              = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.vpcId")
-  cloudtrail_logs_detect_vpc_peering_connection_deletions_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.vpcId")
-  cloudtrail_logs_detect_vpc_route_table_updates_sql_columns               = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.routeTableId")
-  cloudtrail_logs_detect_vpc_route_table_deletions_sql_columns             = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.routeTableId")
-  cloudtrail_logs_detect_vpc_route_table_route_deletions_sql_columns       = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.routeTableId")
+  cloudtrail_logs_detect_vpcs_with_classic_link_enabled_sql_columns        = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.vpcId")
+  cloudtrail_logs_detect_vpc_peering_connection_deletions_sql_columns       = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.vpcId")
+  cloudtrail_logs_detect_vpc_route_table_updates_sql_columns                = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.routeTableId")
+  cloudtrail_logs_detect_vpc_route_table_deletions_sql_columns              = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.routeTableId")
+  cloudtrail_logs_detect_vpc_route_table_route_deletions_sql_columns        = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.routeTableId")
   cloudtrail_logs_detect_vpc_route_table_route_disassociations_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.routeTableId")
   cloudtrail_logs_detect_vpc_route_table_replace_associations_sql_columns   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.routeTableId")
 }

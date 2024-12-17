@@ -2,9 +2,9 @@ locals {
   cloudtrail_logs_detect_s3_bucket_deletions_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
   cloudtrail_logs_detect_s3_object_deletions_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
   cloudtrail_logs_detect_s3_bucket_policy_modifications_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
-  cloudtrail_logs_detect_public_policy_added_to_s3_buckets_sql_columns   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
+  cloudtrail_logs_detect_public_access_granted_to_s3_buckets_sql_columns   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
   cloudtrail_logs_detect_s3_tool_uploads_sql_columns           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
-  cloudtrail_logs_detect_s3_data_archives_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
+  cloudtrail_logs_detect_s3_data_archiving_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
   cloudtrail_logs_detect_s3_large_file_downloads_sql_columns   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
   cloudtrail_logs_detect_s3_object_compressed_uploads_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
 }
@@ -17,10 +17,10 @@ benchmark "cloudtrail_logs_s3_detections" {
     detection.cloudtrail_logs_detect_s3_bucket_deletions,
     detection.cloudtrail_logs_detect_s3_bucket_policy_modifications,
     detection.cloudtrail_logs_detect_s3_tool_uploads,
-    detection.cloudtrail_logs_detect_s3_data_archives,
+    detection.cloudtrail_logs_detect_s3_data_archiving,
     detection.cloudtrail_logs_detect_s3_large_file_downloads,
     detection.cloudtrail_logs_detect_s3_object_deletions,
-    detection.cloudtrail_logs_detect_public_policy_added_to_s3_buckets,
+    detection.cloudtrail_logs_detect_public_access_granted_to_s3_buckets,
     detection.cloudtrail_logs_detect_s3_object_compressed_uploads,
   ]
 
@@ -32,7 +32,7 @@ benchmark "cloudtrail_logs_s3_detections" {
 
 detection "cloudtrail_logs_detect_s3_bucket_deletions" {
   title       = "Detect S3 Bucket Deletions"
-  description = "Detect when an S3 Bucket is deleted."
+  description = "Detect when an S3 bucket is deleted. Deleting an S3 bucket can lead to data loss, disrupt services relying on stored data, and may indicate malicious activity aimed at destroying critical information or disrupting operations."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_s3_bucket_deletions
 
@@ -43,7 +43,7 @@ detection "cloudtrail_logs_detect_s3_bucket_deletions" {
 
 detection "cloudtrail_logs_detect_s3_object_deletions" {
   title       = "Detect S3 Object Deletions"
-  description = "Detect when S3 Object, is deleted."
+  description = "Detect when an S3 object is deleted. Unauthorized deletions can lead to data loss, disrupt workflows relying on the object, and may indicate malicious activity aimed at destroying evidence or compromising business operations."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_s3_object_deletions
 
@@ -54,7 +54,7 @@ detection "cloudtrail_logs_detect_s3_object_deletions" {
 
 detection "cloudtrail_logs_detect_s3_bucket_policy_modifications" {
   title       = "Detect S3 Buckets Policy Modifications"
-  description = "Detect when S3 buckets policy, is modified."
+  description = "Detect when an S3 bucket policy is modified. Changes to bucket policies can weaken security controls, potentially exposing data to unauthorized access or enabling data exfiltration."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_s3_bucket_policy_modifications
 
@@ -63,11 +63,11 @@ detection "cloudtrail_logs_detect_s3_bucket_policy_modifications" {
   })
 }
 
-detection "cloudtrail_logs_detect_public_policy_added_to_s3_buckets" {
-  title       = "Detect S3 Buckets Policy Change to Allow Public Access"
-  description = "Detect when S3 buckets policy is modified to allow public access."
+detection "cloudtrail_logs_detect_public_access_granted_to_s3_buckets" {
+  title       = "Detect Public Access Granted to S3 Buckets"
+  description = "Detect when an S3 bucket policy is modified to allow public access. Granting public access can expose sensitive data to unauthorized users, increasing the risk of data breaches, data exfiltration, or malicious exploitation."
   severity    = "high"
-  query       = query.cloudtrail_logs_detect_public_policy_added_to_s3_buckets
+  query       = query.cloudtrail_logs_detect_public_access_granted_to_s3_buckets
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0005:T1070"
@@ -75,8 +75,8 @@ detection "cloudtrail_logs_detect_public_policy_added_to_s3_buckets" {
 }
 
 detection "cloudtrail_logs_detect_s3_tool_uploads" {
-  title       = "Detect S3 Lateral Tool Transfer"
-  description = "Detect transfer of malicious tools or binaries between resources."
+  title       = "Detect S3 Tool Uploads"
+  description = "Detect the upload of tools or binaries to S3 that may be used for lateral movement or malicious activity. Transferring malicious tools between resources via S3 can indicate preparation for further exploitation, persistence, or escalation within the environment."
   severity    = "medium"
   # documentation = file("./detections/docs/cloudtrail_logs_detect_s3_tool_uploads.md")
   query       = query.cloudtrail_logs_detect_s3_tool_uploads
@@ -86,12 +86,12 @@ detection "cloudtrail_logs_detect_s3_tool_uploads" {
   })
 }
 
-detection "cloudtrail_logs_detect_s3_data_archives" {
-  title       = "Detect S3 Data Archiving for Collection"
-  description = "Detect archiving of collected data using AWS S3 services."
+detection "cloudtrail_logs_detect_s3_data_archiving" {
+  title       = "Detect S3 Data Archiving"
+  description = "Detect when data is archived in S3, which may indicate an attempt to store or package data for later exfiltration. Archiving large amounts of data can be part of a malicious workflow aimed at preparing data for transfer or long-term storage outside of standard security controls."
   severity    = "medium"
-  # documentation = file("./detections/docs/cloudtrail_logs_detect_s3_data_archives.md")
-  query       = query.cloudtrail_logs_detect_s3_data_archives
+  # documentation = file("./detections/docs/cloudtrail_logs_detect_s3_data_archiving.md")
+  query       = query.cloudtrail_logs_detect_s3_data_archiving
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0009:T1560.001"
@@ -99,8 +99,8 @@ detection "cloudtrail_logs_detect_s3_data_archives" {
 }
 
 detection "cloudtrail_logs_detect_s3_large_file_downloads" {
-  title       = "Detect S3 Large Data Transfers"
-  description = "Detect S3 unusually large data transfers indicative of exfiltration."
+  title       = "Detect S3 Large File Downloads"
+  description = "Detect unusually large data downloads from S3 buckets that may indicate potential data exfiltration. Large file downloads can be a sign of malicious activity, such as unauthorized data extraction by an external attacker or insider threat."
   severity    = "critical"
   # documentation = file("./detections/docs/cloudtrail_logs_detect_s3_large_file_downloads.md")
   query       = query.cloudtrail_logs_detect_s3_large_file_downloads
@@ -111,8 +111,8 @@ detection "cloudtrail_logs_detect_s3_large_file_downloads" {
 }
 
 detection "cloudtrail_logs_detect_s3_object_compressed_uploads" {
-  title       = "Detect S3 Data Compression Before Exfiltration"
-  description = "Detect S3 data compression operations in preparation for exfiltration."
+  title       = "Detect S3 Object Compressed Uploads"
+  description = "Detect when S3 objects are compressed before being uploaded or modified. Data compression may indicate preparation for data exfiltration, as attackers often compress data to facilitate faster transfer and minimize detection."
   severity    = "medium"
   # documentation = file("./detections/docs/cloudtrail_logs_detect_s3_object_compressed_uploads.md")
   query       = query.cloudtrail_logs_detect_s3_object_compressed_uploads
@@ -122,10 +122,10 @@ detection "cloudtrail_logs_detect_s3_object_compressed_uploads" {
   })
 }
 
-query "cloudtrail_logs_detect_s3_data_archives" {
+query "cloudtrail_logs_detect_s3_data_archiving" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_s3_data_archives_sql_columns}
+      ${local.cloudtrail_logs_detect_s3_data_archiving_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -196,10 +196,10 @@ query "cloudtrail_logs_detect_s3_bucket_policy_modifications" {
   EOQ
 }
 
-query "cloudtrail_logs_detect_public_policy_added_to_s3_buckets" {
+query "cloudtrail_logs_detect_public_access_granted_to_s3_buckets" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_public_policy_added_to_s3_buckets_sql_columns}
+      ${local.cloudtrail_logs_detect_public_access_granted_to_s3_buckets_sql_columns}
     from
       aws_cloudtrail_log
     where
