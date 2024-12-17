@@ -1,10 +1,10 @@
 locals {
-  cloudtrail_logs_detect_s3_bucket_deleted_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
-  cloudtrail_logs_detect_s3_object_deleted_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
-  cloudtrail_logs_detect_s3_bucket_policy_modified_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
-  cloudtrail_logs_detect_s3_bucket_policy_public_sql_columns   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
+  cloudtrail_logs_detect_s3_bucket_deletions_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
+  cloudtrail_logs_detect_s3_object_deletions_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
+  cloudtrail_logs_detect_s3_bucket_policy_modifications_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
+  cloudtrail_logs_detect_public_policy_added_to_s3_buckets_sql_columns   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
   cloudtrail_logs_detect_s3_tool_uploads_sql_columns           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
-  cloudtrail_logs_detect_s3_data_archiving_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
+  cloudtrail_logs_detect_s3_data_archives_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
   cloudtrail_logs_detect_s3_large_file_downloads_sql_columns   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
   cloudtrail_logs_detect_s3_object_compressed_uploads_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
 }
@@ -14,11 +14,14 @@ benchmark "cloudtrail_logs_s3_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail's S3 logs"
   type        = "detection"
   children    = [
-    detection.cloudtrail_logs_detect_s3_bucket_deleted,
-    detection.cloudtrail_logs_detect_s3_bucket_policy_modified,
+    detection.cloudtrail_logs_detect_s3_bucket_deletions,
+    detection.cloudtrail_logs_detect_s3_bucket_policy_modifications,
     detection.cloudtrail_logs_detect_s3_tool_uploads,
-    detection.cloudtrail_logs_detect_s3_data_archiving,
-    detection.cloudtrail_logs_detect_s3_large_file_downloads
+    detection.cloudtrail_logs_detect_s3_data_archives,
+    detection.cloudtrail_logs_detect_s3_large_file_downloads,
+    detection.cloudtrail_logs_detect_s3_object_deletions,
+    detection.cloudtrail_logs_detect_public_policy_added_to_s3_buckets,
+    detection.cloudtrail_logs_detect_s3_object_compressed_uploads,
   ]
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
@@ -27,44 +30,44 @@ benchmark "cloudtrail_logs_s3_detections" {
   })
 }
 
-detection "cloudtrail_logs_detect_s3_bucket_deleted" {
-  title       = "Detect S3 Bucket Deleted"
+detection "cloudtrail_logs_detect_s3_bucket_deletions" {
+  title       = "Detect S3 Bucket Deletions"
   description = "Detect when an S3 Bucket is deleted."
   severity    = "low"
-  query       = query.cloudtrail_logs_detect_s3_bucket_deleted
+  query       = query.cloudtrail_logs_detect_s3_bucket_deletions
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0040:T1485"
   })
 }
 
-detection "cloudtrail_logs_detect_s3_object_deleted" {
-  title       = "Detect S3 Object Deleted"
+detection "cloudtrail_logs_detect_s3_object_deletions" {
+  title       = "Detect S3 Object Deletions"
   description = "Detect when S3 Object, is deleted."
   severity    = "low"
-  query       = query.cloudtrail_logs_detect_s3_object_deleted
+  query       = query.cloudtrail_logs_detect_s3_object_deletions
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0040:T1485"
   })
 }
 
-detection "cloudtrail_logs_detect_s3_bucket_policy_modified" {
-  title       = "Detect S3 Buckets Policy Modified"
+detection "cloudtrail_logs_detect_s3_bucket_policy_modifications" {
+  title       = "Detect S3 Buckets Policy Modifications"
   description = "Detect when S3 buckets policy, is modified."
   severity    = "low"
-  query       = query.cloudtrail_logs_detect_s3_bucket_policy_modified
+  query       = query.cloudtrail_logs_detect_s3_bucket_policy_modifications
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0010:T1567"
   })
 }
 
-detection "cloudtrail_logs_detect_s3_bucket_policy_public" {
+detection "cloudtrail_logs_detect_public_policy_added_to_s3_buckets" {
   title       = "Detect S3 Buckets Policy Change to Allow Public Access"
   description = "Detect when S3 buckets policy is modified to allow public access."
   severity    = "high"
-  query       = query.cloudtrail_logs_detect_s3_bucket_policy_public
+  query       = query.cloudtrail_logs_detect_public_policy_added_to_s3_buckets
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0005:T1070"
@@ -72,7 +75,7 @@ detection "cloudtrail_logs_detect_s3_bucket_policy_public" {
 }
 
 detection "cloudtrail_logs_detect_s3_tool_uploads" {
-  title       = "Detect Lateral Tool Transfer"
+  title       = "Detect S3 Lateral Tool Transfer"
   description = "Detect transfer of malicious tools or binaries between resources."
   severity    = "medium"
   # documentation = file("./detections/docs/cloudtrail_logs_detect_s3_tool_uploads.md")
@@ -83,12 +86,12 @@ detection "cloudtrail_logs_detect_s3_tool_uploads" {
   })
 }
 
-detection "cloudtrail_logs_detect_s3_data_archiving" {
-  title       = "Detect Data Archiving for Collection"
-  description = "Detect archiving of collected data using AWS services such as S3 or Glacier."
+detection "cloudtrail_logs_detect_s3_data_archives" {
+  title       = "Detect S3 Data Archiving for Collection"
+  description = "Detect archiving of collected data using AWS S3 services."
   severity    = "medium"
-  # documentation = file("./detections/docs/cloudtrail_logs_detect_s3_data_archiving.md")
-  query       = query.cloudtrail_logs_detect_s3_data_archiving
+  # documentation = file("./detections/docs/cloudtrail_logs_detect_s3_data_archives.md")
+  query       = query.cloudtrail_logs_detect_s3_data_archives
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0009:T1560.001"
@@ -96,8 +99,8 @@ detection "cloudtrail_logs_detect_s3_data_archiving" {
 }
 
 detection "cloudtrail_logs_detect_s3_large_file_downloads" {
-  title       = "Detect Large Data Transfers"
-  description = "Detect unusually large data transfers indicative of exfiltration."
+  title       = "Detect S3 Large Data Transfers"
+  description = "Detect S3 unusually large data transfers indicative of exfiltration."
   severity    = "critical"
   # documentation = file("./detections/docs/cloudtrail_logs_detect_s3_large_file_downloads.md")
   query       = query.cloudtrail_logs_detect_s3_large_file_downloads
@@ -108,8 +111,8 @@ detection "cloudtrail_logs_detect_s3_large_file_downloads" {
 }
 
 detection "cloudtrail_logs_detect_s3_object_compressed_uploads" {
-  title       = "Detect Data Compression Before Exfiltration"
-  description = "Detect data compression operations in preparation for exfiltration."
+  title       = "Detect S3 Data Compression Before Exfiltration"
+  description = "Detect S3 data compression operations in preparation for exfiltration."
   severity    = "medium"
   # documentation = file("./detections/docs/cloudtrail_logs_detect_s3_object_compressed_uploads.md")
   query       = query.cloudtrail_logs_detect_s3_object_compressed_uploads
@@ -119,10 +122,10 @@ detection "cloudtrail_logs_detect_s3_object_compressed_uploads" {
   })
 }
 
-query "cloudtrail_logs_detect_s3_data_archiving" {
+query "cloudtrail_logs_detect_s3_data_archives" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_s3_data_archiving_sql_columns}
+      ${local.cloudtrail_logs_detect_s3_data_archives_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -151,10 +154,10 @@ query "cloudtrail_logs_detect_s3_tool_uploads" {
   EOQ
 }
 
-query "cloudtrail_logs_detect_s3_bucket_deleted" {
+query "cloudtrail_logs_detect_s3_bucket_deletions" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_s3_bucket_deleted_sql_columns}
+      ${local.cloudtrail_logs_detect_s3_bucket_deletions_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -165,10 +168,10 @@ query "cloudtrail_logs_detect_s3_bucket_deleted" {
   EOQ
 }
 
-query "cloudtrail_logs_detect_s3_object_deleted" {
+query "cloudtrail_logs_detect_s3_object_deletions" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_s3_object_deleted_sql_columns}
+      ${local.cloudtrail_logs_detect_s3_object_deletions_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -179,10 +182,10 @@ query "cloudtrail_logs_detect_s3_object_deleted" {
   EOQ
 }
 
-query "cloudtrail_logs_detect_s3_bucket_policy_modified" {
+query "cloudtrail_logs_detect_s3_bucket_policy_modifications" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_s3_bucket_policy_modified_sql_columns}
+      ${local.cloudtrail_logs_detect_s3_bucket_policy_modifications_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -193,10 +196,10 @@ query "cloudtrail_logs_detect_s3_bucket_policy_modified" {
   EOQ
 }
 
-query "cloudtrail_logs_detect_s3_bucket_policy_public" {
+query "cloudtrail_logs_detect_public_policy_added_to_s3_buckets" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_s3_bucket_policy_public_sql_columns}
+      ${local.cloudtrail_logs_detect_public_policy_added_to_s3_buckets_sql_columns}
     from
       aws_cloudtrail_log
     where

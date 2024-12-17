@@ -25,6 +25,7 @@ benchmark "mitre_v151_ta0005_t1562_001" {
     detection.cloudtrail_logs_detect_disabled_eventbridge_rules,
     detection.cloudtrail_logs_detect_guardduty_detector_deletions,
     detection.cloudtrail_logs_detect_cloudfront_distributions_with_logging_disabled,
+    detection.cloudtrail_logs_detect_vpcs_with_classic_link_enabled,
   ]
 
   tags = merge(local.mitre_v151_ta0005_t1562_common_tags, {

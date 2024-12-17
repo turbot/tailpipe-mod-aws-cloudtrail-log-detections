@@ -20,7 +20,13 @@ benchmark "mitre_v151_ta0040_t1565_003" {
   type          = "detection"
   documentation = file("./mitre_v151/docs/ta0040_t1565_003.md")
   children = [
-    detection.cloudtrail_logs_detect_waf_web_acl_disassociations
+    detection.cloudtrail_logs_detect_waf_web_acl_disassociations,
+    detection.cloudtrail_logs_detect_vpc_route_table_deletions,
+    detection.cloudtrail_logs_detect_vpc_route_table_route_deletions,
+    detection.cloudtrail_logs_detect_vpc_route_table_route_disassociations,
+    detection.cloudtrail_logs_detect_vpc_route_table_replace_associations,
+    detection.cloudtrail_logs_detect_vpc_deletions,
+    detection.cloudtrail_logs_detect_vpc_peering_connection_deletions
   ]
 
   tags = local.mitre_v151_ta0040_t1565_common_tags

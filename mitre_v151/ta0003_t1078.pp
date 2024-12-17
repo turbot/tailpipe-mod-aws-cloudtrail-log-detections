@@ -9,7 +9,8 @@ benchmark "mitre_v151_ta0003_t1078" {
   type          = "detection"
   documentation = file("./mitre_v151/docs/ta0003_t1078.md")
   children = [
-    detection.cloudtrail_logs_detect_route53_vpc_associations_with_hosted_zones
+    detection.cloudtrail_logs_detect_route53_vpc_associations_with_hosted_zones,
+    detection.cloudtrail_logs_detect_vpcs_with_classic_link_enabled,
   ]
 
   tags = local.mitre_v151_ta0003_t1078_common_tags

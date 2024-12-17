@@ -1,29 +1,32 @@
 locals {
+  cloudtrail_log_detection_ses_common_tags = merge(local.cloudtrail_log_detection_common_tags, {
+    service = "AWS/SES"
+  })
+
   cloudtrail_logs_detect_ses_unauthorized_email_collections_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
 }
 
 benchmark "cloudtrail_logs_ses_detections" {
-  title       = "CloudTrail Log SES Detections"
-  description = "This benchmark contains recommendations when scanning CloudTrail's SES logs."
+  title       = "SES"
+  description = "This benchmark contains recommendations when scanning CloudTrail logs for SES events."
   type        = "detection"
   children    = [
-    detection.cloudtrail_logs_detect_ses_unauthorized_email_collections,
+    detection.cloudtrail_logs_detect_ses_unauthorized_email_collections
   ]
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_ses_common_tags, {
     type    = "Benchmark"
-    service = "AWS/SES"
   })
 }
 
 detection "cloudtrail_logs_detect_ses_unauthorized_email_collections" {
-  title       = "Detect Email Collection via AWS SES"
+  title       = "Detect Email Collections via AWS SES"
   description = "Detect unauthorized attempts to read or download emails using AWS SES."
   severity    = "medium"
   documentation = file("./detections/docs/cloudtrail_logs_detect_ses_unauthorized_email_collections.md")
   query       = query.cloudtrail_logs_detect_ses_unauthorized_email_collections
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_ses_common_tags, {
     mitre_attack_ids = "TA0009:T1114.001"
   })
 }

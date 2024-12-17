@@ -9,7 +9,7 @@ benchmark "mitre_v151_ta0009_t1560_001" {
   type          = "detection"
   documentation = file("./mitre_v151/docs/ta0009_t1560_001.md")
   children = [
-    detection.cloudtrail_logs_detect_s3_data_archiving
+    detection.cloudtrail_logs_detect_s3_data_archives
   ]
 
   tags = local.mitre_v151_ta0009_t1560_001_common_tags
