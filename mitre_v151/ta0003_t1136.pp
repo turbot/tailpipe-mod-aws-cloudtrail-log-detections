@@ -10,7 +10,7 @@ benchmark "mitre_v151_ta0003_t1136" {
   documentation = file("./mitre_v151/docs/ta0003_t1136.md")
   children = [
     detection.cloudtrail_logs_detect_iam_entities_created_without_cloudformation,
-    detection.cloudtrail_logs_detect_iam_user_creation
+    detection.cloudtrail_logs_detect_iam_user_creations
   ]
 
   tags = local.mitre_v151_ta0003_t1136_common_tags

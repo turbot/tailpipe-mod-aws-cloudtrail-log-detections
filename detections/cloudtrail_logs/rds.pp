@@ -1,4 +1,8 @@
 locals {
+  cloudtrail_log_detection_rds_common_tags = merge(local.cloudtrail_log_detection_common_tags, {
+    service = "AWS/RDS"
+  })
+
   cloudtrail_logs_detect_rds_db_manual_snapshot_creations_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
   cloudtrail_logs_detect_rds_db_instance_master_pass_updates_sql_columns                     = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
   cloudtrail_logs_detect_rds_db_instance_public_restores_sql_columns                           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
@@ -26,9 +30,8 @@ benchmark "cloudtrail_logs_rds_detections" {
     detection.cloudtrail_logs_detect_rds_db_cluster_snapshot_deletions,
   ]
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_rds_common_tags, {
     type    = "Benchmark"
-    service = "AWS/RDS"
   })
 }
 
@@ -38,7 +41,7 @@ detection "cloudtrail_logs_detect_publicly_accessible_rds_db_instances" {
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_publicly_accessible_rds_db_instances
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_rds_common_tags, {
     mitre_attack_ids = "TA0001:T1190"
   })
 }
@@ -49,7 +52,7 @@ detection "cloudtrail_logs_detect_rds_db_manual_snapshot_creations" {
   severity    = "low"
   query       = query.cloudtrail_logs_detect_rds_db_manual_snapshot_creations
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_rds_common_tags, {
     mitre_attack_ids = "TA0010:T1537"
   })
 }
@@ -60,7 +63,7 @@ detection "cloudtrail_logs_detect_rds_db_instance_master_pass_updates" {
   severity    = "low"
   query       = query.cloudtrail_logs_detect_rds_db_instance_master_pass_updates
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_rds_common_tags, {
     mitre_attack_ids = "TA0003:T1098"
   })
 }
@@ -71,7 +74,7 @@ detection "cloudtrail_logs_detect_rds_db_instance_public_restores" {
   severity    = "high"
   query       = query.cloudtrail_logs_detect_rds_db_instance_public_restores
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_rds_common_tags, {
     mitre_attack_ids = "TA0010:T1020"
   })
 }
@@ -82,7 +85,7 @@ detection "cloudtrail_logs_detect_rds_db_instance_snapshot_deletions" {
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_rds_db_instance_snapshot_deletions
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_rds_common_tags, {
     mitre_attack_ids = "TA0040.T1485"
   })
 }
@@ -93,11 +96,10 @@ detection "cloudtrail_logs_detect_rds_db_cluster_snapshot_deletions" {
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_rds_db_cluster_snapshot_deletions
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_rds_common_tags, {
     mitre_attack_ids = "TA0040.T1485"
   })
 }
-
 
 detection "cloudtrail_logs_detect_deletion_protection_disabled_rds_db_clusters" {
   title       = "Detect RDS DB Clusters Deletion Protection Disabled"
@@ -105,7 +107,7 @@ detection "cloudtrail_logs_detect_deletion_protection_disabled_rds_db_clusters" 
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_deletion_protection_disabled_rds_db_clusters
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_rds_common_tags, {
     mitre_attack_ids = "TA0040.T1485"
   })
 }
@@ -117,7 +119,7 @@ detection "cloudtrail_logs_detect_disabled_iam_authentication_rds_db_instances" 
   # documentation = file("./detections/docs/cloudtrail_logs_detect_disabled_iam_authentication_rds_db_instances.md")
   query       = query.cloudtrail_logs_detect_disabled_iam_authentication_rds_db_instances
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_rds_common_tags, {
     mitre_attack_ids = "TA0008:T1210"
   })
 }
@@ -128,7 +130,7 @@ detection "cloudtrail_logs_detect_deletion_protection_disabled_rds_db_instances"
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_deletion_protection_disabled_rds_db_instances
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_rds_common_tags, {
     mitre_attack_ids = "TA0040.T1485"
   })
 }
