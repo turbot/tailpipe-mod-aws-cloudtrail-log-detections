@@ -9,7 +9,8 @@ benchmark "mitre_v151_ta0010_t1048" {
   type          = "detection"
   documentation = file("./mitre_v151/docs/ta0010_t1048.md")
   children = [
-    detection.cloudtrail_logs_detect_cloudfront_distribution_updates
+    detection.cloudtrail_logs_detect_cloudfront_distributions_with_failover_criteria_modified,
+    
   ]
 
   tags = local.mitre_v151_ta0010_t1048_common_tags

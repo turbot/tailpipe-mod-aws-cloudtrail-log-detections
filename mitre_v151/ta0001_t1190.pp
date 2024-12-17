@@ -9,7 +9,7 @@ benchmark "mitre_v151_ta0001_t1190" {
   type          = "detection"
   documentation = file("./mitre_v151/docs/ta0001_t1190.md")
   children = [
-    detection.cloudtrail_logs_detect_api_gateway_public_access,
+    detection.cloudtrail_logs_detect_public_access_granted_to_api_gateways,
     detection.cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates,
     detection.cloudtrail_logs_detect_public_access_granted_to_lambda_functions,
     detection.cloudtrail_logs_detect_publicly_accessible_rds_db_instances

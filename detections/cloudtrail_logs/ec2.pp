@@ -158,6 +158,7 @@ detection "cloudtrail_logs_detect_security_group_ipv6_allow_all" {
   })
 }
 
+//TODO: rename this. be more service specific, the title should updated
 detection "cloudtrail_logs_detect_ec2_instance_updates" {
   title       = "Detect Firmware Corruption"
   description = "Detect attempts to alter EC2 instance metadata or AMI configurations."
@@ -170,6 +171,7 @@ detection "cloudtrail_logs_detect_ec2_instance_updates" {
   })
 }
 
+// TODO: Check this one again
 query "cloudtrail_logs_detect_ec2_instance_updates" {
   sql = <<-EOQ
     select
