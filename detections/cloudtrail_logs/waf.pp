@@ -1,49 +1,54 @@
 locals {
-  cloudtrail_logs_detect_waf_web_acl_deletion_updates_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.id")
-  cloudtrail_logs_detect_waf_disassociation_sql_columns                          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.resourceArn")
-}
-
-benchmark "cloudtrail_logs_waf_detections" {
-  title       = "CloudTrail Log WAF Detections"
-  description = "This benchmark contains recommendations when scanning CloudTrail's WAF logs"
-  type        = "detection"
-  children    = [
-    detection.cloudtrail_logs_detect_waf_web_acl_deletion_updates,
-    detection.cloudtrail_logs_detect_waf_disassociation,
-  ]
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    type    = "Benchmark"
+  cloudtrail_log_detection_waf_common_tags = merge(local.cloudtrail_log_detection_common_tags, {
     service = "AWS/WAF"
   })
+
+  cloudtrail_logs_detect_waf_web_acl_deletions_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.id")
+  cloudtrail_logs_detect_waf_web_acl_disassociations_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.resourceArn")
 }
 
-detection "cloudtrail_logs_detect_waf_web_acl_deletion_updates" {
-  title       = "Detect WAF Web ACLs Deletion Updates"
-  description = "Detect WAF web ACLs deletion updates to check for unauthorized changes."
-  severity    = "medium"
-  query       = query.cloudtrail_logs_detect_waf_web_acl_deletion_updates
+benchmark "cloudtrail_log_detections_waf" {
+  title       = "WAF"
+  description = "This benchmark contains recommendations when scanning CloudTrail logs for WAF events."
+  type        = "detection"
+  children    = [
+    detection.cloudtrail_logs_detect_waf_web_acl_deletions,
+    detection.cloudtrail_logs_detect_waf_web_acl_disassociations,
+  ]
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = ""
+  tags = merge(local.cloudtrail_log_detection_waf_common_tags, {
+    type = "Benchmark"
   })
 }
 
-detection "cloudtrail_logs_detect_waf_disassociation" {
-  title       = "Detect WAFs Disassociation"
-  description = "Detect when WAFs are disassociated."
-  severity    = "high"
-  query       = query.cloudtrail_logs_detect_waf_disassociation
+detection "cloudtrail_logs_detect_waf_web_acl_deletions" {
+  title           = "Detect WAF Web ACLs Deletions"
+  description     = "Detect when a WAF web ACL is deleted to check for potential disruptions to web application protections, which could expose applications to malicious traffic or DDoS attacks."
+  severity        = "medium"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_waf_web_acl_deletions
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_waf_common_tags, {
+    mitre_attack_ids = "TA0005:T1562.001"
+  })
+}
+
+detection "cloudtrail_logs_detect_waf_web_acl_disassociations" {
+  title           = "Detect WAF Web ACL Disassociations"
+  description     = "Detect when a WAF web ACL is disassociated from a resource to check for intentional bypassing of security protections or misconfigurations that could allow unrestricted access to web applications."
+  severity        = "medium"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_waf_web_acl_disassociations
+
+  tags = merge(local.cloudtrail_log_detection_waf_common_tags, {
     mitre_attack_ids = "TA0004:T1498"
   })
 }
 
-query "cloudtrail_logs_detect_waf_web_acl_deletion_updates" {
+query "cloudtrail_logs_detect_waf_web_acl_deletions" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_waf_web_acl_deletion_updates_sql_columns}
+      ${local.cloudtrail_logs_detect_waf_web_acl_deletions_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -54,10 +59,10 @@ query "cloudtrail_logs_detect_waf_web_acl_deletion_updates" {
   EOQ
 }
 
-query "cloudtrail_logs_detect_waf_disassociation" {
+query "cloudtrail_logs_detect_waf_web_acl_disassociations" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_waf_disassociation_sql_columns}
+      ${local.cloudtrail_logs_detect_waf_web_acl_disassociations_sql_columns}
     from
       aws_cloudtrail_log
     where
