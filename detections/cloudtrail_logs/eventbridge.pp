@@ -8,7 +8,7 @@ locals {
 }
 
 benchmark "cloudtrail_logs_eventbridge_detections" {
-  title       = "EventBridge"
+  title       = "EventBridge Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs for EventBridge events."
   type        = "detection"
   children    = [

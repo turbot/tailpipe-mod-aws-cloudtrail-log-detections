@@ -4,7 +4,7 @@ locals {
 }
 
 benchmark "cloudtrail_logs_ssm_detections" {
-  title       = "CloudTrail Log SSM Detections"
+  title       = "SSM Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's SSM logs."
   type        = "detection"
   children    = [

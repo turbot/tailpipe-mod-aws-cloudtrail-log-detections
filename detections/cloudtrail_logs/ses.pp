@@ -7,7 +7,7 @@ locals {
 }
 
 benchmark "cloudtrail_logs_ses_detections" {
-  title       = "SES"
+  title       = "SES Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs for SES events."
   type        = "detection"
   children    = [

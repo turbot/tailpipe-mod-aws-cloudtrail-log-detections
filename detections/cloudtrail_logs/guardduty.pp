@@ -7,7 +7,7 @@ locals {
 }
 
 benchmark "cloudtrail_logs_guardduty_detections" {
-  title       = "GuardDuty"
+  title       = "GuardDuty Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs for GuardDuty events."
   type        = "detection"
   children    = [

@@ -16,7 +16,7 @@ locals {
 }
 
 benchmark "cloudtrail_logs_vpc_detections" {
-  title       = "VPC"
+  title       = "VPC Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs for VPC events."
   type        = "detection"
   children    = [

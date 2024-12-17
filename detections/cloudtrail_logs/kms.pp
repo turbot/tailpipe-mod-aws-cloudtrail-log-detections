@@ -7,7 +7,7 @@ locals {
 }
 
 benchmark "cloudtrail_logs_kms_detections" {
-  title       = "KMS"
+  title       = "KMS Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs for KMS events."
   type        = "detection"
   children    = [

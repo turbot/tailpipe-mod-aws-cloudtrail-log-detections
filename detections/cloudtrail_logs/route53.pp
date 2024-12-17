@@ -8,7 +8,7 @@ locals {
 }
 
 benchmark "cloudtrail_logs_route53_detections" {
-  title       = "Route 53"
+  title       = "Route 53 Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs for Route 53 events."
   type        = "detection"
   children    = [

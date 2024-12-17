@@ -7,7 +7,7 @@ locals {
 }
 
 benchmark "cloudtrail_log_detections_lambda" {
-  title       = "Lambda"
+  title       = "Lambda Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs for Lambda events."
   type        = "detection"
   children    = [

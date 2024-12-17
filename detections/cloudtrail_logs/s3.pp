@@ -10,7 +10,7 @@ locals {
 }
 
 benchmark "cloudtrail_logs_s3_detections" {
-  title       = "CloudTrail Log S3 Detections"
+  title       = "S3 Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's S3 logs"
   type        = "detection"
   children    = [

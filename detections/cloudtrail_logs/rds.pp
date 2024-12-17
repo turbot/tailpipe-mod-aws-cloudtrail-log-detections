@@ -15,7 +15,7 @@ locals {
 }
 
 benchmark "cloudtrail_logs_rds_detections" {
-  title       = "RDS"
+  title       = "RDS Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs for RDS events."
   type        = "detection"
   children    = [

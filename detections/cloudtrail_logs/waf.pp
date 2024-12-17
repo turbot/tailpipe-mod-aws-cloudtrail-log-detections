@@ -8,7 +8,7 @@ locals {
 }
 
 benchmark "cloudtrail_log_detections_waf" {
-  title       = "WAF"
+  title       = "WAF Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs for WAF events."
   type        = "detection"
   children    = [
