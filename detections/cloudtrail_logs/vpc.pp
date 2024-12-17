@@ -1,20 +1,22 @@
 locals {
+  cloudtrail_log_detection_vpc_common_tags = merge(local.cloudtrail_log_detection_common_tags, {
+    service = "AWS/VPC"
+  })
   cloudtrail_logs_detect_vpc_updates_sql_columns                                  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.vpcId")
   cloudtrail_logs_detect_route_table_updates_sql_columns                         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.routeTableId")
 }
 
 benchmark "cloudtrail_logs_vpc_detections" {
-  title       = "CloudTrail Log VPC Detections"
-  description = "This benchmark contains recommendations when scanning CloudTrail's VPC logs"
+  title       = "VPC"
+  description = "This benchmark contains recommendations when scanning CloudTrail logs for VPC events."
   type        = "detection"
   children    = [
     detection.cloudtrail_logs_detect_vpc_updates,
     detection.cloudtrail_logs_detect_route_table_updates,
   ]
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_vpc_common_tags, {
     type    = "Benchmark"
-    service = "AWS/VPC"
   })
 }
 
@@ -25,7 +27,7 @@ detection "cloudtrail_logs_detect_route_table_updates" {
   severity    = "low"
   query       = query.cloudtrail_logs_detect_route_table_updates
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_vpc_common_tags, {
     mitre_attack_ids = "TA0010:T1048"
   })
 }
@@ -36,7 +38,7 @@ detection "cloudtrail_logs_detect_vpc_updates" {
   severity    = "low"
   query       = query.cloudtrail_logs_detect_vpc_updates
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_vpc_common_tags, {
     mitre_attack_ids = "TA0005:T1562"
   })
 }

@@ -1,30 +1,29 @@
 locals {
-  cloudtrail_logs_detect_rds_manual_snapshot_created_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
-  cloudtrail_logs_detect_rds_master_pass_updated_sql_columns                     = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
-  cloudtrail_logs_detect_rds_publicrestore_sql_columns                           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
-  cloudtrail_logs_detect_rds_db_instance_stop_sql_columns                        = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
-  cloudtrail_logs_detect_rds_db_cluster_stop_sql_columns                         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBClusterIdentifier")
-  cloudtrail_logs_detect_rds_db_snapshot_delete_sql_columns                      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBSnapshotIdentifier")
-  cloudtrail_logs_detect_rds_db_instance_cluster_deletion_protection_disable_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "coalesce(request_parameters.dBInstanceIdentifier, request_parameters.dBClusterIdentifier)")
-  cloudtrail_logs_detect_rds_db_instance_disable_iam_authentication_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
-  cloudtrail_logs_detect_rds_db_cluster_deletion_protection_disable_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBClusterIdentifier")
-  cloudtrail_logs_detect_rds_db_instance_deletion_protection_disable_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
+  cloudtrail_logs_detect_rds_db_manual_snapshot_creations_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
+  cloudtrail_logs_detect_rds_db_instance_master_pass_updates_sql_columns                     = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
+  cloudtrail_logs_detect_rds_db_instance_public_restores_sql_columns                           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
+  cloudtrail_logs_detect_rds_db_instance_snapshot_deletions_sql_columns                      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBSnapshotIdentifier")
+  cloudtrail_logs_detect_disabled_iam_authentication_rds_db_instances_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
+  cloudtrail_logs_detect_deletion_protection_disabled_rds_db_clusters_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBClusterIdentifier")
+  cloudtrail_logs_detect_deletion_protection_disabled_rds_db_instances_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
+  cloudtrail_logs_detect_rds_db_cluster_snapshot_deletions_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBSnapshotIdentifier")
+  cloudtrail_logs_detect_publicly_accessible_rds_db_instances_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
 }
 
 benchmark "cloudtrail_logs_rds_detections" {
-  title       = "CloudTrail Log RDS Detections"
-  description = "This benchmark contains recommendations when scanning CloudTrail's RDS logs"
+  title       = "RDS"
+  description = "This benchmark contains recommendations when scanning CloudTrail logs for RDS events."
   type        = "detection"
   children    = [
-    detection.cloudtrail_logs_detect_rds_manual_snapshot_created,
-    detection.cloudtrail_logs_detect_rds_master_pass_updated,
-    detection.cloudtrail_logs_detect_rds_publicrestore,
-    detection.cloudtrail_logs_detect_rds_db_instance_stop,
-    detection.cloudtrail_logs_detect_rds_db_cluster_stop,
-    detection.cloudtrail_logs_detect_rds_db_snapshot_delete,
-    detection.cloudtrail_logs_detect_rds_db_cluster_deletion_protection_disable,
-    detection.cloudtrail_logs_detect_rds_db_instance_deletion_protection_disable,
-    detection.cloudtrail_logs_detect_rds_instance_pulicly_accessible,
+    detection.cloudtrail_logs_detect_rds_db_manual_snapshot_creations,
+    detection.cloudtrail_logs_detect_rds_db_instance_master_pass_updates,
+    detection.cloudtrail_logs_detect_rds_db_instance_public_restores,
+    detection.cloudtrail_logs_detect_rds_db_instance_snapshot_deletions,
+    detection.cloudtrail_logs_detect_deletion_protection_disabled_rds_db_clusters,
+    detection.cloudtrail_logs_detect_deletion_protection_disabled_rds_db_instances,
+    detection.cloudtrail_logs_detect_publicly_accessible_rds_db_instances,
+    detection.cloudtrail_logs_detect_disabled_iam_authentication_rds_db_instances,
+    detection.cloudtrail_logs_detect_rds_db_cluster_snapshot_deletions,
   ]
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
@@ -33,110 +32,111 @@ benchmark "cloudtrail_logs_rds_detections" {
   })
 }
 
-detection "cloudtrail_logs_detect_rds_instance_pulicly_accessible" {
+detection "cloudtrail_logs_detect_publicly_accessible_rds_db_instances" {
   title       = "Detect RDS Instances Publicly Accessible"
   description = "Detect RDS instances publicly accessible to check for unauthorized access."
   severity    = "medium"
-  query       = query.cloudtrail_logs_detect_rds_instance_pulicly_accessible
+  query       = query.cloudtrail_logs_detect_publicly_accessible_rds_db_instances
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = ""
+    mitre_attack_ids = "TA0001:T1190"
   })
 }
 
-detection "cloudtrail_logs_detect_rds_manual_snapshot_created" {
+detection "cloudtrail_logs_detect_rds_db_manual_snapshot_creations" {
   title       = "Detect RDS Manual Snapshots Created"
   description = "Detect when RDS manual snapshots is created."
   severity    = "low"
-  query       = query.cloudtrail_logs_detect_rds_manual_snapshot_created
+  query       = query.cloudtrail_logs_detect_rds_db_manual_snapshot_creations
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0010:T1537"
   })
 }
 
-detection "cloudtrail_logs_detect_rds_master_pass_updated" {
-  title       = "Detect RDS Instances Master Password Updated"
-  description = "Detect when RDS instances master password is updated."
+detection "cloudtrail_logs_detect_rds_db_instance_master_pass_updates" {
+  title       = "Detect RDS Instances Master Password Updates"
+  description = "Detect when RDS instances master password are updated."
   severity    = "low"
-  query       = query.cloudtrail_logs_detect_rds_master_pass_updated
+  query       = query.cloudtrail_logs_detect_rds_db_instance_master_pass_updates
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0003:T1098"
   })
 }
 
-detection "cloudtrail_logs_detect_rds_publicrestore" {
-  title       = "Detect RDS Instances public restore"
-  description = "Detect when RDS public instances are restored from snapshot."
+detection "cloudtrail_logs_detect_rds_db_instance_public_restores" {
+  title       = "Detect RDS DB Instances Public Restores"
+  description = "Detect when RDS public DB instances are restored from snapshot."
   severity    = "high"
-  query       = query.cloudtrail_logs_detect_rds_publicrestore
+  query       = query.cloudtrail_logs_detect_rds_db_instance_public_restores
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0010:T1020"
   })
 }
 
-detection "cloudtrail_logs_detect_rds_db_instance_stop" {
-  title       = "Detect RDS DB Instances Stopped"
-  description = "Detect when the RDS DB instances is stopped."
+detection "cloudtrail_logs_detect_rds_db_instance_snapshot_deletions" {
+  title       = "Detect RDS DB Instance Snapshots Deletions"
+  description = "Detect when the RDS DB instance snapshots are deleted."
   severity    = "medium"
-  query       = query.cloudtrail_logs_detect_rds_db_instance_stop
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = "TA0040.T1489"
-  })
-}
-
-detection "cloudtrail_logs_detect_rds_db_cluster_stop" {
-  title       = "Detect RDS DB Clusters Stopped"
-  description = "Detect when the RDS DB clusters is stopped."
-  severity    = "medium"
-  query       = query.cloudtrail_logs_detect_rds_db_cluster_stop
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = "TA0040.T1489"
-  })
-}
-
-detection "cloudtrail_logs_detect_rds_db_snapshot_delete" {
-  title       = "Detect RDS DB Snapshots Deleted"
-  description = "Detect when the RDS DB snapshots is deleted."
-  severity    = "medium"
-  query       = query.cloudtrail_logs_detect_rds_db_snapshot_delete
+  query       = query.cloudtrail_logs_detect_rds_db_instance_snapshot_deletions
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0040.T1485"
   })
 }
 
-detection "cloudtrail_logs_detect_rds_db_cluster_deletion_protection_disable" {
+detection "cloudtrail_logs_detect_rds_db_cluster_snapshot_deletions" {
+  title       = "Detect RDS DB Cluster Snapshots Deletions"
+  description = "Detect when the RDS DB cluster snapshots are deleted."
+  severity    = "medium"
+  query       = query.cloudtrail_logs_detect_rds_db_cluster_snapshot_deletions
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0040.T1485"
+  })
+}
+
+
+detection "cloudtrail_logs_detect_deletion_protection_disabled_rds_db_clusters" {
   title       = "Detect RDS DB Clusters Deletion Protection Disabled"
-  description = "Detect when the RDS DB clusters deletion protection is disabled."
+  description = "Detect when the RDS DB clusters deletion protection are disabled."
   severity    = "medium"
-  query       = query.cloudtrail_logs_detect_rds_db_cluster_deletion_protection_disable
+  query       = query.cloudtrail_logs_detect_deletion_protection_disabled_rds_db_clusters
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0040.T1485"
   })
 }
 
-detection "cloudtrail_logs_detect_rds_db_instance_disable_iam_authentication_updates" {
+detection "cloudtrail_logs_detect_disabled_iam_authentication_rds_db_instances" {
   title       = "Detect Exploitation of Remote Services"
   description = "Detect lateral movement via the exploitation of misconfigured or vulnerable services."
   severity    = "critical"
-  # documentation = file("./detections/docs/cloudtrail_logs_detect_rds_db_instance_disable_iam_authentication_updates.md")
-  query       = query.cloudtrail_logs_detect_rds_db_instance_disable_iam_authentication_updates
+  # documentation = file("./detections/docs/cloudtrail_logs_detect_disabled_iam_authentication_rds_db_instances.md")
+  query       = query.cloudtrail_logs_detect_disabled_iam_authentication_rds_db_instances
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0008:T1210"
   })
 }
 
-query "cloudtrail_logs_detect_rds_db_instance_disable_iam_authentication_updates" {
+detection "cloudtrail_logs_detect_deletion_protection_disabled_rds_db_instances" {
+  title       = "Detect RDS DB Instances Deletion Protection Disabled"
+  description = "Detect when the RDS DB instances deletion protection are disabled."
+  severity    = "medium"
+  query       = query.cloudtrail_logs_detect_deletion_protection_disabled_rds_db_instances
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0040.T1485"
+  })
+}
+
+query "cloudtrail_logs_detect_disabled_iam_authentication_rds_db_instances" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_rds_db_instance_disable_iam_authentication_updates_sql_columns}
+      ${local.cloudtrail_logs_detect_disabled_iam_authentication_rds_db_instances_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -149,22 +149,10 @@ query "cloudtrail_logs_detect_rds_db_instance_disable_iam_authentication_updates
   EOQ
 }
 
-detection "cloudtrail_logs_detect_rds_db_instance_deletion_protection_disable" {
-  title       = "Detect RDS DB Instances Deletion Protection Disabled"
-  description = "Detect when the RDS DB instances deletion protection is disabled."
-  severity    = "medium"
-  query       = query.cloudtrail_logs_detect_rds_db_instance_deletion_protection_disable
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = "TA0040.T1485"
-  })
-}
-
-
-query "cloudtrail_logs_detect_rds_instance_pulicly_accessible" {
+query "cloudtrail_logs_detect_publicly_accessible_rds_db_instances" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_rds_instance_pulicly_accessible_sql_columns}
+      ${local.cloudtrail_logs_detect_publicly_accessible_rds_db_instances_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -177,10 +165,10 @@ query "cloudtrail_logs_detect_rds_instance_pulicly_accessible" {
   EOQ
 }
 
-query "cloudtrail_logs_detect_rds_manual_snapshot_created" {
+query "cloudtrail_logs_detect_rds_db_manual_snapshot_creations" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_rds_manual_snapshot_created_sql_columns}
+      ${local.cloudtrail_logs_detect_rds_db_manual_snapshot_creations_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -192,10 +180,10 @@ query "cloudtrail_logs_detect_rds_manual_snapshot_created" {
   EOQ
 }
 
-query "cloudtrail_logs_detect_rds_master_pass_updated" {
+query "cloudtrail_logs_detect_rds_db_instance_master_pass_updates" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_rds_master_pass_updated_sql_columns}
+      ${local.cloudtrail_logs_detect_rds_db_instance_master_pass_updates_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -208,10 +196,10 @@ query "cloudtrail_logs_detect_rds_master_pass_updated" {
   EOQ
 }
 
-query "cloudtrail_logs_detect_rds_publicrestore" {
+query "cloudtrail_logs_detect_rds_db_instance_public_restores" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_rds_publicrestore_sql_columns}
+      ${local.cloudtrail_logs_detect_rds_db_instance_public_restores_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -224,46 +212,16 @@ query "cloudtrail_logs_detect_rds_publicrestore" {
   EOQ
 }
 
-query "cloudtrail_logs_detect_rds_db_instance_stop" {
+query "cloudtrail_logs_detect_rds_db_instance_snapshot_deletions" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_rds_db_instance_stop_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'rds.amazonaws.com'
-      and event_name = 'StopDBInstance'
-      ${local.cloudtrail_log_detections_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "cloudtrail_logs_detect_rds_db_cluster_stop" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_rds_db_cluster_stop_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'rds.amazonaws.com'
-      and event_name = 'StopDBCluster'
-      ${local.cloudtrail_log_detections_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "cloudtrail_logs_detect_rds_db_snapshot_delete" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_rds_db_snapshot_delete_sql_columns}
+      ${local.cloudtrail_logs_detect_rds_db_instance_snapshot_deletions_sql_columns}
     from
       aws_cloudtrail_log
     where
       event_source = 'rds.amazonaws.com'
       and (
-        (event_name in ('DeleteDBSnapshot', 'DeleteDBClusterSnapshot'))
+        (event_name = 'DeleteDBSnapshot')
         or (event_name = 'ModifyDBInstance' and (request_parameters ->> 'backupRetentionPeriod')::int = 7)
         )
       ${local.cloudtrail_log_detections_where_conditions}
@@ -272,10 +230,25 @@ query "cloudtrail_logs_detect_rds_db_snapshot_delete" {
   EOQ
 }
 
-query "cloudtrail_logs_detect_rds_db_cluster_deletion_protection_disable" {
+query "cloudtrail_logs_detect_rds_db_cluster_snapshot_deletions" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_rds_db_cluster_deletion_protection_disable_sql_columns}
+      ${local.cloudtrail_logs_detect_rds_db_cluster_snapshot_deletions_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'rds.amazonaws.com'
+      and event_name = 'DeleteDBClusterSnapshot'
+      ${local.cloudtrail_log_detections_where_conditions}
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_deletion_protection_disabled_rds_db_clusters" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_deletion_protection_disabled_rds_db_clusters_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -288,10 +261,10 @@ query "cloudtrail_logs_detect_rds_db_cluster_deletion_protection_disable" {
   EOQ
 }
 
-query "cloudtrail_logs_detect_rds_db_instance_deletion_protection_disable" {
+query "cloudtrail_logs_detect_deletion_protection_disabled_rds_db_instances" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_rds_db_instance_deletion_protection_disable_sql_columns}
+      ${local.cloudtrail_logs_detect_deletion_protection_disabled_rds_db_instances_sql_columns}
     from
       aws_cloudtrail_log
     where

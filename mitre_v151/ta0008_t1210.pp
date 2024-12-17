@@ -9,8 +9,8 @@ benchmark "mitre_v151_ta0008_t1210" {
   type          = "detection"
   documentation = file("./mitre_v151/docs/ta0008_t1210.md")
   children = [
-    detection.cloudtrail_logs_detect_rds_db_instance_disable_iam_authentication_updates,
-    detection.cloudtrail_logs_detect_rds_instance_pulicly_accessible,
+    detection.cloudtrail_logs_detect_disabled_iam_authentication_rds_db_instances,
+    detection.cloudtrail_logs_detect_publicly_accessible_rds_db_instances,
   ]
 
   tags = local.mitre_v151_ta0008_t1210_common_tags
