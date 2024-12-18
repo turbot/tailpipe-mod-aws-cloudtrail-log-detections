@@ -1,10 +1,5 @@
 locals {
-  cloudtrail_logs_detect_ec2_ebs_volumes_with_encryption_disabled_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "recipient_account_id")
-
-  cloudtrail_logs_detect_ebs_snapshot_deletions_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
-
-  cloudtrail_logs_detect_ebs_volume_deletions_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
-
+  cloudtrail_logs_detect_regions_with_default_ebs_encryption_disabled_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "recipient_account_id")
   cloudtrail_logs_detect_ebs_volume_detachments_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
 }
 
@@ -13,9 +8,7 @@ benchmark "cloudtrail_logs_ebs_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail's EBS logs"
   type        = "detection"
   children    = [
-    detection.cloudtrail_logs_detect_ec2_ebs_volumes_with_encryption_disabled,
-    detection.cloudtrail_logs_detect_ebs_snapshot_deletions,
-    detection.cloudtrail_logs_detect_ebs_volume_deletions,
+    detection.cloudtrail_logs_detect_regions_with_default_ebs_encryption_disabled,
     detection.cloudtrail_logs_detect_ebs_volume_detachments,
   ]
 
@@ -25,43 +18,19 @@ benchmark "cloudtrail_logs_ebs_detections" {
   })
 }
 
-detection "cloudtrail_logs_detect_ec2_ebs_volumes_with_encryption_disabled" {
-  title       = "Detect EC2 EBS Encryptions Disabled Updates"
+detection "cloudtrail_logs_detect_regions_with_default_ebs_encryption_disabled" {
+  title       = "Detect EBS Encryptions Disabled Updates"
   description = "Detect EC2 EBS encryptions disabled updates to check for data at rest encryption."
   severity    = "medium"
-  query       = query.cloudtrail_logs_detect_ec2_ebs_volumes_with_encryption_disabled
+  query       = query.cloudtrail_logs_detect_regions_with_default_ebs_encryption_disabled
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0003:T1486,TA0040:T1565"
   })
 }
 
-detection "cloudtrail_logs_detect_ebs_snapshot_deletions" {
-  title       = "Detect Inhibition of System Recovery"
-  description = "Detect deletion of EBS snapshots or recovery points."
-  severity    = "critical"
-  # documentation = file("./detections/docs/cloudtrail_logs_detect_ebs_snapshot_deletions.md")
-  query       = query.cloudtrail_logs_detect_ebs_snapshot_deletions
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = "TA0040:T1490"
-  })
-}
-
-detection "cloudtrail_logs_detect_ebs_volume_deletions" {
-  title       = "Detect Disk Content Wipe"
-  description = "Detect deletion or overwriting of EBS volumes or snapshots."
-  severity    = "critical"
-  # documentation = file("./detections/docs/cloudtrail_logs_detect_ebs_volume_deletions.md")
-  query       = query.cloudtrail_logs_detect_ebs_volume_deletions
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = "TA0040:T1561.001"
-  })
-}
-
 detection "cloudtrail_logs_detect_ebs_volume_detachments" {
-  title       = "Detect Disk Structure Wipe"
+  title       = "Detect EBS Volume Detachments"
   description = "Detect attempts to corrupt or modify the disk structure of EBS volumes."
   severity    = "critical"
   # documentation = file("./detections/docs/cloudtrail_logs_detect_ebs_volume_detachments.md")
@@ -87,25 +56,10 @@ query "cloudtrail_logs_detect_ebs_volume_detachments" {
   EOQ
 }
 
-query "cloudtrail_logs_detect_ebs_volume_deletions" {
+query "cloudtrail_logs_detect_regions_with_default_ebs_encryption_disabled" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_ebs_volume_deletions_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'ec2.amazonaws.com'
-      and event_name = 'DeleteVolume'
-      ${local.cloudtrail_log_detections_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "cloudtrail_logs_detect_ec2_ebs_volumes_with_encryption_disabled" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_ec2_ebs_volumes_with_encryption_disabled_sql_columns}
+      ${local.cloudtrail_logs_detect_regions_with_default_ebs_encryption_disabled_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -117,17 +71,3 @@ query "cloudtrail_logs_detect_ec2_ebs_volumes_with_encryption_disabled" {
   EOQ
 }
 
-query "cloudtrail_logs_detect_ebs_snapshot_deletions" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_ebs_snapshot_deletions_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'ec2.amazonaws.com'
-      and event_name in ('DeleteSnapshot', 'DeleteRecoveryPoint')
-      ${local.cloudtrail_log_detections_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}

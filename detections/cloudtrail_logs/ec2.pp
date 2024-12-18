@@ -27,10 +27,10 @@ benchmark "cloudtrail_logs_ec2_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail's EC2 logs"
   type        = "detection"
   children = [
-    detection.cloudtrail_logs_detect_ec2_ami_copy_cross_account,
-    detection.cloudtrail_logs_detect_ec2_ami_import_cross_account,    
-    detection.cloudtrail_logs_detect_ec2_ami_restore_tasks_cross_account,
-    detection.cloudtrail_logs_detect_ec2_ami_store_tasks_external,
+    detection.cloudtrail_logs_detect_ec2_ami_copied_from_external_accounts,
+    detection.cloudtrail_logs_detect_ec2_ami_imported_from_external_accounts,    
+    detection.cloudtrail_logs_detect_ec2_ami_restored_tasks_from_external_accounts,
+    detection.cloudtrail_logs_detect_ec2_ami_storage_tasks_created_from_external_accounts,
     detection.cloudtrail_logs_detect_ec2_flow_log_deletions,
     detection.cloudtrail_logs_detect_ec2_full_network_packet_capture_updates,
     detection.cloudtrail_logs_detect_ec2_gateway_updates,
@@ -314,18 +314,18 @@ query "cloudtrail_logs_detect_security_group_ipv6_allow_all" {
   EOQ
 }
 
-detection "cloudtrail_logs_detect_ec2_ami_copy_cross_account" {
+detection "cloudtrail_logs_detect_ec2_ami_copied_from_external_accounts" {
   title       = "Detect Cross-Account EC2 AMI Copy Events"
   description = "Identify events where EC2 AMIs are copied across accounts, which could indicate unauthorized duplication."
   severity    = "high"
-  query       = query.cloudtrail_logs_detect_ec2_ami_copy_cross_account
+  query       = query.cloudtrail_logs_detect_ec2_ami_copied_from_external_accounts
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0010:T1020"
   })
 }
 
-query "cloudtrail_logs_detect_ec2_ami_copy_cross_account" {
+query "cloudtrail_logs_detect_ec2_ami_copied_from_external_accounts" {
   sql = <<-EOQ
     select
       ${local.cloudtrail_logs_detect_ec2_ami_updates_sql_columns}
@@ -341,18 +341,18 @@ query "cloudtrail_logs_detect_ec2_ami_copy_cross_account" {
   EOQ
 }
 
-detection "cloudtrail_logs_detect_ec2_ami_restore_tasks_cross_account" {
+detection "cloudtrail_logs_detect_ec2_ami_restored_tasks_from_external_accounts" {
   title       = "Detect Cross-Account EC2 AMI Restore Tasks"
   description = "Identify events where restore image tasks involve resources from different accounts, potentially indicating data recovery or unauthorized restoration."
   severity    = "high"
-  query       = query.cloudtrail_logs_detect_ec2_ami_restore_tasks_cross_account
+  query       = query.cloudtrail_logs_detect_ec2_ami_restored_tasks_from_external_accounts
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0007:T1078"
   })
 }
 
-query "cloudtrail_logs_detect_ec2_ami_restore_tasks_cross_account" {
+query "cloudtrail_logs_detect_ec2_ami_restored_tasks_from_external_accounts" {
   sql = <<-EOQ
     select
       ${local.cloudtrail_logs_detect_ec2_ami_updates_sql_columns}
@@ -368,18 +368,18 @@ query "cloudtrail_logs_detect_ec2_ami_restore_tasks_cross_account" {
   EOQ
 }
 
-detection "cloudtrail_logs_detect_ec2_ami_store_tasks_external" {
+detection "cloudtrail_logs_detect_ec2_ami_storage_tasks_created_from_external_accounts" {
   title       = "Detect EC2 AMI Store Tasks in External Locations"
   description = "Identify events where EC2 AMIs are stored in external or unapproved destinations, potentially indicating data exfiltration."
   severity    = "high"
-  query       = query.cloudtrail_logs_detect_ec2_ami_store_tasks_external
+  query       = query.cloudtrail_logs_detect_ec2_ami_storage_tasks_created_from_external_accounts
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0010:T1537"
   })
 }
 
-query "cloudtrail_logs_detect_ec2_ami_store_tasks_external" {
+query "cloudtrail_logs_detect_ec2_ami_storage_tasks_created_from_external_accounts" {
   sql = <<-EOQ
     select
       ${local.cloudtrail_logs_detect_ec2_ami_updates_sql_columns}
@@ -395,18 +395,18 @@ query "cloudtrail_logs_detect_ec2_ami_store_tasks_external" {
   EOQ
 }
 
-detection "cloudtrail_logs_detect_ec2_ami_import_cross_account" {
+detection "cloudtrail_logs_detect_ec2_ami_imported_from_external_accounts" {
   title       = "Detect Cross-Account EC2 AMI Import Events"
   description = "Identify events where AMIs are imported from external accounts, potentially introducing unauthorized or untrusted images."
   severity    = "high"
-  query       = query.cloudtrail_logs_detect_ec2_ami_import_cross_account
+  query       = query.cloudtrail_logs_detect_ec2_ami_imported_from_external_accounts
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0003:T1577"
   })
 }
 
-query "cloudtrail_logs_detect_ec2_ami_import_cross_account" {
+query "cloudtrail_logs_detect_ec2_ami_imported_from_external_accounts" {
   sql = <<-EOQ
     select
       ${local.cloudtrail_logs_detect_ec2_ami_updates_sql_columns}
