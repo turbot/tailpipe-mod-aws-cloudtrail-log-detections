@@ -3,7 +3,7 @@ locals {
 }
 
 benchmark "cloudtrail_logs_apigateway_detections" {
-  title       = "CloudTrail Log API Gateway Detections"
+  title       = "API Gateway Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's API Gateway logs"
   type        = "detection"
   children    = [

@@ -9,7 +9,7 @@ locals {
 }
 
 benchmark "cloudtrail_logs_ebs_detections" {
-  title       = "CloudTrail Log EBS Detections"
+  title       = "EBS Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's EBS logs"
   type        = "detection"
   children    = [

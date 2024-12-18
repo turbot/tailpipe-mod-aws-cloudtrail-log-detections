@@ -4,7 +4,7 @@ locals {
 }
 
 benchmark "cloudtrail_logs_config_detections" {
-  title       = "CloudTrail Log Config Detections"
+  title       = "Config Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's Config logs"
   type        = "detection"
   children    = [

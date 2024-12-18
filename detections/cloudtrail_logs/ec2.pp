@@ -26,7 +26,7 @@ locals {
 }
 
 benchmark "cloudtrail_logs_ec2_detections" {
-  title       = "CloudTrail Log EC2 Detections"
+  title       = "EC2 Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's EC2 logs"
   type        = "detection"
   children    = [

@@ -3,7 +3,7 @@ locals {
 }
 
 benchmark "cloudtrail_logs_codebuild_detections" {
-  title       = "CloudTrail Log CodeBuild Detections"
+  title       = "CodeBuild Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail's CodeBuild logs"
   type        = "detection"
   children    = [
