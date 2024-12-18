@@ -1,5 +1,5 @@
 locals {
-  cloudtrail_logs_detect_public_access_granted_to_codebuild_projects_sql_columns        = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.projectArn")
+  cloudtrail_logs_detect_public_access_granted_to_codebuild_projects_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.projectArn")
 }
 
 benchmark "cloudtrail_logs_codebuild_detections" {

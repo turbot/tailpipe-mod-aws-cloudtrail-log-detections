@@ -9,7 +9,8 @@ benchmark "mitre_v151_ta0040_t1495" {
   type          = "detection"
   documentation = file("./mitre_v151/docs/ta0040_t1495.md")
   children = [
-    detection.cloudtrail_logs_detect_ec2_instance_updates
+    detection.cloudtrail_logs_detect_ec2_instances_with_source_dest_check_disabled,
+    detection.cloudtrail_logs_detect_ec2_instances_with_launch_permission_changes,
   ]
 
   tags = local.mitre_v151_ta0040_t1495_common_tags

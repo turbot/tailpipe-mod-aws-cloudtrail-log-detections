@@ -1,6 +1,6 @@
 locals {
-  cloudtrail_logs_detect_config_service_rule_deletions_sql_columns                  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.configRuleName")
-  cloudtrail_logs_detect_configuration_recorder_stop_updates_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.configurationRecorderName")
+  cloudtrail_logs_detect_config_service_rule_deletions_sql_columns        = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.configRuleName")
+  cloudtrail_logs_detect_configuration_recorder_stop_updates_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.configurationRecorderName")
 }
 
 benchmark "cloudtrail_logs_config_detections" {
