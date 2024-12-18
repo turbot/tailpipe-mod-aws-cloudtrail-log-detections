@@ -50,7 +50,7 @@ query "cloudtrail_logs_detect_cloudfront_distributions_with_default_certificates
 }
 
 detection "cloudtrail_logs_detect_cloudfront_distributions_with_geo_restriction_disabled" {
-  title       = "Detect CloudFront Distributions with Geo-restriction disabled"
+  title       = "Detect CloudFront Distributions with Geo-restriction Disabled"
   description = "Identify updates to CloudFront Access Control Lists (ACLs) or changes in Origin Access Identity."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_cloudfront_distributions_with_geo_restriction_disabled

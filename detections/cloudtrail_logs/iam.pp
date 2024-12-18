@@ -9,7 +9,7 @@ locals {
   cloudtrail_logs_detect_iam_access_keys_creations_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'userName'")
   cloudtrail_logs_detect_iam_access_keys_deletions_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'userName'")
   cloudtrail_logs_detect_iam_users_with_password_change_sql_columns              = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", " ''")
-  cloudtrail_logs_detect_iam_users_attached_to_admin_groups_sql_columns          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'userName")
+  cloudtrail_logs_detect_iam_users_attached_to_admin_groups_sql_columns          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'userName'")
   cloudtrail_logs_detect_inline_policies_attached_to_iam_users_sql_columns       = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'userName'")
   cloudtrail_logs_detect_managed_policies_attached_to_iam_users_sql_columns      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'userName'")
   cloudtrail_logs_detect_iam_role_policies_modifications_sql_columns             = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'name'")
@@ -363,7 +363,7 @@ query "cloudtrail_logs_detect_iam_users_attached_to_admin_groups" {
     where
       event_source = 'iam.amazonaws.com'
       and event_name = 'AddUserToGroup'
-      and cast(request_parameters ->> 'groupName' as text) ilike '%admin%'
+      and request_parameters ->> 'groupName' ilike '%admin%'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;

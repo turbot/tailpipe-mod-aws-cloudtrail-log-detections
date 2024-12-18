@@ -69,10 +69,7 @@ query "cloudtrail_logs_detect_cloudtrail_trails_with_s3_logging_disabled" {
     where
       event_source = 'cloudtrail.amazonaws.com'
       and event_name = 'PutEventSelectors'
-      and (
-        request_parameters->'eventSelectors' is null
-        or request_parameters->'eventSelectors' not like '%"DataResourceType":"AWS::S3::Object"%'
-      )
+      and request_parameters ->> 'eventSelectors' not like '%"DataResourceType":"AWS::S3::Object"%'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -99,10 +96,7 @@ query "cloudtrail_logs_detect_cloudtrail_trails_with_lambda_logging_disabled" {
     where
       event_source = 'cloudtrail.amazonaws.com'
       and event_name = 'PutEventSelectors'
-      and (
-        request_parameters->'eventSelectors' is null
-        or request_parameters->'eventSelectors' not like '%"DataResourceType":"AWS::Lambda::Function"%'
-      )
+      and request_parameters ->> 'eventSelectors' not like '%"DataResourceType":"AWS::Lambda::Function"%'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
