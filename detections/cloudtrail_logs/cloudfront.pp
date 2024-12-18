@@ -22,7 +22,7 @@ benchmark "cloudtrail_logs_cloudfront_detections" {
 }
 
 detection "cloudtrail_logs_detect_cloudfront_distributions_with_default_certificates_disabled" {
-  title       = "Detect CloudFront ACL or Access Control Changes"
+  title       = "Detect CloudFront Distributions with Default Certificates Disabled"
   description = "Identify updates to CloudFront Access Control Lists (ACLs) or changes in Origin Access Identity."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_cloudfront_distributions_with_default_certificates_disabled
@@ -78,7 +78,7 @@ query "cloudtrail_logs_detect_cloudfront_distributions_with_geo_restriction_disa
 }
 
 detection "cloudtrail_logs_detect_public_access_granted_to_cloudfront_distribution_origins" {
-  title       = "Detect Overly Permissive CloudFront Origins"
+  title       = "Detect Public Access Granted to CloudFront Distribution Origins"
   description = "Identify CloudFront origins that allow public access, which can enable data exfiltration."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_public_access_granted_to_cloudfront_distribution_origins
@@ -104,7 +104,7 @@ query "cloudtrail_logs_detect_public_access_granted_to_cloudfront_distribution_o
 }
 
 detection "cloudtrail_logs_detect_cloudfront_distributions_with_logging_disabled" {
-  title       = "Detect CloudFront Logging Disabled"
+  title       = "Detect CloudFront Distributions with Logging Disabled"
   description = "Identify attempts to disable logging on CloudFront distributions."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_cloudfront_distributions_with_logging_disabled
@@ -155,7 +155,7 @@ query "cloudtrail_logs_detect_cloudfront_distribution_deletions" {
 }
 
 detection "cloudtrail_logs_detect_cloudfront_distributions_with_failover_criteria_modified" {
-  title       = "Detect CloudFront Origin Failover Changes"
+  title       = "Detect CloudFront Distributions with Failover Criteria Modified"
   description = "Identify updates to origin failover settings that can redirect data exfiltration."
   severity    = "medium"
   query       = query.cloudtrail_logs_detect_cloudfront_distributions_with_failover_criteria_modified

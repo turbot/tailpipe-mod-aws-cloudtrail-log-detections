@@ -4,7 +4,7 @@ locals {
 
 benchmark "cloudtrail_logs_apigateway_detections" {
   title       = "API Gateway Detections"
-  description = "This benchmark contains recommendations when scanning CloudTrail's API Gateway logs"
+  description = "This benchmark contains recommendations when scanning CloudTrail's API Gateway logs."
   type        = "detection"
   children    = [
     detection.cloudtrail_logs_detect_public_access_granted_to_api_gateways
@@ -17,7 +17,7 @@ benchmark "cloudtrail_logs_apigateway_detections" {
 }
 
 detection "cloudtrail_logs_detect_public_access_granted_to_api_gateways" {
-  title       = "Detect API Gateway Created with Public Access"
+  title       = "Detect Public Access Granted to API Gateways"
   description = "Detect when an API Gateway is created with public access, potentially exposing internal services."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_public_access_granted_to_api_gateways
