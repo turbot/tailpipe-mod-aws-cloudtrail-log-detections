@@ -10,6 +10,7 @@ benchmark "mitre_v151_ta0004_t1078" {
   documentation = file("./mitre_v151/docs/ta0004_t1078.md")
   children = [
     detection.cloudtrail_logs_detect_iam_users_attached_to_admin_groups,
+    detection.cloudtrail_logs_detect_codebuild_projects_with_iam_role_changes,
   ]
 
   tags = local.mitre_v151_ta0004_t1078_common_tags

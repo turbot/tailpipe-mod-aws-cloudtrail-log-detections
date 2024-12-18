@@ -19,6 +19,8 @@ benchmark "mitre_v151_ta0005_t1070" {
     detection.cloudtrail_logs_detect_vpc_route_table_replace_associations,
     detection.cloudtrail_logs_detect_vpc_deletions,
     detection.cloudtrail_logs_detect_vpc_peering_connection_deletions,
+    detection.cloudtrail_logs_detect_codebuild_projects_with_environment_variable_changes,
+    detection.cloudtrail_logs_detect_codebuild_project_deletions,
   ]
 
   tags = local.mitre_v151_ta0005_t1070_common_tags

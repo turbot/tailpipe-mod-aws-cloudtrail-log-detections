@@ -9,7 +9,8 @@ benchmark "mitre_v151_ta0040_t1561_002" {
   type          = "detection"
   documentation = file("./mitre_v151/docs/ta0040_t1561_002.md")
   children = [
-    detection.cloudtrail_logs_detect_ebs_volume_updates
+    detection.cloudtrail_logs_detect_ec2_ebs_volumes_with_encryption_disabled,
+    detection.cloudtrail_logs_detect_ebs_volume_detachments,
   ]
 
   tags = local.mitre_v151_ta0040_t1561_002_common_tags
