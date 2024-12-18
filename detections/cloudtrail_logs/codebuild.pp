@@ -61,7 +61,7 @@ detection "cloudtrail_logs_detect_codebuild_projects_with_iam_role_changes" {
 query "cloudtrail_logs_detect_codebuild_projects_with_iam_role_changes" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_log_detection_sql_columns}
+      ${local.cloudtrail_logs_detect_public_access_granted_to_codebuild_projects_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -88,7 +88,7 @@ detection "cloudtrail_logs_detect_codebuild_projects_with_source_repository_chan
 query "cloudtrail_logs_detect_codebuild_projects_with_source_repository_changes" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_log_detection_sql_columns}
+      ${local.cloudtrail_logs_detect_public_access_granted_to_codebuild_projects_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -115,7 +115,7 @@ detection "cloudtrail_logs_detect_codebuild_project_deletions" {
 query "cloudtrail_logs_detect_codebuild_project_deletions" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_log_detection_sql_columns}
+      ${local.cloudtrail_logs_detect_public_access_granted_to_codebuild_projects_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -141,7 +141,7 @@ detection "cloudtrail_logs_detect_codebuild_projects_with_environment_variable_c
 query "cloudtrail_logs_detect_codebuild_projects_with_environment_variable_changes" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_log_detection_sql_columns}
+      ${local.cloudtrail_logs_detect_public_access_granted_to_codebuild_projects_sql_columns}
     from
       aws_cloudtrail_log
     where

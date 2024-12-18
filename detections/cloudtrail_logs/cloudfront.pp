@@ -35,7 +35,7 @@ detection "cloudtrail_logs_detect_cloudfront_distributions_with_default_certific
 query "cloudtrail_logs_detect_cloudfront_distributions_with_default_certificates_disabled" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_log_detection_sql_columns}
+      ${local.cloudtrail_logs_detect_cloudfront_distribution_updates_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -63,7 +63,7 @@ detection "cloudtrail_logs_detect_cloudfront_distributions_with_geo_restriction_
 query "cloudtrail_logs_detect_cloudfront_distributions_with_geo_restriction_disabled" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_log_detection_sql_columns}
+      ${local.cloudtrail_logs_detect_cloudfront_distribution_updates_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -91,7 +91,7 @@ detection "cloudtrail_logs_detect_public_access_granted_to_cloudfront_distributi
 query "cloudtrail_logs_detect_public_access_granted_to_cloudfront_distribution_origins" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_log_detection_sql_columns}
+      ${local.cloudtrail_logs_detect_cloudfront_distribution_updates_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -117,7 +117,7 @@ detection "cloudtrail_logs_detect_cloudfront_distributions_with_logging_disabled
 query "cloudtrail_logs_detect_cloudfront_distributions_with_logging_disabled" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_log_detection_sql_columns}
+      ${local.cloudtrail_logs_detect_cloudfront_distribution_updates_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -143,7 +143,7 @@ detection "cloudtrail_logs_detect_cloudfront_distribution_deletions" {
 query "cloudtrail_logs_detect_cloudfront_distribution_deletions" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_log_detection_sql_columns}
+      ${local.cloudtrail_logs_detect_cloudfront_distribution_updates_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -168,13 +168,14 @@ detection "cloudtrail_logs_detect_cloudfront_distributions_with_failover_criteri
 query "cloudtrail_logs_detect_cloudfront_distributions_with_failover_criteria_modified" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_log_detection_sql_columns}
+      ${local.cloudtrail_logs_detect_cloudfront_distribution_updates_sql_columns}
     from
       aws_cloudtrail_log
     where
       event_source = 'cloudfront.amazonaws.com'
       and event_name = 'UpdateDistribution'
-      and request_parameters.origins.items[*].failover_criteria.status_codes is not null
+      and json_extract(request_parameters, '$.origins.items') IS NOT NULL
+      and json_array_length(json_extract(request_parameters, '$.origins.items[*].failover_criteria.status_codes')) > 0
     order by
       event_time desc;
   EOQ
