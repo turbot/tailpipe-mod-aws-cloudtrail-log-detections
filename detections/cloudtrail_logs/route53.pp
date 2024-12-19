@@ -23,10 +23,11 @@ benchmark "cloudtrail_logs_route53_detections" {
 }
 
 detection "cloudtrail_logs_detect_route53_domain_transfers" {
-  title       = "Detect Route 53 Domain Transfers"
-  description = "Detect when Route 53 domains are transferred to another AWS account. Unauthorized domain transfers can result in the loss of control over your domains, leading to service disruption, domain hijacking, or malicious use of your web infrastructure."
-  severity    = "low"
-  query       = query.cloudtrail_logs_detect_route53_domain_transfers
+  title           = "Detect Route 53 Domain Transfers"
+  description     = "Detect when Route 53 domains are transferred to another AWS account. Unauthorized domain transfers can result in the loss of control over your domains, leading to service disruption, domain hijacking, or malicious use of your web infrastructure."
+  severity        = "low"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_route53_domain_transfers
 
   tags = merge(local.cloudtrail_log_detection_route53_common_tags, {
     mitre_attack_ids = "TA0040:T1531"
@@ -34,10 +35,11 @@ detection "cloudtrail_logs_detect_route53_domain_transfers" {
 }
 
 detection "cloudtrail_logs_detect_route53_domains_with_transfer_lock_disabled" {
-  title       = "Detect Route 53 Domains with Transfer Lock Disabled"
-  description = "Detect when the transfer lock on a Route 53 domain is disabled. Disabling the transfer lock can allow unauthorized domain transfers, leading to potential loss of control, domain hijacking, service disruptions, and malicious use of the domain."
-  severity    = "low"
-  query       = query.cloudtrail_logs_detect_route53_domains_with_transfer_lock_disabled
+  title           = "Detect Route 53 Domains with Transfer Lock Disabled"
+  description     = "Detect when the transfer lock on a Route 53 domain is disabled. Disabling the transfer lock can allow unauthorized domain transfers, leading to potential loss of control, domain hijacking, service disruptions, and malicious use of the domain."
+  severity        = "low"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_route53_domains_with_transfer_lock_disabled
 
   tags = merge(local.cloudtrail_log_detection_route53_common_tags, {
     mitre_attack_ids = "TA0040:T1531"
@@ -45,10 +47,11 @@ detection "cloudtrail_logs_detect_route53_domains_with_transfer_lock_disabled" {
 }
 
 detection "cloudtrail_logs_detect_route53_vpc_associations_with_hosted_zones" {
-  title       = "Detect Route 53 VPC Associations with Hosted Zones"
-  description = "Detect when a VPC is associated with a Route 53 hosted zone. Unauthorized VPC associations can expose DNS records to unintended networks, potentially enabling lateral movement, unauthorized access, or DNS-based attacks."
-  severity    = "low"
-  query       = query.cloudtrail_logs_detect_route53_vpc_associations_with_hosted_zones
+  title          = "Detect Route 53 VPC Associations with Hosted Zones"
+  description    = "Detect when a VPC is associated with a Route 53 hosted zone. Unauthorized VPC associations can expose DNS records to unintended networks, potentially enabling lateral movement, unauthorized access, or DNS-based attacks."
+  severity        = "low"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_route53_vpc_associations_with_hosted_zones
 
   tags = merge(local.cloudtrail_log_detection_route53_common_tags, {
     mitre_attack_ids = "TA0003:T1078"

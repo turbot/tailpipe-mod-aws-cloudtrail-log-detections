@@ -36,10 +36,11 @@ benchmark "cloudtrail_logs_rds_detections" {
 }
 
 detection "cloudtrail_logs_detect_public_access_granted_to_rds_db_instances" {
-  title       = "Detect Public Access Granted to RDS DB Instances"
-  description = "Detect when public access is granted to RDS database instances. Making RDS instances publicly accessible can expose sensitive data to unauthorized users and increase the risk of exploitation through brute force, SQL injection, or other attacks."
-  severity    = "medium"
-  query       = query.cloudtrail_logs_detect_public_access_granted_to_rds_db_instances
+  title           = "Detect Public Access Granted to RDS DB Instances"
+  description     = "Detect when public access is granted to RDS database instances. Making RDS instances publicly accessible can expose sensitive data to unauthorized users and increase the risk of exploitation through brute force, SQL injection, or other attacks."
+  severity        = "medium"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_public_access_granted_to_rds_db_instances
 
   tags = merge(local.cloudtrail_log_detection_rds_common_tags, {
     mitre_attack_ids = "TA0001:T1190"
@@ -47,10 +48,11 @@ detection "cloudtrail_logs_detect_public_access_granted_to_rds_db_instances" {
 }
 
 detection "cloudtrail_logs_detect_rds_db_manual_snapshot_creations" {
-  title       = "Detect RDS Manual Snapshot Created"
-  description = "Detect when a manual snapshot of an RDS database instance is created. Manual snapshots can be used for legitimate backup purposes, but unauthorized snapshot creation may indicate data exfiltration or attempts to access sensitive data."
-  severity    = "low"
-  query       = query.cloudtrail_logs_detect_rds_db_manual_snapshot_creations
+  title           = "Detect RDS Manual Snapshot Created"
+  description     = "Detect when a manual snapshot of an RDS database instance is created. Manual snapshots can be used for legitimate backup purposes, but unauthorized snapshot creation may indicate data exfiltration or attempts to access sensitive data."
+  severity        = "low"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_rds_db_manual_snapshot_creations
 
   tags = merge(local.cloudtrail_log_detection_rds_common_tags, {
     mitre_attack_ids = "TA0010:T1537"
@@ -58,10 +60,11 @@ detection "cloudtrail_logs_detect_rds_db_manual_snapshot_creations" {
 }
 
 detection "cloudtrail_logs_detect_rds_db_instance_master_password_updates" {
-  title       = "Detect RDS Instances Master Password Updates"
-  description = "Detect when the master password of an RDS DB instance is updated. While password updates are common for security maintenance, unexpected or unauthorized changes may indicate an attempt to compromise database access or escalate privileges."
-  severity    = "low"
-  query       = query.cloudtrail_logs_detect_rds_db_instance_master_password_updates
+  title           = "Detect RDS Instances Master Password Updates"
+  description     = "Detect when the master password of an RDS DB instance is updated. While password updates are common for security maintenance, unexpected or unauthorized changes may indicate an attempt to compromise database access or escalate privileges."
+  severity        = "low"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_rds_db_instance_master_password_updates
 
   tags = merge(local.cloudtrail_log_detection_rds_common_tags, {
     mitre_attack_ids = "TA0003:T1098"
@@ -69,10 +72,11 @@ detection "cloudtrail_logs_detect_rds_db_instance_master_password_updates" {
 }
 
 detection "cloudtrail_logs_detect_rds_db_instances_public_restore" {
-  title       = "Detect RDS DB Instancse Public Restore"
-  description = "Detect when an RDS DB instance is restored from a snapshot with public accessibility enabled. Restoring a public DB instance can expose sensitive data to unauthorized access, increasing the risk of data exfiltration or exploitation."
-  severity    = "high"
-  query       = query.cloudtrail_logs_detect_rds_db_instances_public_restore
+  title           = "Detect RDS DB Instancse Public Restore"
+  description     = "Detect when an RDS DB instance is restored from a snapshot with public accessibility enabled. Restoring a public DB instance can expose sensitive data to unauthorized access, increasing the risk of data exfiltration or exploitation."
+  severity        = "high"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_rds_db_instances_public_restore
 
   tags = merge(local.cloudtrail_log_detection_rds_common_tags, {
     mitre_attack_ids = "TA0010:T1020"
@@ -80,10 +84,11 @@ detection "cloudtrail_logs_detect_rds_db_instances_public_restore" {
 }
 
 detection "cloudtrail_logs_detect_rds_db_instance_snapshot_deletions" {
-  title       = "Detect RDS DB Instance Snapshots Deletions"
-  description = "Detect when RDS DB instance snapshots are deleted. Deleting snapshots can lead to the loss of critical backups, hinder recovery efforts, and may indicate an attempt to destroy evidence or disrupt data availability."
-  severity    = "medium"
-  query       = query.cloudtrail_logs_detect_rds_db_instance_snapshot_deletions
+  title           = "Detect RDS DB Instance Snapshots Deletions"
+  description     = "Detect when RDS DB instance snapshots are deleted. Deleting snapshots can lead to the loss of critical backups, hinder recovery efforts, and may indicate an attempt to destroy evidence or disrupt data availability."
+  severity        = "medium"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_rds_db_instance_snapshot_deletions
 
   tags = merge(local.cloudtrail_log_detection_rds_common_tags, {
     mitre_attack_ids = "TA0040.T1485"
@@ -91,10 +96,11 @@ detection "cloudtrail_logs_detect_rds_db_instance_snapshot_deletions" {
 }
 
 detection "cloudtrail_logs_detect_rds_db_cluster_snapshot_deletions" {
-  title       = "Detect RDS DB Cluster Snapshots Deletions"
-  description = "Detect when RDS DB cluster snapshots are deleted. Deleting cluster snapshots can lead to the loss of critical backups, hinder disaster recovery, and may indicate attempts to destroy evidence or disrupt data availability."
-  severity    = "medium"
-  query       = query.cloudtrail_logs_detect_rds_db_cluster_snapshot_deletions
+  title           = "Detect RDS DB Cluster Snapshots Deletions"
+  description     = "Detect when RDS DB cluster snapshots are deleted. Deleting cluster snapshots can lead to the loss of critical backups, hinder disaster recovery, and may indicate attempts to destroy evidence or disrupt data availability."
+  severity        = "medium"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           =  query.cloudtrail_logs_detect_rds_db_cluster_snapshot_deletions
 
   tags = merge(local.cloudtrail_log_detection_rds_common_tags, {
     mitre_attack_ids = "TA0040.T1485"
@@ -102,10 +108,11 @@ detection "cloudtrail_logs_detect_rds_db_cluster_snapshot_deletions" {
 }
 
 detection "cloudtrail_logs_detect_rds_db_clusters_with_deletion_protection_disabled" {
-  title       = "Detect RDS DB Clusters Deletion Protection Disabled"
-  description = "Detect when deletion protection is disabled for RDS DB clusters. Disabling deletion protection increases the risk of accidental or malicious deletion of database clusters, potentially leading to data loss and service disruption."
-  severity    = "medium"
-  query       = query.cloudtrail_logs_detect_rds_db_clusters_with_deletion_protection_disabled
+  title           = "Detect RDS DB Clusters Deletion Protection Disabled"
+  description     = "Detect when deletion protection is disabled for RDS DB clusters. Disabling deletion protection increases the risk of accidental or malicious deletion of database clusters, potentially leading to data loss and service disruption."
+  severity        = "medium"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_rds_db_clusters_with_deletion_protection_disabled
 
   tags = merge(local.cloudtrail_log_detection_rds_common_tags, {
     mitre_attack_ids = "TA0040.T1485"
@@ -113,11 +120,12 @@ detection "cloudtrail_logs_detect_rds_db_clusters_with_deletion_protection_disab
 }
 
 detection "cloudtrail_logs_detect_rds_db_instances_with_iam_authentication_disabled" {
-  title       = "Detect Exploitation of Remote Services"
-  description = "Detect when IAM authentication is disabled on RDS DB instances. Disabling IAM authentication can weaken access controls, making it easier for attackers to exploit misconfigured or vulnerable services for unauthorized access or lateral movement."
-  severity    = "critical"
+  title           = "Detect Exploitation of Remote Services"
+  description     = "Detect when IAM authentication is disabled on RDS DB instances. Disabling IAM authentication can weaken access controls, making it easier for attackers to exploit misconfigured or vulnerable services for unauthorized access or lateral movement."
+  severity        = "critical"
+  display_columns = local.cloudtrail_log_detection_display_columns
   # documentation = file("./detections/docs/cloudtrail_logs_detect_rds_db_instances_with_iam_authentication_disabled.md")
-  query       = query.cloudtrail_logs_detect_rds_db_instances_with_iam_authentication_disabled
+  query           = query.cloudtrail_logs_detect_rds_db_instances_with_iam_authentication_disabled
 
   tags = merge(local.cloudtrail_log_detection_rds_common_tags, {
     mitre_attack_ids = "TA0008:T1210"
@@ -125,10 +133,11 @@ detection "cloudtrail_logs_detect_rds_db_instances_with_iam_authentication_disab
 }
 
 detection "cloudtrail_logs_detect_rds_db_instances_with_deletion_protection_disabled" {
-  title       = "Detect RDS DB Instances Deletion Protection Disabled"
-  description = "Detect when deletion protection is disabled for RDS DB instances. Disabling deletion protection increases the risk of accidental or malicious deletion of critical databases, potentially leading to data loss and service disruption."
-  severity    = "medium"
-  query       = query.cloudtrail_logs_detect_rds_db_instances_with_deletion_protection_disabled
+  title           = "Detect RDS DB Instances Deletion Protection Disabled"
+  description     = "Detect when deletion protection is disabled for RDS DB instances. Disabling deletion protection increases the risk of accidental or malicious deletion of critical databases, potentially leading to data loss and service disruption."
+  severity        = "medium"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_rds_db_instances_with_deletion_protection_disabled
 
   tags = merge(local.cloudtrail_log_detection_rds_common_tags, {
     mitre_attack_ids = "TA0040.T1485"

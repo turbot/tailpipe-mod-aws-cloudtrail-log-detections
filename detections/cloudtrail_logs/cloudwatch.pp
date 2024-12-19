@@ -1,4 +1,8 @@
 locals {
+  cloudtrail_log_detection_cloudwatch_common_tags = merge(local.cloudtrail_log_detection_common_tags, {
+    service = "AWS/CloudWatch"
+  })
+
   cloudtrail_logs_detect_cloudwatch_log_group_deletions_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
   cloudtrail_logs_detect_cloudwatch_log_stream_deletions_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logStreamName')")
   cloudtrail_logs_detect_cloudwatch_alarm_deletions_sql_columns      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.alarmNames')")
@@ -14,41 +18,43 @@ benchmark "cloudtrail_logs_cloudwatch_detections" {
     detection.cloudtrail_logs_detect_cloudwatch_alarm_deletions,
   ]
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_cloudwatch_common_tags, {
     type    = "Benchmark"
-    service = "AWS/CloudWatch"
   })
 }
 
 detection "cloudtrail_logs_detect_cloudwatch_log_group_deletions" {
-  title       = "Detect CloudWatch Log Group Deletions"
-  description = "Detect CloudWatch log groups deletion updates to check for unauthorized changes."
-  severity    = "medium"
-  query       = query.cloudtrail_logs_detect_cloudwatch_log_group_deletions
+  title           = "Detect CloudWatch Log Group Deletions"
+  description     = "Detect CloudWatch log groups deletion updates to check for unauthorized changes."
+  severity        = "medium"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_cloudwatch_log_group_deletions
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_cloudwatch_common_tags, {
     mitre_attack_ids = ""
   })
 }
 
 detection "cloudtrail_logs_detect_cloudwatch_log_stream_deletions" {
-  title       = "Detect CloudWatch Log Stream Deletions"
-  description = "Detect CloudWatch log streams deletion updates to check for unauthorized changes."
-  severity    = "medium"
-  query       = query.cloudtrail_logs_detect_cloudwatch_log_stream_deletions
+  title           = "Detect CloudWatch Log Stream Deletions"
+  description     = "Detect CloudWatch log streams deletion updates to check for unauthorized changes."
+  severity        = "medium"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_cloudwatch_log_stream_deletions
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_cloudwatch_common_tags, {
     mitre_attack_ids = ""
   })
 }
 
 detection "cloudtrail_logs_detect_cloudwatch_alarm_deletions" {
-  title       = "Detect CloudWatch Alarm Deletions"
-  description = "Detect CloudWatch alarms deletion updates to check for unauthorized changes."
-  severity    = "medium"
-  query       = query.cloudtrail_logs_detect_cloudwatch_alarm_deletions
+  title           = "Detect CloudWatch Alarm Deletions"
+  description     = "Detect CloudWatch alarms deletion updates to check for unauthorized changes."
+  severity        = "medium"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_cloudwatch_alarm_deletions
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_cloudwatch_common_tags, {
     mitre_attack_ids = ""
   })
 }

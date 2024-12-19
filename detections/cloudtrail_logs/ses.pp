@@ -20,11 +20,12 @@ benchmark "cloudtrail_logs_ses_detections" {
 }
 
 detection "cloudtrail_logs_detect_ses_unauthorized_email_collections" {
-  title       = "Detect SES Unauthorized Email Collections"
-  description = "Detect unauthorized attempts to read, download, or collect emails using AWS Simple Email Service (SES). This activity may indicate data exfiltration or unauthorized access to sensitive email communications."
-  severity    = "medium"
-  documentation = file("./detections/docs/cloudtrail_logs_detect_ses_unauthorized_email_collections.md")
-  query       = query.cloudtrail_logs_detect_ses_unauthorized_email_collections
+  title          = "Detect SES Unauthorized Email Collections"
+  description    = "Detect unauthorized attempts to read, download, or collect emails using AWS Simple Email Service (SES). This activity may indicate data exfiltration or unauthorized access to sensitive email communications."
+  severity        = "medium"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  documentation   = file("./detections/docs/cloudtrail_logs_detect_ses_unauthorized_email_collections.md")
+  query           = query.cloudtrail_logs_detect_ses_unauthorized_email_collections
 
   tags = merge(local.cloudtrail_log_detection_ses_common_tags, {
     mitre_attack_ids = "TA0009:T1114.001"

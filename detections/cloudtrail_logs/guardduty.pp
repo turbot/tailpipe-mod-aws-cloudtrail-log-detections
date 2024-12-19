@@ -20,10 +20,11 @@ benchmark "cloudtrail_logs_guardduty_detections" {
 }
 
 detection "cloudtrail_logs_detect_guardduty_detector_deletions" {
-  title       = "Detect GuardDuty Detector Deletions"
-  description = "Detect when GuardDuty detectors are deleted. Deleting GuardDuty detectors disables threat detection capabilities, which can allow malicious activities to go undetected and impair your ability to respond to security incidents."
-  severity    = "high"
-  query       = query.cloudtrail_logs_detect_guardduty_detector_deletions
+  title           = "Detect GuardDuty Detector Deletions"
+  description     = "Detect when GuardDuty detectors are deleted. Deleting GuardDuty detectors disables threat detection capabilities, which can allow malicious activities to go undetected and impair your ability to respond to security incidents."
+  severity        = "high"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_guardduty_detector_deletions
 
   tags = merge(local.cloudtrail_log_detection_guardduty_common_tags, {
     mitre_attack_ids = "TA0005:T1562.001, TA0040:T1485"

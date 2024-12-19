@@ -22,10 +22,11 @@ benchmark "cloudtrail_logs_eventbridge_detections" {
 }
 
 detection "cloudtrail_logs_detect_disabled_eventbridge_rules" {
-  title       = "Detect Disabled EventBridge Rules"
-  description = "Detect when EventBridge rules are disabled. Disabling EventBridge rules can disrupt automated workflows, scheduled tasks, and alerting mechanisms, potentially preventing the detection or mitigation of malicious activities."
-  severity    = "low"
-  query       = query.cloudtrail_logs_detect_disabled_eventbridge_rules
+  title           = "Detect Disabled EventBridge Rules"
+  description     = "Detect when EventBridge rules are disabled. Disabling EventBridge rules can disrupt automated workflows, scheduled tasks, and alerting mechanisms, potentially preventing the detection or mitigation of malicious activities."
+  severity        = "low"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_disabled_eventbridge_rules
 
   tags = merge(local.cloudtrail_log_detection_eventbridge_common_tags, {
     mitre_attack_ids = "TA0005:T1562.001"
@@ -33,10 +34,11 @@ detection "cloudtrail_logs_detect_disabled_eventbridge_rules" {
 }
 
 detection "cloudtrail_logs_detect_eventbridge_rule_deletions" {
-  title       = "Detect EventBridge Rule Deletion"
-  description = "Detect when EventBridge rules are deleted. Deleting EventBridge rules can disrupt critical automation and monitoring workflows, potentially allowing malicious activities to go undetected or unmitigated."
-  severity    = "low"
-  query       = query.cloudtrail_logs_detect_eventbridge_rule_deletions
+  title           = "Detect EventBridge Rule Deletion"
+  description     = "Detect when EventBridge rules are deleted. Deleting EventBridge rules can disrupt critical automation and monitoring workflows, potentially allowing malicious activities to go undetected or unmitigated."
+  severity        = "low"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_eventbridge_rule_deletions
 
   tags = merge(local.cloudtrail_log_detection_eventbridge_common_tags, {
     mitre_attack_ids = "TA0040:T1485"

@@ -20,10 +20,11 @@ benchmark "cloudtrail_logs_kms_detections" {
 }
 
 detection "cloudtrail_logs_detect_kms_key_deletions" {
-  title       = "Detect AWS KMS Key Deletions"
-  description = "Detect when an AWS KMS key is scheduled for deletion. Deleting a KMS key can render encrypted data permanently inaccessible, disrupt critical services, and impair data protection mechanisms. Unauthorized deletions may indicate an attempt to destroy evidence or disable security controls."
-  severity    = "high"
-  query       = query.cloudtrail_logs_detect_kms_key_deletions
+  title           = "Detect AWS KMS Key Deletions"
+  description     = "Detect when an AWS KMS key is scheduled for deletion. Deleting a KMS key can render encrypted data permanently inaccessible, disrupt critical services, and impair data protection mechanisms. Unauthorized deletions may indicate an attempt to destroy evidence or disable security controls."
+  severity        = "high"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_kms_key_deletions
 
   tags = merge(local.cloudtrail_log_detection_kms_common_tags, {
     mitre_attack_ids = "TA0005:T1070"

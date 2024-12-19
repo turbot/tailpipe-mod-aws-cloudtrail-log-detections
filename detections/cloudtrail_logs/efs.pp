@@ -1,4 +1,8 @@
 locals {
+  cloudtrail_log_detection_efs_common_tags = merge(local.cloudtrail_log_detection_common_tags, {
+    service = "AWS/EFS"
+  })
+
   cloudtrail_logs_detect_efs_file_systems_with_backup_policy_disabled_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "coalesce(json_extract_string(request_parameters, '$.fileSystemId'), json_extract_string(request_parameters, '$.mountTargetId'))")
 }
 
@@ -10,19 +14,19 @@ benchmark "cloudtrail_logs_efs_detections" {
     detection.cloudtrail_logs_detect_efs_file_systems_with_backup_policy_disabled,
   ]
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_efs_common_tags, {
     type    = "Benchmark"
-    service = "AWS/EFS"
   })
 }
 
 detection "cloudtrail_logs_detect_efs_file_systems_with_backup_policy_disabled" {
-  title       = "Detect EFS File Systems with Backup Policy Disabled"
-  description = "Identify events where backup policies are disabled for EFS file systems, potentially leaving data unprotected."
-  severity    = "high"
-  query       = query.cloudtrail_logs_detect_efs_file_systems_with_backup_policy_disabled
+  title           = "Detect EFS File Systems with Backup Policy Disabled"
+  description     = "Identify events where backup policies are disabled for EFS file systems, potentially leaving data unprotected."
+  severity        = "high"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_efs_file_systems_with_backup_policy_disabled
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.cloudtrail_log_detection_efs_common_tags, {
     mitre_attack_ids = "TA0040:T1562.001"
   })
 }
