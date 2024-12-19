@@ -9,7 +9,7 @@ locals {
 
 benchmark "cloudtrail_logs_ssm_detections" {
   title       = "SSM Detections"
-  description = "This benchmark contains recommendations when scanning CloudTrail's SSM logs."
+  description = "This benchmark contains recommendations when scanning CloudTrail logs for SSM events."
   type        = "detection"
   children    = [
     detection.cloudtrail_logs_detect_ssm_unauthorized_input_captures,

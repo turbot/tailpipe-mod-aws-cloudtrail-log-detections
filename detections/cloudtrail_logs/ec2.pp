@@ -11,7 +11,7 @@ locals {
 
 benchmark "cloudtrail_logs_ec2_detections" {
   title       = "EC2 Detections"
-  description = "This benchmark contains recommendations when scanning CloudTrail's EC2 logs"
+  description = "This benchmark contains recommendations when scanning CloudTrail logs for EC2 events."
   type        = "detection"
   children = [
     detection.cloudtrail_logs_detect_ec2_ami_copied_from_external_accounts,

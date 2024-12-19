@@ -4,20 +4,20 @@ locals {
   })
 
   cloudtrail_logs_detect_regions_with_default_ebs_encryption_disabled_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "recipient_account_id")
-  cloudtrail_logs_detect_ebs_volume_detachments_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
+  cloudtrail_logs_detect_ebs_volume_detachments_sql_columns                       = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
 }
 
 benchmark "cloudtrail_logs_ebs_detections" {
   title       = "EBS Detections"
-  description = "This benchmark contains recommendations when scanning CloudTrail's EBS logs"
+  description = "This benchmark contains recommendations when scanning CloudTrail logs for EBS events"
   type        = "detection"
-  children    = [
+  children = [
     detection.cloudtrail_logs_detect_regions_with_default_ebs_encryption_disabled,
     detection.cloudtrail_logs_detect_ebs_volume_detachments,
   ]
 
   tags = merge(local.cloudtrail_log_detection_ebs_common_tags, {
-    type    = "Benchmark"
+    type = "Benchmark"
   })
 }
 
@@ -39,7 +39,7 @@ detection "cloudtrail_logs_detect_ebs_volume_detachments" {
   severity        = "critical"
   display_columns = local.cloudtrail_log_detection_display_columns
   # documentation = file("./detections/docs/cloudtrail_logs_detect_ebs_volume_detachments.md")
-  query           = query.cloudtrail_logs_detect_ebs_volume_detachments
+  query = query.cloudtrail_logs_detect_ebs_volume_detachments
 
   tags = merge(local.cloudtrail_log_detection_ebs_common_tags, {
     mitre_attack_ids = "TA0040:T1561.002"

@@ -8,7 +8,7 @@ locals {
 
 benchmark "cloudtrail_logs_efs_detections" {
   title       = "EFS Detections"
-  description = "This benchmark contains recommendations when scanning CloudTrail's EFS logs"
+  description = "This benchmark contains recommendations when scanning CloudTrail logs for EFS events"
   type        = "detection"
   children    = [
     detection.cloudtrail_logs_detect_efs_file_systems_with_backup_policy_disabled,

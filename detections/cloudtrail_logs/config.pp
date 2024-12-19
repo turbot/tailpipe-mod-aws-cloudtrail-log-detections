@@ -9,7 +9,7 @@ locals {
 
 benchmark "cloudtrail_logs_config_detections" {
   title       = "Config Detections"
-  description = "This benchmark contains recommendations when scanning CloudTrail's Config logs"
+  description = "This benchmark contains recommendations when scanning CloudTrail logs for Config events."
   type        = "detection"
   children    = [
     detection.cloudtrail_logs_detect_config_service_rule_deletions,

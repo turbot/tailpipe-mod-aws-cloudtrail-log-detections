@@ -8,7 +8,7 @@ locals {
 
 benchmark "cloudtrail_logs_codebuild_detections" {
   title       = "CodeBuild Detections"
-  description = "This benchmark contains recommendations when scanning CloudTrail's CodeBuild logs"
+  description = "This benchmark contains recommendations when scanning CloudTrail logs for CodeBuild events."
   type        = "detection"
   children    = [
     detection.cloudtrail_logs_detect_public_access_granted_to_codebuild_projects,

@@ -22,7 +22,7 @@ locals {
 
 benchmark "cloudtrail_logs_iam_detections" {
   title       = "IAM Detections"
-  description = "This benchmark contains recommendations when scanning CloudTrail's IAM logs"
+  description = "This benchmark contains recommendations when scanning CloudTrail logs for IAM events."
   type        = "detection"
   children    = [
     detection.cloudtrail_logs_detect_iam_access_keys_creations,
