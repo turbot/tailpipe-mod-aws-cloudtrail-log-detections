@@ -9,7 +9,7 @@ benchmark "mitre_v151_ta0009_t1005" {
   type          = "detection"
   documentation = file("./mitre_v151/docs/ta0009_t1005.md")
   children = [
-    detection.cloudtrail_logs_detect_ssm_unauthorized_data_access_from_local_systems
+    detection.cloudtrail_logs_detect_ssm_with_unauthorized_data_access_from_local_systems
   ]
 
   tags = local.mitre_v151_ta0009_t1005_common_tags
