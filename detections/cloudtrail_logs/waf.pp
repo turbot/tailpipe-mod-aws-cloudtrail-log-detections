@@ -3,8 +3,8 @@ locals {
     service = "AWS/WAF"
   })
 
-  cloudtrail_logs_detect_waf_web_acl_deletions_sql_columns       = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.id")
-  cloudtrail_logs_detect_waf_web_acl_disassociations_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.resourceArn")
+  cloudtrail_logs_detect_waf_web_acl_deletions_sql_columns       = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.id')")
+  cloudtrail_logs_detect_waf_web_acl_disassociations_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.resourceArn')")
 }
 
 benchmark "cloudtrail_logs_waf_detections" {
@@ -52,7 +52,8 @@ query "cloudtrail_logs_detect_waf_web_acl_deletions" {
     from
       aws_cloudtrail_log
     where
-      event_name = 'DeleteWebACL'
+      event_source in ('waf.amazonaws.com', 'wafv2.amazonaws.com')
+      and event_name = 'DeleteWebACL'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -66,7 +67,8 @@ query "cloudtrail_logs_detect_waf_web_acl_disassociations" {
     from
       aws_cloudtrail_log
     where
-      event_name = 'DisassociateWebACL'
+      event_source = 'wafv2.amazonaws.com'
+      and event_name = 'DisassociateWebACL'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;

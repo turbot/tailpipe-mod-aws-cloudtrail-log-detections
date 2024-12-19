@@ -3,7 +3,7 @@ locals {
     service = "AWS/SES"
   })
 
-  cloudtrail_logs_detect_ses_unauthorized_email_collections_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
+  cloudtrail_logs_detect_ses_unauthorized_email_collections_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
 }
 
 benchmark "cloudtrail_logs_ses_detections" {
@@ -44,7 +44,7 @@ query "cloudtrail_logs_detect_ses_unauthorized_email_collections" {
         'VerifyEmailIdentity',
         'DeleteIdentity'
       )
-      and (user_identity.type = 'IAMUser' or user_identity.type = 'AssumedRole')
+      and (json_extract_string(user_identity, '$.type') = 'IAMUser' or json_extract_string(user_identity, '$.type') = 'AssumedRole')
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;

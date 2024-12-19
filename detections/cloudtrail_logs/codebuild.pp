@@ -1,5 +1,5 @@
 locals {
-  cloudtrail_logs_detect_public_access_granted_to_codebuild_projects_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.projectArn")
+  cloudtrail_logs_detect_public_access_granted_to_codebuild_projects_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.projectArn')")
 }
 
 benchmark "cloudtrail_logs_codebuild_detections" {
@@ -40,7 +40,7 @@ query "cloudtrail_logs_detect_public_access_granted_to_codebuild_projects" {
     where
       event_source = 'codebuild.amazonaws.com'
       and event_name = 'UpdateProjectVisibility'
-      and (request_parameters.projectVisibility) = 'PUBLIC_READ'
+      and json_extract_string(request_parameters, '$.projectVisibility') = 'PUBLIC_READ'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -67,7 +67,7 @@ query "cloudtrail_logs_detect_codebuild_projects_with_iam_role_changes" {
     where
       event_source = 'codebuild.amazonaws.com'
       and event_name = 'UpdateProject'
-      and request_parameters.roleArn is not null
+      and json_extract_string(request_parameters, '$.roleArn') is not null
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -94,7 +94,7 @@ query "cloudtrail_logs_detect_codebuild_projects_with_source_repository_changes"
     where
       event_source = 'codebuild.amazonaws.com'
       and event_name = 'UpdateProject'
-      and request_parameters.source.location is not null
+      and json_extract_string(request_parameters, '$.source.location') is not null
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -147,7 +147,7 @@ query "cloudtrail_logs_detect_codebuild_projects_with_environment_variable_chang
     where
       event_source = 'codebuild.amazonaws.com'
       and event_name = 'UpdateProject'
-      and request_parameters.environment.environmentVariables is not null
+      and json_extract_string(request_parameters, '$.environment.environmentVariables') is not null
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;

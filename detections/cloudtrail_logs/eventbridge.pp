@@ -3,8 +3,8 @@ locals {
     service = "AWS/EventBridge"
   })
 
-  cloudtrail_logs_detect_disabled_eventbridge_rules_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
-  cloudtrail_logs_detect_eventbridge_rule_deletions_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
+  cloudtrail_logs_detect_disabled_eventbridge_rules_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
+  cloudtrail_logs_detect_eventbridge_rule_deletions_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
 }
 
 benchmark "cloudtrail_logs_eventbridge_detections" {

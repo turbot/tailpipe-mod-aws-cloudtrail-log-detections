@@ -1,6 +1,6 @@
 locals {
   cloudtrail_logs_detect_regions_with_default_ebs_encryption_disabled_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "recipient_account_id")
-  cloudtrail_logs_detect_ebs_volume_detachments_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
+  cloudtrail_logs_detect_ebs_volume_detachments_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
 }
 
 benchmark "cloudtrail_logs_ebs_detections" {
@@ -70,4 +70,3 @@ query "cloudtrail_logs_detect_regions_with_default_ebs_encryption_disabled" {
       event_time desc;
   EOQ
 }
-

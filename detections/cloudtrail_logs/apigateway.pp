@@ -1,10 +1,10 @@
 locals {
-  cloudtrail_logs_detect_public_access_granted_to_api_gateways_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.createRestApiInput.name")
+  cloudtrail_logs_detect_public_access_granted_to_api_gateways_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.createRestApiInput.name')")
 }
 
 benchmark "cloudtrail_logs_apigateway_detections" {
   title       = "API Gateway Detections"
-  description = "This benchmark contains recommendations when scanning CloudTrail's API Gateway logs."
+  description = "This benchmark contains recommendations when scanning CloudTrail logs for API Gateway events."
   type        = "detection"
   children    = [
     detection.cloudtrail_logs_detect_public_access_granted_to_api_gateways

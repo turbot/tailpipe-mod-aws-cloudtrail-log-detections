@@ -3,10 +3,10 @@ locals {
     service = "AWS/Lambda"
   })
 
-  cloudtrail_logs_detect_public_access_granted_to_lambda_functions_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.functionName")
+  cloudtrail_logs_detect_public_access_granted_to_lambda_functions_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.functionName')")
 }
 
-benchmark "cloudtrail_logs_detections_lambda" {
+benchmark "cloudtrail_logs_lambda_detections" {
   title       = "Lambda Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs for Lambda events."
   type        = "detection"
@@ -40,7 +40,7 @@ query "cloudtrail_logs_detect_lambda_funtion_public_permission_added" {
     where
       event_source = 'lambda.amazonaws.com'
       and event_name like 'AddPermission%'
-      and (request_parameters ->> 'principal') = '*'
+      and json_extract_string(request_parameters, '$.principal') = '*'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;

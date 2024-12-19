@@ -1,10 +1,10 @@
 locals {
-  cloudtrail_logs_detect_cloudtrail_trail_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
+  cloudtrail_logs_detect_cloudtrail_trail_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
 }
 
 benchmark "cloudtrail_logs_cloudtrail_detections" {
   title       = "CloudTrail Detections"
-  description = "This benchmark contains recommendations when scanning CloudTrail's CloudTrail logs"
+  description = "This benchmark contains recommendations when scanning CloudTrail logs for CloudTrail events."
   type        = "detection"
   children    = [
     detection.cloudtrail_logs_detect_cloudtrail_trails_with_s3_logging_disabled,
@@ -23,11 +23,11 @@ benchmark "cloudtrail_logs_cloudtrail_detections" {
 }
 
 detection "cloudtrail_logs_detect_cloudtrail_trail_updates" {
-  title       = "Detect CloudTrail Trails Updates"
-  description = "Detect changes to CloudTrail trails to check if logging was stopped."
-  severity    = "medium"
-  documentation        = file("./detections/docs/cloudtrail_logs_detect_cloudtrail_trail_updates.md")
-  query       = query.cloudtrail_logs_detect_cloudtrail_trail_updates
+  title         = "Detect CloudTrail Trails Updates"
+  description   = "Detect changes to CloudTrail trails to check if logging was stopped."
+  severity      = "medium"
+  documentation = file("./detections/docs/cloudtrail_logs_detect_cloudtrail_trail_updates.md")
+  query         = query.cloudtrail_logs_detect_cloudtrail_trail_updates
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0005:T1562:001"
@@ -69,7 +69,7 @@ query "cloudtrail_logs_detect_cloudtrail_trails_with_s3_logging_disabled" {
     where
       event_source = 'cloudtrail.amazonaws.com'
       and event_name = 'PutEventSelectors'
-      and request_parameters ->> 'eventSelectors' not like '%"DataResourceType":"AWS::S3::Object"%'
+      and json_extract_string(request_parameters, '$.eventSelectors') not like '%"DataResourceType":"AWS::S3::Object"%'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -96,7 +96,7 @@ query "cloudtrail_logs_detect_cloudtrail_trails_with_lambda_logging_disabled" {
     where
       event_source = 'cloudtrail.amazonaws.com'
       and event_name = 'PutEventSelectors'
-      and request_parameters ->> 'eventSelectors' not like '%"DataResourceType":"AWS::Lambda::Function"%'
+      and json_extract_string(request_parameters, '$.eventSelectors') not like '%"DataResourceType":"AWS::Lambda::Function"%'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -123,8 +123,8 @@ query "cloudtrail_logs_detect_cloudtrail_trails_with_encryption_disabled" {
     where
       event_source = 'cloudtrail.amazonaws.com'
       and event_name = 'UpdateTrail'
-      and request_parameters->>'KmsKeyId' is null
-      and response_elements->>'trailARN' is not null
+      and json_extract_string(request_parameters, '$.KmsKeyId') is null
+      and json_extract_string(response_elements, '$.trailARN') is not null
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -151,8 +151,8 @@ query "cloudtrail_logs_detect_cloudtrail_trails_with_kms_key_updated" {
     where
       event_source = 'cloudtrail.amazonaws.com'
       and event_name = 'UpdateTrail'
-      and request_parameters->>'KmsKeyId' is not null
-      and response_elements->>'trailARN' is not null
+      and json_extract_string(request_parameters, '$.KmsKeyId') is not null
+      and json_extract_string(response_elements, '$.trailARN') is not null
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -179,8 +179,8 @@ query "cloudtrail_logs_detect_cloudtrail_trails_with_s3_logging_bucket_modified"
     where
       event_source = 'cloudtrail.amazonaws.com'
       and event_name = 'UpdateTrail'
-      and request_parameters->>'S3BucketName' is not null
-      and response_elements->>'trailARN' is not null
+      and json_extract_string(request_parameters, '$.S3BucketName') is not null
+      and json_extract_string(response_elements, '$.trailARN') is not null
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -207,7 +207,7 @@ query "cloudtrail_logs_detect_cloudtrail_trails_with_global_service_logging_disa
     where
       event_source = 'cloudtrail.amazonaws.com'
       and event_name = 'PutEventSelectors'
-      and request_parameters->>'IncludeGlobalServiceEvents' = 'false'
+      and json_extract_string(request_parameters, '$.IncludeGlobalServiceEvents') = 'false'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -239,5 +239,3 @@ query "cloudtrail_logs_detect_cloudtrail_trail_deletion" {
       event_time desc;
   EOQ
 }
-
-

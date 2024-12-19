@@ -3,7 +3,7 @@ locals {
     service = "AWS/KMS"
   })
 
-  cloudtrail_logs_detect_kms_key_deletions_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.keyId")
+  cloudtrail_logs_detect_kms_key_deletions_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.keyId')")
 }
 
 benchmark "cloudtrail_logs_kms_detections" {
@@ -20,7 +20,7 @@ benchmark "cloudtrail_logs_kms_detections" {
 }
 
 detection "cloudtrail_logs_detect_kms_key_deletions" {
-  title       = "Detect AWS KMS Key Deletion"
+  title       = "Detect AWS KMS Key Deletions"
   description = "Detect when an AWS KMS key is scheduled for deletion. Deleting a KMS key can render encrypted data permanently inaccessible, disrupt critical services, and impair data protection mechanisms. Unauthorized deletions may indicate an attempt to destroy evidence or disable security controls."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_kms_key_deletions

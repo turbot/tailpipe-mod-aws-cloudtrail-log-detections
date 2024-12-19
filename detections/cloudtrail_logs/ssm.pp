@@ -1,6 +1,6 @@
 locals {
-  cloudtrail_logs_detect_ssm_unauthorized_input_captures_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
-  cloudtrail_logs_detect_ssm_unauthorized_data_access_from_local_systems_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.documentName")
+  cloudtrail_logs_detect_ssm_unauthorized_input_captures_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
+  cloudtrail_logs_detect_ssm_unauthorized_data_access_from_local_systems_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.documentName')")
 }
 
 benchmark "cloudtrail_logs_ssm_detections" {
@@ -52,7 +52,7 @@ query "cloudtrail_logs_detect_ssm_unauthorized_data_access_from_local_systems" {
     where
       event_source = 'ssm.amazonaws.com'
       and event_name = 'SendCommand'
-      and cast(request_parameters ->> 'documentName' as text) = 'AWS-RunShellScript'
+      and json_extract_string(request_parameters, '$.documentName') = 'AWS-RunShellScript'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -69,10 +69,9 @@ query "cloudtrail_logs_detect_ssm_unauthorized_input_captures" {
     where
       event_source = 'ssm.amazonaws.com'
       and event_name = 'StartSession'
-      and request_parameters.documentName = 'AWS-StartPortForwardingSession'
+      and json_extract_string(request_parameters, '$.documentName') = 'AWS-StartPortForwardingSession'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
   EOQ
 }
-

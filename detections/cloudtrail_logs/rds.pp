@@ -3,15 +3,15 @@ locals {
     service = "AWS/RDS"
   })
 
-  cloudtrail_logs_detect_rds_db_manual_snapshot_creations_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
-  cloudtrail_logs_detect_rds_db_instance_master_password_updates_sql_columns                     = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
-  cloudtrail_logs_detect_rds_db_instances_public_restore_sql_columns                           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
-  cloudtrail_logs_detect_rds_db_instance_snapshot_deletions_sql_columns                      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBSnapshotIdentifier")
-  cloudtrail_logs_detect_rds_db_instances_with_iam_authentication_disabled_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
-  cloudtrail_logs_detect_rds_db_clusters_with_deletion_protection_disabled_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBClusterIdentifier")
-  cloudtrail_logs_detect_rds_db_instances_with_deletion_protection_disabled_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
-  cloudtrail_logs_detect_rds_db_cluster_snapshot_deletions_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBSnapshotIdentifier")
-  cloudtrail_logs_detect_public_access_granted_to_rds_db_instances_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.dBInstanceIdentifier")
+  cloudtrail_logs_detect_rds_db_manual_snapshot_creations_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.dBInstanceIdentifier')")
+  cloudtrail_logs_detect_rds_db_instance_master_password_updates_sql_columns            = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.dBInstanceIdentifier')")
+  cloudtrail_logs_detect_rds_db_instances_public_restore_sql_columns                    = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.dBInstanceIdentifier')")
+  cloudtrail_logs_detect_rds_db_instance_snapshot_deletions_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.dBSnapshotIdentifier')")
+  cloudtrail_logs_detect_rds_db_instances_with_iam_authentication_disabled_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
+  cloudtrail_logs_detect_rds_db_clusters_with_deletion_protection_disabled_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.dBClusterIdentifier')")
+  cloudtrail_logs_detect_rds_db_instances_with_deletion_protection_disabled_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.dBInstanceIdentifier')")
+  cloudtrail_logs_detect_rds_db_cluster_snapshot_deletions_sql_columns                  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.dBSnapshotIdentifier')")
+  cloudtrail_logs_detect_public_access_granted_to_rds_db_instances_sql_columns          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.dBInstanceIdentifier')")
 }
 
 benchmark "cloudtrail_logs_rds_detections" {
@@ -144,7 +144,7 @@ query "cloudtrail_logs_detect_rds_db_instances_with_iam_authentication_disabled"
     where
       event_source = 'rds.amazonaws.com'
       and event_name = 'ModifyDBInstance'
-      and request_parameters.enableIAMDatabaseAuthentication = 'false'
+      and json_extract_string(request_parameters, '$.enableIAMDatabaseAuthentication') = 'false'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -160,7 +160,7 @@ query "cloudtrail_logs_detect_public_access_granted_to_rds_db_instances" {
     where
       event_source = 'rds.amazonaws.com'
       and event_name in ('ModifyDBInstance', 'CreateDBInstance')
-      and coalesce(request_parameters.publiclyAccessible, 'false') = 'true'
+      and json_extract_string(request_parameters, '$.publiclyAccessible') = 'true'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -191,7 +191,7 @@ query "cloudtrail_logs_detect_rds_db_instance_master_password_updates" {
     where
       event_source = 'rds.amazonaws.com'
       and event_name = 'ModifyDBInstance'
-      and (response_elements -> 'pendingModifiedValues' -> 'masterUserPassword') is not null
+      and json_extract_string(response_elements, '$.pendingModifiedValues.masterUserPassword') is not null
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -207,7 +207,7 @@ query "cloudtrail_logs_detect_rds_db_instances_public_restore" {
     where
       event_source = 'rds.amazonaws.com'
       and event_name = 'RestoreDBInstanceFromDBSnapshot'
-      and cast(response_elements ->> 'publiclyAccessible' AS BOOLEAN) = true
+      and json_extract_string(response_elements, '$.publiclyAccessible') = 'true'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -224,7 +224,7 @@ query "cloudtrail_logs_detect_rds_db_instance_snapshot_deletions" {
       event_source = 'rds.amazonaws.com'
       and (
         (event_name = 'DeleteDBSnapshot')
-        or (event_name = 'ModifyDBInstance' and (request_parameters ->> 'backupRetentionPeriod')::int = 7)
+        or (event_name = 'ModifyDBInstance' and json_extract_string(request_parameters, '$.backupRetentionPeriod')::int = 7)
         )
       ${local.cloudtrail_log_detections_where_conditions}
     order by
@@ -256,7 +256,7 @@ query "cloudtrail_logs_detect_rds_db_clusters_with_deletion_protection_disabled"
     where
       event_source = 'rds.amazonaws.com'
       and event_name = 'ModifyDBCluster'
-      and (request_parameters ->> 'deletionProtection' = false)
+      and json_extract_string(request_parameters, '$.deletionProtection') = 'false'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -272,7 +272,7 @@ query "cloudtrail_logs_detect_rds_db_instances_with_deletion_protection_disabled
     where
       event_source = 'rds.amazonaws.com'
       and event_name = 'ModifyDBInstance'
-      and (request_parameters ->> 'deletionProtection' = false)
+      and json_extract_string(request_parameters, '$.deletionProtection') = 'false'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;

@@ -1,10 +1,10 @@
 locals {
-  cloudtrail_logs_detect_cloudfront_distribution_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
+  cloudtrail_logs_detect_cloudfront_distribution_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
 }
 
 benchmark "cloudtrail_logs_cloudfront_detections" {
   title       = "CloudFront Detections"
-  description = "This benchmark contains recommendations when scanning CloudTrail's CloudFront logs"
+  description = "This benchmark contains recommendations when scanning CloudTrail logs for CloudFront events."
   type        = "detection"
   children    = [
     detection.cloudtrail_logs_detect_cloudfront_distributions_with_default_certificates_disabled,
@@ -41,9 +41,7 @@ query "cloudtrail_logs_detect_cloudfront_distributions_with_default_certificates
     where
       event_source = 'cloudfront.amazonaws.com'
       and event_name in ('UpdateDistribution', 'CreateDistribution')
-      and (
-        request_parameters.viewer_certificate.cloudfront_default_certificate != 'true'
-      )
+      and json_extract_string(request_parameters, '$.viewer_certificate.cloudfront_default_certificate') != 'true'
     order by
       event_time desc;
   EOQ
@@ -69,9 +67,7 @@ query "cloudtrail_logs_detect_cloudfront_distributions_with_geo_restriction_disa
     where
       event_source = 'cloudfront.amazonaws.com'
       and event_name = 'UpdateDistribution'
-      and (
-        request_parameters.restrictions.geo_restriction.restriction_type != 'none'
-      )
+      and json_extract_string(request_parameters, '$.restrictions.geo_restriction.restriction_type') != 'none'
     order by
       event_time desc;
   EOQ
@@ -97,7 +93,8 @@ query "cloudtrail_logs_detect_public_access_granted_to_cloudfront_distribution_o
     where
       event_source = 'cloudfront.amazonaws.com'
       and event_name in ('CreateDistribution', 'UpdateDistribution')
-      and request_parameters.origins.items[*].s3_origin_config.origin_access_identity is null
+      -- TODO: Fix this condition
+      --and request_parameters.origins.items[*].s3_origin_config.origin_access_identity is null
     order by
       event_time desc;
   EOQ
@@ -123,7 +120,7 @@ query "cloudtrail_logs_detect_cloudfront_distributions_with_logging_disabled" {
     where
       event_source = 'cloudfront.amazonaws.com'
       and event_name = 'UpdateDistribution'
-      and request_parameters.logging.enabled = 'false'
+      and json_extract_string(request_parameters, '$.logging.enabled') = 'false'
     order by
       event_time desc;
   EOQ
@@ -174,7 +171,7 @@ query "cloudtrail_logs_detect_cloudfront_distributions_with_failover_criteria_mo
     where
       event_source = 'cloudfront.amazonaws.com'
       and event_name = 'UpdateDistribution'
-      and json_extract(request_parameters, '$.origins.items') IS NOT NULL
+      and json_extract(request_parameters, '$.origins.items') is not null
       and json_array_length(json_extract(request_parameters, '$.origins.items[*].failover_criteria.status_codes')) > 0
     order by
       event_time desc;

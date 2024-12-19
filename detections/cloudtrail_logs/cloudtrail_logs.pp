@@ -9,8 +9,6 @@ benchmark "cloudtrail_log_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs."
   type        = "detection"
   children = [
-    benchmark.cloudtrail_logs_detections_lambda,
-    benchmark.cloudtrail_logs_waf_detections,
     benchmark.cloudtrail_logs_apigateway_detections,
     benchmark.cloudtrail_logs_cloudfront_detections,
     benchmark.cloudtrail_logs_cloudtrail_detections,
@@ -24,16 +22,17 @@ benchmark "cloudtrail_log_detections" {
     benchmark.cloudtrail_logs_guardduty_detections,
     benchmark.cloudtrail_logs_iam_detections,
     benchmark.cloudtrail_logs_kms_detections,
+    benchmark.cloudtrail_logs_lambda_detections,
     benchmark.cloudtrail_logs_rds_detections,
     benchmark.cloudtrail_logs_route53_detections,
     benchmark.cloudtrail_logs_s3_detections,
     benchmark.cloudtrail_logs_ses_detections,
     benchmark.cloudtrail_logs_ssm_detections,
     benchmark.cloudtrail_logs_vpc_detections,
+    benchmark.cloudtrail_logs_waf_detections,
   ]
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     type = "Benchmark"
   })
 }
-

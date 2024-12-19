@@ -1,12 +1,11 @@
 locals {
-  cloudtrail_logs_detect_s3_bucket_deletions_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
-  cloudtrail_logs_detect_s3_object_deletions_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
-  cloudtrail_logs_detect_s3_bucket_policy_modifications_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
-  cloudtrail_logs_detect_public_access_granted_to_s3_buckets_sql_columns   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
-  cloudtrail_logs_detect_s3_tool_uploads_sql_columns           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.bucketName")
-  cloudtrail_logs_detect_s3_data_archiving_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
-  cloudtrail_logs_detect_s3_large_file_downloads_sql_columns   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
-  cloudtrail_logs_detect_s3_object_compressed_uploads_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters.name")
+  cloudtrail_logs_detect_s3_bucket_deletions_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.bucketName')")
+  cloudtrail_logs_detect_s3_bucket_policy_modifications_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.bucketName')")
+  cloudtrail_logs_detect_public_access_granted_to_s3_buckets_sql_columns   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.bucketName')")
+  cloudtrail_logs_detect_s3_tool_uploads_sql_columns           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.bucketName')")
+  cloudtrail_logs_detect_s3_data_archiving_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
+  cloudtrail_logs_detect_s3_large_file_downloads_sql_columns   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
+  cloudtrail_logs_detect_s3_object_compressed_uploads_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
 }
 
 benchmark "cloudtrail_logs_s3_detections" {
@@ -19,7 +18,6 @@ benchmark "cloudtrail_logs_s3_detections" {
     detection.cloudtrail_logs_detect_s3_tool_uploads,
     detection.cloudtrail_logs_detect_s3_data_archiving,
     detection.cloudtrail_logs_detect_s3_large_file_downloads,
-    detection.cloudtrail_logs_detect_s3_object_deletions,
     detection.cloudtrail_logs_detect_public_access_granted_to_s3_buckets,
     detection.cloudtrail_logs_detect_s3_object_compressed_uploads,
   ]
@@ -35,17 +33,6 @@ detection "cloudtrail_logs_detect_s3_bucket_deletions" {
   description = "Detect when an S3 bucket is deleted. Deleting an S3 bucket can lead to data loss, disrupt services relying on stored data, and may indicate malicious activity aimed at destroying critical information or disrupting operations."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_s3_bucket_deletions
-
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = "TA0040:T1485"
-  })
-}
-
-detection "cloudtrail_logs_detect_s3_object_deletions" {
-  title       = "Detect S3 Object Deletions"
-  description = "Detect when an S3 object is deleted. Unauthorized deletions can lead to data loss, disrupt workflows relying on the object, and may indicate malicious activity aimed at destroying evidence or compromising business operations."
-  severity    = "low"
-  query       = query.cloudtrail_logs_detect_s3_object_deletions
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0040:T1485"
@@ -131,7 +118,7 @@ query "cloudtrail_logs_detect_s3_data_archiving" {
     where
       event_source = 's3.amazonaws.com'
       and event_name = 'PutObject'
-      and request_parameters.key like '%.zip%'
+      and json_extract_string(request_parameters, '$.key') like '%.zip%'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -147,7 +134,7 @@ query "cloudtrail_logs_detect_s3_tool_uploads" {
     where
       event_source = 's3.amazonaws.com'
       and event_name in ('PutObject', 'CopyObject')
-      and request_parameters.key like '%.exe%'
+      and json_extract_string(request_parameters, '$.key') like '%.exe%'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -162,20 +149,6 @@ query "cloudtrail_logs_detect_s3_bucket_deletions" {
       aws_cloudtrail_log
     where
       event_name = 'DeleteBucket'
-      ${local.cloudtrail_log_detections_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "cloudtrail_logs_detect_s3_object_deletions" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_s3_object_deletions_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_name = 'DeleteObject'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -204,7 +177,7 @@ query "cloudtrail_logs_detect_public_access_granted_to_s3_buckets" {
       aws_cloudtrail_log
     where
       event_name = 'PutBucketPolicy'
-      and cast(request_parameters -> 'policy' as text) like '%"Principal":"*"%'
+      and json_extract_string(request_parameters, '$.policy') like '%"Principal":"*"%'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -220,7 +193,7 @@ query "cloudtrail_logs_detect_s3_large_file_downloads" {
     where
       event_source = 's3.amazonaws.com'
       and event_name = 'GetObject'
-      and cast(request_parameters->>'size' as integer) > 104857600 -- Size greater than 100MB
+      and json_extract_string(request_parameters, '$.size')::int > 104857600 -- Size greater than 100MB
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -236,8 +209,8 @@ query "cloudtrail_logs_detect_s3_object_compressed_uploads" {
     where
       event_source = 's3.amazonaws.com'
       and event_name in ('PutObject', 'UploadPart')
-      and request_parameters.compressionFormat is not null
-      and (user_identity.type = 'IAMUser' or user_identity.type = 'AssumedRole')
+      and json_extract_string(request_parameters, '$.compressionFormat') is not null
+      and (json_extract_string(user_identity, '$.type') = 'IAMUser' or json_extract_string(user_identity, '$.type') = 'AssumedRole')
     order by
       event_time desc;
   EOQ

@@ -1,10 +1,10 @@
 # Overview
 
-AWS EC2 Security Groups control inbound and outbound traffic to your EC2 instances. Monitoring changes to these rules is critical to detect and prevent unauthorized access to your VPC or the potential export of sensitive data. Unauthorized changes to ingress and egress rules can be a sign of malicious activity or misconfiguration that could expose your environment to threats.
+AWS VPC Security Groups control inbound and outbound traffic to your EC2 instances. Monitoring changes to these rules is critical to detect and prevent unauthorized access to your VPC or the potential export of sensitive data. Unauthorized changes to ingress and egress rules can be a sign of malicious activity or misconfiguration that could expose your environment to threats.
 
 ## Potential Impact of Unmonitored Security Group Changes
 
-Failing to monitor EC2 Security Group changes can expose your environment to:
+Failing to monitor VPC Security Group changes can expose your environment to:
 
 1. **External Threats:** 
    - Unauthorized ingress rules may allow attackers to exploit open ports, enabling lateral movement or establishing persistence for malicious activities.
