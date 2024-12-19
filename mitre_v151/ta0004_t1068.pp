@@ -9,7 +9,7 @@ benchmark "mitre_v151_ta0004_t1068" {
   type          = "detection"
   documentation = file("./mitre_v151/docs/ta0004_t1068.md")
   children = [
-    detection.cloudtrail_logs_detect_ec2_security_group_ingress_egress_updates,
+    detection.cloudtrail_logs_detect_vpc_security_group_ingress_egress_updates,
   ]
 
   tags = local.mitre_v151_ta0004_t1068_common_tags

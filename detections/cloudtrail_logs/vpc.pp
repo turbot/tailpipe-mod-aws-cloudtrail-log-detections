@@ -4,20 +4,19 @@ locals {
   })
 
   cloudtrail_logs_detect_vpc_deletions_sql_columns                         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
-  cloudtrail_logs_detect_vpcs_with_classic_link_enabled_sql_columns        = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
-  cloudtrail_logs_detect_vpc_peering_connection_deletions_sql_columns      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
-  cloudtrail_logs_detect_vpc_route_table_updates_sql_columns               = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
-  cloudtrail_logs_detect_vpc_route_table_deletions_sql_columns             = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
-  cloudtrail_logs_detect_vpc_route_table_route_deletions_sql_columns       = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
-  cloudtrail_logs_detect_vpc_route_table_route_disassociations_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
-  cloudtrail_logs_detect_vpc_route_table_replace_associations_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
-  cloudtrail_logs_detect_vpc_security_group_ipv4_allow_all_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
-  cloudtrail_logs_detect_vpc_security_group_ipv6_allow_all_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
-  cloudtrail_logs_detect_vpc_security_group_ingress_egress_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
+  cloudtrail_logs_detect_vpc_full_network_packet_capture_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(response_elements, '$.trafficMirrorTargetId')")
   cloudtrail_logs_detect_vpc_gateway_updates_sql_columns             = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.internetGatewayId')")
   cloudtrail_logs_detect_vpc_network_acl_updates_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.networkAclId')")
-
-  cloudtrail_logs_detect_vpc_full_network_packet_capture_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(response_elements, '$.trafficMirrorTargetId')")
+  cloudtrail_logs_detect_vpc_peering_connection_deletions_sql_columns      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
+  cloudtrail_logs_detect_vpc_route_table_deletions_sql_columns             = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
+  cloudtrail_logs_detect_vpc_route_table_replace_associations_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
+  cloudtrail_logs_detect_vpc_route_table_route_deletions_sql_columns       = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
+  cloudtrail_logs_detect_vpc_route_table_route_disassociations_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
+  cloudtrail_logs_detect_vpc_route_table_updates_sql_columns               = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
+  cloudtrail_logs_detect_vpc_security_group_ingress_egress_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
+  cloudtrail_logs_detect_vpc_security_group_ipv4_allow_all_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
+  cloudtrail_logs_detect_vpc_security_group_ipv6_allow_all_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
+  cloudtrail_logs_detect_vpcs_with_classic_link_enabled_sql_columns        = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
 
   // TODO: Get an array of flowLogIds. Need to extract it and convert it into a string?
   cloudtrail_logs_detect_vpc_flow_log_deletions_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.flowLogIds')")
@@ -29,18 +28,19 @@ benchmark "cloudtrail_logs_vpc_detections" {
   type        = "detection"
   children    = [
     detection.cloudtrail_logs_detect_vpc_deletions,
+    detection.cloudtrail_logs_detect_vpc_flow_log_deletions,
+    detection.cloudtrail_logs_detect_vpc_full_network_packet_capture_updates,
+    detection.cloudtrail_logs_detect_vpc_gateway_updates,
+    detection.cloudtrail_logs_detect_vpc_network_acl_updates,
     detection.cloudtrail_logs_detect_vpc_peering_connection_deletions,
     detection.cloudtrail_logs_detect_vpc_route_table_deletions,
     detection.cloudtrail_logs_detect_vpc_route_table_replace_associations,
     detection.cloudtrail_logs_detect_vpc_route_table_route_deletions,
     detection.cloudtrail_logs_detect_vpc_route_table_route_disassociations,
-    detection.cloudtrail_logs_detect_vpcs_with_classic_link_enabled,
-    detection.cloudtrail_logs_detect_vpc_flow_log_deletions,
-    detection.cloudtrail_logs_detect_vpc_full_network_packet_capture_updates,
-    detection.cloudtrail_logs_detect_vpc_gateway_updates,
-    detection.cloudtrail_logs_detect_vpc_network_acl_updates,
     detection.cloudtrail_logs_detect_vpc_security_group_ingress_egress_updates,
+    detection.cloudtrail_logs_detect_vpc_security_group_ipv4_allow_all,
     detection.cloudtrail_logs_detect_vpc_security_group_ipv6_allow_all,
+    detection.cloudtrail_logs_detect_vpcs_with_classic_link_enabled,
   ]
 
   tags = merge(local.cloudtrail_log_detection_vpc_common_tags, {
@@ -138,7 +138,7 @@ detection "cloudtrail_logs_detect_vpc_security_group_ingress_egress_updates" {
 }
 
 detection "cloudtrail_logs_detect_vpc_network_acl_updates" {
-  title       = "Detect VPC Gateways Updates"
+  title       = "Detect VPC Network ACL Updates"
   description = "Detect VPC gateways updates to check for changes in network configurations."
   severity    = "low"
   query       = query.cloudtrail_logs_detect_vpc_network_acl_updates
@@ -171,7 +171,7 @@ detection "cloudtrail_logs_detect_vpc_full_network_packet_capture_updates" {
 }
 
 detection "cloudtrail_logs_detect_vpc_flow_log_deletions" {
-  title       = "Detect VPC Flow Logs Deletions Updates"
+  title       = "Detect VPC Flow Logs Deletions"
   description = "Detect VPC flow logs deletions updates to check for unauthorized changes."
   severity    = "high"
   query       = query.cloudtrail_logs_detect_vpc_flow_log_deletions
@@ -181,11 +181,11 @@ detection "cloudtrail_logs_detect_vpc_flow_log_deletions" {
   })
 }
 
-detection "cloudtrail_logs_detect_security_group_ipv4_allow_all" {
+detection "cloudtrail_logs_detect_vpc_security_group_ipv4_allow_all" {
   title       = "Detect Security Groups Rule Modifications to Allow All Traffic to IPv4"
   description = "Detect when security group rules are modified to allow all traffic to IPv4."
   severity    = "high"
-  query       = query.cloudtrail_logs_detect_security_group_ipv4_allow_all
+  query       = query.cloudtrail_logs_detect_vpc_security_group_ipv4_allow_all
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0005:T1070"
@@ -324,7 +324,7 @@ query "cloudtrail_logs_detect_vpc_flow_log_deletions" {
   EOQ
 }
 
-query "cloudtrail_logs_detect_security_group_ipv4_allow_all" {
+query "cloudtrail_logs_detect_vpc_security_group_ipv4_allow_all" {
   sql = <<-EOQ
     select
       ${local.cloudtrail_logs_detect_vpc_security_group_ipv4_allow_all_sql_columns}
