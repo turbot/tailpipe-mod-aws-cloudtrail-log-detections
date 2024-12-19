@@ -40,7 +40,7 @@ query "cloudtrail_logs_detect_public_access_granted_to_api_gateways" {
     where
       event_source = 'apigateway.amazonaws.com'
       and event_name = 'CreateRestApi'
-      and json_extract(request_parameters, '$.createRestApiInput.endpointConfiguration.types') like '%EDGE%'
+      and json_extract_string(request_parameters, '$.createRestApiInput.endpointConfiguration.types') like '%EDGE%'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;

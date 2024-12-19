@@ -12,11 +12,10 @@ benchmark "cloudtrail_logs_cloudfront_detections" {
   type        = "detection"
   children    = [
     detection.cloudtrail_logs_detect_cloudfront_distributions_with_default_certificates_disabled,
+    detection.cloudtrail_logs_detect_cloudfront_distributions_with_failover_criteria_modified,
     detection.cloudtrail_logs_detect_cloudfront_distributions_with_geo_restriction_disabled,
-    detection.cloudtrail_logs_detect_public_access_granted_to_cloudfront_distribution_origins,
     detection.cloudtrail_logs_detect_cloudfront_distributions_with_logging_disabled,
-    detection.cloudtrail_logs_detect_cloudfront_distribution_deletions,
-    detection.cloudtrail_logs_detect_cloudfront_distributions_with_failover_criteria_modified
+    detection.cloudtrail_logs_detect_public_access_granted_to_cloudfront_distribution_origins,
   ]
 
   tags = merge(local.cloudtrail_log_detection_cloudfront_common_tags, {
@@ -26,7 +25,7 @@ benchmark "cloudtrail_logs_cloudfront_detections" {
 
 detection "cloudtrail_logs_detect_cloudfront_distributions_with_default_certificates_disabled" {
   title           = "Detect CloudFront Distributions with Default Certificates Disabled"
-  description     = "Identify updates to CloudFront Access Control Lists (ACLs) or changes in Origin Access Identity."
+  description     = "Detect CloudFront distributions with default certificates disabled to check for misconfigurations that could lead to insecure connections or unauthorized access, compromising data integrity and security."
   severity        = "high"
   display_columns = local.cloudtrail_log_detection_display_columns
   query           = query.cloudtrail_logs_detect_cloudfront_distributions_with_default_certificates_disabled
@@ -53,7 +52,7 @@ query "cloudtrail_logs_detect_cloudfront_distributions_with_default_certificates
 
 detection "cloudtrail_logs_detect_cloudfront_distributions_with_geo_restriction_disabled" {
   title           = "Detect CloudFront Distributions with Geo-restriction Disabled"
-  description     = "Identify updates to CloudFront Access Control Lists (ACLs) or changes in Origin Access Identity."
+  description = "Detect CloudFront distributions with geo-restriction disabled to check for misconfigurations that could allow access from restricted geographic locations, potentially exposing resources to unauthorized or malicious activity."
   severity        = "high"
   display_columns = local.cloudtrail_log_detection_display_columns
   query           = query.cloudtrail_logs_detect_cloudfront_distributions_with_geo_restriction_disabled
@@ -80,7 +79,7 @@ query "cloudtrail_logs_detect_cloudfront_distributions_with_geo_restriction_disa
 
 detection "cloudtrail_logs_detect_public_access_granted_to_cloudfront_distribution_origins" {
   title           = "Detect Public Access Granted to CloudFront Distribution Origins"
-  description     = "Identify CloudFront origins that allow public access, which can enable data exfiltration."
+  description     = "Detect CloudFront origins that allow public access, which can enable data exfiltration."
   severity        = "medium"
   display_columns = local.cloudtrail_log_detection_display_columns
   query           = query.cloudtrail_logs_detect_public_access_granted_to_cloudfront_distribution_origins
@@ -108,7 +107,7 @@ query "cloudtrail_logs_detect_public_access_granted_to_cloudfront_distribution_o
 
 detection "cloudtrail_logs_detect_cloudfront_distributions_with_logging_disabled" {
   title           = "Detect CloudFront Distributions with Logging Disabled"
-  description     = "Identify attempts to disable logging on CloudFront distributions."
+  description = "Detect CloudFront distributions with logging disabled to check for changes that could hinder monitoring and auditing, potentially obscuring malicious activity or misconfigurations."
   severity        = "high"
   display_columns = local.cloudtrail_log_detection_display_columns
   query           = query.cloudtrail_logs_detect_cloudfront_distributions_with_logging_disabled
@@ -133,35 +132,9 @@ query "cloudtrail_logs_detect_cloudfront_distributions_with_logging_disabled" {
   EOQ
 }
 
-detection "cloudtrail_logs_detect_cloudfront_distribution_deletions" {
-  title           = "Detect CloudFront Distribution Deletions"
-  description     = "Identify events where CloudFront distributions are deleted, potentially disrupting content delivery."
-  severity        = "high"
-  display_columns = local.cloudtrail_log_detection_display_columns
-  query           = query.cloudtrail_logs_detect_cloudfront_distribution_deletions
-
-  tags = merge(local.cloudtrail_log_detection_cloudfront_common_tags, {
-    mitre_attack_ids = "TA0040:T1485"
-  })
-}
-
-query "cloudtrail_logs_detect_cloudfront_distribution_deletions" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_cloudfront_distribution_updates_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'cloudfront.amazonaws.com'
-      and event_name = 'DeleteDistribution'
-    order by
-      event_time desc;
-  EOQ
-}
-
 detection "cloudtrail_logs_detect_cloudfront_distributions_with_failover_criteria_modified" {
   title           = "Detect CloudFront Distributions with Failover Criteria Modified"
-  description     = "Identify updates to origin failover settings that can redirect data exfiltration."
+  description = "Detect modifications to CloudFront distribution failover criteria to check for changes that could enable unintended data redirection or exfiltration, compromising data confidentiality and availability."
   severity        = "medium"
   display_columns = local.cloudtrail_log_detection_display_columns
   query           = query.cloudtrail_logs_detect_cloudfront_distributions_with_failover_criteria_modified

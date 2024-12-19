@@ -14,8 +14,6 @@ benchmark "cloudtrail_logs_config_detections" {
   children    = [
     detection.cloudtrail_logs_detect_config_service_rule_deletions,
     detection.cloudtrail_logs_detect_configuration_recorder_stop_updates,
-    detection.cloudtrail_logs_detect_config_service_delivery_channel_deletions,
-    detection.cloudtrail_logs_detect_config_service_configuration_recorder_deletions,
   ]
 
   tags = merge(local.cloudtrail_log_detection_config_common_tags, {
@@ -25,79 +23,13 @@ benchmark "cloudtrail_logs_config_detections" {
 
 detection "cloudtrail_logs_detect_config_service_rule_deletions" {
   title           = "Detect Config Service Rules Deletions"
-  description     = "Detect the deletions of Config service rules."
+  description     = "Detect the deletions of Config service rules to check for changes that could disrupt compliance monitoring or remove critical guardrails."
   severity        = "low"
   display_columns = local.cloudtrail_log_detection_display_columns
   query           = query.cloudtrail_logs_detect_config_service_rule_deletions
 
   tags = merge(local.cloudtrail_log_detection_config_common_tags, {
     mitre_attack_ids = "T1562.001"
-  })
-}
-
-detection "cloudtrail_logs_detect_config_service_delivery_channel_deletions" {
-  title           = "Detect Config Service Delivery Channel Deletions"
-  description     = "Detect the deletions of Config service delivery channels."
-  severity        = "low"
-  display_columns = local.cloudtrail_log_detection_display_columns
-  query           = query.cloudtrail_logs_detect_config_service_delivery_channel_deletions
-
-  tags = merge(local.cloudtrail_log_detection_config_common_tags, {
-    mitre_attack_ids = "T1562.001"
-  })
-}
-
-query "cloudtrail_logs_detect_config_service_delivery_channel_deletions" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_config_service_rule_deletions_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'config.amazonaws.com'
-      and event_name = 'DeleteDeliveryChannel'
-      ${local.cloudtrail_log_detections_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}
-
-detection "cloudtrail_logs_detect_config_service_configuration_recorder_deletions" {
-  title           = "Detect Config Service Configuration Recorder Deletions"
-  description     = "Detect the deletions of Config service configuration recorder."
-  severity        = "low"
-  display_columns = local.cloudtrail_log_detection_display_columns
-  query           = query.cloudtrail_logs_detect_config_service_configuration_recorder_deletions
-
-  tags = merge(local.cloudtrail_log_detection_config_common_tags, {
-    mitre_attack_ids = "T1562.001"
-  })
-}
-
-query "cloudtrail_logs_detect_config_service_configuration_recorder_deletions" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_config_service_rule_deletions_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'config.amazonaws.com'
-      and event_name = 'DeleteConfigurationRecorder'
-      ${local.cloudtrail_log_detections_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}
-
-detection "cloudtrail_logs_detect_configuration_recorder_stop_updates" {
-  title           = "Detect Configuration Recorder Stop Updates"
-  description     = "Detect when configuration recorders are stopped."
-  severity        = "low"
-  display_columns = local.cloudtrail_log_detection_display_columns
-  query           = query.cloudtrail_logs_detect_configuration_recorder_stop_updates
-
-  tags = merge(local.cloudtrail_log_detection_config_common_tags, {
-    mitre_attack_ids = "TA0005.T1562"
   })
 }
 
@@ -114,6 +46,18 @@ query "cloudtrail_logs_detect_config_service_rule_deletions" {
     order by
       event_time desc;
   EOQ
+}
+
+detection "cloudtrail_logs_detect_configuration_recorder_stop_updates" {
+  title           = "Detect Configuration Recorder Stop Updates"
+  description     = "Detect when configuration recorders are stopped to check for changes that could disrupt compliance monitoring and auditing, potentially obscuring unauthorized activity."
+  severity        = "low"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_configuration_recorder_stop_updates
+
+  tags = merge(local.cloudtrail_log_detection_config_common_tags, {
+    mitre_attack_ids = "TA0005:T1562"
+  })
 }
 
 query "cloudtrail_logs_detect_configuration_recorder_stop_updates" {
