@@ -21,8 +21,6 @@ benchmark "mitre_v151_ta0005_t1070" {
     detection.cloudtrail_logs_detect_vpc_security_group_ipv4_allow_all,
     detection.cloudtrail_logs_detect_vpc_security_group_ipv6_allow_all,
     detection.cloudtrail_logs_detect_vpc_flow_log_deletions,
-    detection.cloudtrail_logs_detect_cloudwatch_log_stream_deletions,
-    detection.cloudtrail_logs_detect_cloudwatch_log_group_deletions,
   ]
 
   tags = local.mitre_v151_ta0005_t1070_common_tags

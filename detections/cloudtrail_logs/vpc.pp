@@ -3,20 +3,20 @@ locals {
     service = "AWS/VPC"
   })
 
-  cloudtrail_logs_detect_vpc_deletions_sql_columns                         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
-  cloudtrail_logs_detect_vpc_full_network_packet_capture_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(response_elements, '$.trafficMirrorTargetId')")
-  cloudtrail_logs_detect_vpc_gateway_updates_sql_columns             = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.internetGatewayId')")
-  cloudtrail_logs_detect_vpc_network_acl_updates_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.networkAclId')")
-  cloudtrail_logs_detect_vpc_peering_connection_deletions_sql_columns      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
-  cloudtrail_logs_detect_vpc_route_table_deletions_sql_columns             = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
-  cloudtrail_logs_detect_vpc_route_table_replace_associations_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
-  cloudtrail_logs_detect_vpc_route_table_route_deletions_sql_columns       = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
-  cloudtrail_logs_detect_vpc_route_table_route_disassociations_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
-  cloudtrail_logs_detect_vpc_route_table_updates_sql_columns               = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
+  cloudtrail_logs_detect_vpc_deletions_sql_columns                             = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
+  cloudtrail_logs_detect_vpc_full_network_packet_capture_updates_sql_columns   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(response_elements, '$.trafficMirrorTargetId')")
+  cloudtrail_logs_detect_vpc_gateway_updates_sql_columns                       = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.internetGatewayId')")
+  cloudtrail_logs_detect_vpc_network_acl_updates_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.networkAclId')")
+  cloudtrail_logs_detect_vpc_peering_connection_deletions_sql_columns          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
+  cloudtrail_logs_detect_vpc_route_table_deletions_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
+  cloudtrail_logs_detect_vpc_route_table_replace_associations_sql_columns      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
+  cloudtrail_logs_detect_vpc_route_table_route_deletions_sql_columns           = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
+  cloudtrail_logs_detect_vpc_route_table_route_disassociations_sql_columns     = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
+  cloudtrail_logs_detect_vpc_route_table_updates_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
   cloudtrail_logs_detect_vpc_security_group_ingress_egress_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
-  cloudtrail_logs_detect_vpc_security_group_ipv4_allow_all_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
-  cloudtrail_logs_detect_vpc_security_group_ipv6_allow_all_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
-  cloudtrail_logs_detect_vpcs_with_classic_link_enabled_sql_columns        = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
+  cloudtrail_logs_detect_vpc_security_group_ipv4_allow_all_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
+  cloudtrail_logs_detect_vpc_security_group_ipv6_allow_all_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
+  cloudtrail_logs_detect_vpcs_with_classic_link_enabled_sql_columns            = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
 
   // TODO: Get an array of flowLogIds. Need to extract it and convert it into a string?
   cloudtrail_logs_detect_vpc_flow_log_deletions_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.flowLogIds')")
@@ -26,7 +26,7 @@ benchmark "cloudtrail_logs_vpc_detections" {
   title       = "VPC Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs for VPC events."
   type        = "detection"
-  children    = [
+  children = [
     detection.cloudtrail_logs_detect_vpc_deletions,
     detection.cloudtrail_logs_detect_vpc_flow_log_deletions,
     detection.cloudtrail_logs_detect_vpc_full_network_packet_capture_updates,
@@ -44,12 +44,12 @@ benchmark "cloudtrail_logs_vpc_detections" {
   ]
 
   tags = merge(local.cloudtrail_log_detection_vpc_common_tags, {
-    type    = "Benchmark"
+    type = "Benchmark"
   })
 }
 
 detection "cloudtrail_logs_detect_vpc_route_table_deletions" {
-  title          = "Detect VPC Route Tables Deletions"
+  title           = "Detect VPC Route Tables Deletions"
   description     = "Detect route tables deletions to check for changes in network configurations."
   severity        = "low"
   display_columns = local.cloudtrail_log_detection_display_columns
