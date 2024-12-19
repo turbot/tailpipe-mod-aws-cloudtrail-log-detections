@@ -3,21 +3,21 @@ locals {
     service = "AWS/IAM"
   })
 
-  cloudtrail_logs_detect_iam_entities_created_without_cloudformation_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "response_elements -> 'role' ->> 'arn'")
+  cloudtrail_logs_detect_iam_access_keys_creations_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, 'userName')")
+  cloudtrail_logs_detect_iam_access_keys_deletions_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, 'userName')")
+  cloudtrail_logs_detect_iam_entities_created_without_cloudformation_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(response_elements, 'role.arn')")
+  cloudtrail_logs_detect_iam_group_policies_modifications_sql_columns            = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, 'name')")
+  cloudtrail_logs_detect_iam_role_policies_modifications_sql_columns             = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, 'name')")
   cloudtrail_logs_detect_iam_root_users_console_logins_sql_columns               = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "''")
-  cloudtrail_logs_detect_iam_users_login_profile_updates_sql_columns             = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'userName'")
-  cloudtrail_logs_detect_iam_access_keys_creations_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'userName'")
-  cloudtrail_logs_detect_iam_access_keys_deletions_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'userName'")
+  cloudtrail_logs_detect_iam_user_creations_sql_columns                          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, 'userName')")
+  cloudtrail_logs_detect_iam_user_login_profile_creations_sql_columns            = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, 'userName')")
+  cloudtrail_logs_detect_iam_user_policies_modifications_sql_columns             = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, 'name')")
+  cloudtrail_logs_detect_iam_users_attached_to_admin_groups_sql_columns          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, 'userName')")
+  cloudtrail_logs_detect_iam_users_login_profile_updates_sql_columns             = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, 'userName')")
   cloudtrail_logs_detect_iam_users_with_password_change_sql_columns              = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", " ''")
-  cloudtrail_logs_detect_iam_users_attached_to_admin_groups_sql_columns          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'userName'")
-  cloudtrail_logs_detect_inline_policies_attached_to_iam_users_sql_columns       = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'userName'")
-  cloudtrail_logs_detect_managed_policies_attached_to_iam_users_sql_columns      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'userName'")
-  cloudtrail_logs_detect_iam_role_policies_modifications_sql_columns             = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'name'")
-  cloudtrail_logs_detect_iam_user_policies_modifications_sql_columns             = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'name'")
-  cloudtrail_logs_detect_iam_group_policies_modifications_sql_columns            = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'name'")
-  cloudtrail_logs_detect_iam_user_creations_sql_columns                          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'userName'")
-  cloudtrail_logs_detect_iam_user_login_profile_creations_sql_columns            = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'userName'")
-  cloudtrail_logs_detect_managed_policies_attached_to_iam_roles_sql_columns      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'roleName'")
+  cloudtrail_logs_detect_inline_policies_attached_to_iam_users_sql_columns       = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, 'userName')")
+  cloudtrail_logs_detect_managed_policies_attached_to_iam_roles_sql_columns      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, 'roleName')")
+  cloudtrail_logs_detect_managed_policies_attached_to_iam_users_sql_columns      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, 'userName')")
 }
 
 benchmark "cloudtrail_logs_iam_detections" {
@@ -31,12 +31,12 @@ benchmark "cloudtrail_logs_iam_detections" {
     detection.cloudtrail_logs_detect_iam_group_policies_modifications,
     detection.cloudtrail_logs_detect_iam_role_policies_modifications,
     detection.cloudtrail_logs_detect_iam_root_users_console_logins,
-    detection.cloudtrail_logs_detect_iam_users_attached_to_admin_groups,
     detection.cloudtrail_logs_detect_iam_user_creations,
     detection.cloudtrail_logs_detect_iam_user_login_profile_creations,
+    detection.cloudtrail_logs_detect_iam_user_policies_modifications,
+    detection.cloudtrail_logs_detect_iam_users_attached_to_admin_groups,
     detection.cloudtrail_logs_detect_iam_users_login_profile_updates,
     detection.cloudtrail_logs_detect_iam_users_with_password_change,
-    detection.cloudtrail_logs_detect_iam_user_policies_modifications,
     detection.cloudtrail_logs_detect_inline_policies_attached_to_iam_users,
     detection.cloudtrail_logs_detect_managed_policies_attached_to_iam_roles,
     detection.cloudtrail_logs_detect_managed_policies_attached_to_iam_users,
@@ -268,8 +268,8 @@ query "cloudtrail_logs_detect_iam_entities_created_without_cloudformation" {
       aws_cloudtrail_log
     where
       event_source = 'iam.amazonaws.com'
-      and (user_identity.invoked_by) != 'cloudformation.amazonaws.com'
       and event_name in ('BatchCreateUser', 'CreateGroup', 'CreateInstanceProfile', 'CreatePolicy', 'CreatePolicyVersion', 'CreateRole', 'CreateServiceLinkedRole', 'CreateUser')
+      and user_identity.invoked_by != 'cloudformation.amazonaws.com'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -285,8 +285,8 @@ query "cloudtrail_logs_detect_iam_root_users_console_logins" {
     where
       event_source = 'signin.amazonaws.com'
       and event_name = 'ConsoleLogin'
-      and (user_identity.type) = 'Root'
-      and (response_elements.ConsoleLogin) = 'Success'
+      and user_identity.type = 'Root'
+      and json_extract_string(response_elements, 'ConsoleLogin') = 'Success'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
@@ -363,7 +363,7 @@ query "cloudtrail_logs_detect_iam_users_attached_to_admin_groups" {
     where
       event_source = 'iam.amazonaws.com'
       and event_name = 'AddUserToGroup'
-      and request_parameters ->> 'groupName' ilike '%admin%'
+      and json_extract_string(request_parameters, 'groupName') ilike '%admin%'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
