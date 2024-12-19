@@ -14,7 +14,6 @@ benchmark "mitre_v151_ta0040_t1485" {
     detection.cloudtrail_logs_detect_guardduty_detector_deletions,
     detection.cloudtrail_logs_detect_rds_db_clusters_with_deletion_protection_disabled,
     detection.cloudtrail_logs_detect_rds_db_instances_with_deletion_protection_disabled,
-    detection.cloudtrail_logs_detect_rds_db_instance_snapshot_deletions,
   ]
 
   tags = local.mitre_v151_ta0040_t1485_common_tags
