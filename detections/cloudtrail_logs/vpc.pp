@@ -177,7 +177,7 @@ detection "cloudtrail_logs_detect_vpc_full_network_packet_capture_updates" {
   query           = query.cloudtrail_logs_detect_vpc_full_network_packet_capture_updates
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = ""
+    mitre_attack_ids = "TA0010:T1020"
   })
 }
 
@@ -189,7 +189,7 @@ detection "cloudtrail_logs_detect_vpc_flow_log_deletions" {
   query           = query.cloudtrail_logs_detect_vpc_flow_log_deletions
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = ""
+    mitre_attack_ids = "TA0005:T1070"
   })
 }
 

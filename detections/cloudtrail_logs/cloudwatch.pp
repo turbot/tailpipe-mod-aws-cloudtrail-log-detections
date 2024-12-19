@@ -31,7 +31,7 @@ detection "cloudtrail_logs_detect_cloudwatch_log_group_deletions" {
   query           = query.cloudtrail_logs_detect_cloudwatch_log_group_deletions
 
   tags = merge(local.cloudtrail_log_detection_cloudwatch_common_tags, {
-    mitre_attack_ids = ""
+    mitre_attack_ids = "TA0005:T1070"
   })
 }
 
@@ -43,7 +43,7 @@ detection "cloudtrail_logs_detect_cloudwatch_log_stream_deletions" {
   query           = query.cloudtrail_logs_detect_cloudwatch_log_stream_deletions
 
   tags = merge(local.cloudtrail_log_detection_cloudwatch_common_tags, {
-    mitre_attack_ids = ""
+    mitre_attack_ids = "TA0005:T1070"
   })
 }
 
@@ -55,7 +55,7 @@ detection "cloudtrail_logs_detect_cloudwatch_alarm_deletions" {
   query           = query.cloudtrail_logs_detect_cloudwatch_alarm_deletions
 
   tags = merge(local.cloudtrail_log_detection_cloudwatch_common_tags, {
-    mitre_attack_ids = ""
+    mitre_attack_ids = "TA0005:T1562.001"
   })
 }
 
