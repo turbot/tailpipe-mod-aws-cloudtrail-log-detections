@@ -33,6 +33,7 @@ benchmark "mitre_v151_ta0005_t1562_001" {
     detection.cloudtrail_logs_detect_guardduty_detector_deletions,
     detection.cloudtrail_logs_detect_vpcs_with_classic_link_enabled,
     detection.cloudtrail_logs_detect_waf_web_acl_deletions,
+    detection.cloudtrail_logs_detect_cloudwatch_alarm_deletions,
   ]
 
   tags = merge(local.mitre_v151_ta0005_t1562_common_tags, {
