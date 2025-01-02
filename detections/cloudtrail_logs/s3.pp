@@ -60,7 +60,7 @@ detection "cloudtrail_logs_detect_public_access_granted_to_s3_buckets" {
   query           = query.cloudtrail_logs_detect_public_access_granted_to_s3_buckets
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
-    mitre_attack_ids = "TA0005:T1070"
+    mitre_attack_ids = "TA0005:T1070,TA0001:T1190"
   })
 }
 

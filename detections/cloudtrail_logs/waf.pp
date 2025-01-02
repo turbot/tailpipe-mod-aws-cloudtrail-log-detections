@@ -3,17 +3,17 @@ locals {
     service = "AWS/WAF"
   })
 
-  cloudtrail_logs_detect_waf_acls_with_logging_disabled_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.resourceArn')")
+  cloudtrail_logs_detect_waf_acls_with_logging_disabled_sql_columns                       = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.resourceArn')")
   cloudtrail_logs_detect_waf_acl_disassociation_from_cloudfront_distributions_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.resourceArn')")
-  cloudtrail_logs_detect_waf_acl_disassociation_from_alb_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.resourceArn')")
-  cloudtrail_logs_detect_public_access_granted_to_waf_rules_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.ruleArn')")
+  cloudtrail_logs_detect_waf_acl_disassociation_from_alb_sql_columns                      = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.resourceArn')")
+  cloudtrail_logs_detect_public_access_granted_to_waf_rules_sql_columns                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.ruleArn')")
 }
 
 benchmark "cloudtrail_logs_waf_detections" {
   title       = "WAF Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs for WAF events."
   type        = "detection"
-  children    = [
+  children = [
     detection.cloudtrail_logs_detect_waf_acl_disassociation_from_alb,
     detection.cloudtrail_logs_detect_waf_acl_disassociation_from_cloudfront_distributions,
     detection.cloudtrail_logs_detect_waf_acls_with_logging_disabled,
