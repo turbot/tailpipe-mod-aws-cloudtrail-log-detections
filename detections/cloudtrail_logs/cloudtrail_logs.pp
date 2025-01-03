@@ -1,6 +1,6 @@
 locals {
   cloudtrail_log_detection_common_tags = merge(local.aws_detections_common_tags, {
-    service = "AWS"
+    service = "AWS/CloudTrail"
   })
 }
 

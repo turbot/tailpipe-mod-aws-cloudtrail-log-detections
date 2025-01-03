@@ -1,8 +1,8 @@
-# AWS Detections Mod for Powerpipe
+# AWS CloudTrail Log Detections Mod for Powerpipe
 
-Scan AWS logs for high risk activity.
+View dashboards, run reports, and scan for anomalies across your AWS CloudTrail logs.
 
-Run checks in a dashboard:
+Run benchmarks in a dashboard:
 ![image](https://raw.githubusercontent.com/turbot/tailpipe-mod-aws-detections/main/docs/aws_cis_v400_dashboard.png)
 
 Or in a terminal:
@@ -81,7 +81,7 @@ powerpipe server
 
 Browse and view your dashboards at **http://localhost:9033**.
 
-### Running Checks in Your Terminal
+### Running Benchmarks in Your Terminal
 
 Instead of running benchmarks in a dashboard, you can also run them within your
 terminal with the `powerpipe benchmark` command:
@@ -109,7 +109,7 @@ This repository is published under the [Apache 2.0 license](https://www.apache.o
 
 ## Get Involved
 
-**[Join #powerpipe on Slack →](https://turbot.com/community/join)**
+**[Join #tailpipe and #powerpipe on Slack →](https://turbot.com/community/join)**
 
 Want to help but don't know where to start? Pick up one of the `help wanted` issues:
 

@@ -7,7 +7,7 @@ locals {
 
 // TODO: Should this be mitre_attack_v151?
 benchmark "mitre_v151" {
-  title         = "MITRE ATT&CK v15.1"
+  title         = "MITRE ATT&CK v15.1 for CloudTrail Logs"
   description   = "MITRE ATT&CK is a globally-accessible knowledge base of adversary tactics and techniques based on real-world observations."
   type          = "detection"
   documentation = file("./mitre_v151/docs/mitre.md")
