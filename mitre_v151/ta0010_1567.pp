@@ -21,7 +21,10 @@ benchmark "mitre_v151_ta0010_t1567_001" {
   documentation = file("./mitre_v151/docs/ta0010_t1567_001.md")
   children = [
     detection.cloudtrail_logs_detect_public_access_granted_to_codebuild_projects,
-    detection.cloudtrail_logs_detect_rds_db_manual_snapshot_creations
+    detection.cloudtrail_logs_detect_public_access_granted_to_sqs_queues,
+    detection.cloudtrail_logs_detect_rds_db_manual_snapshot_creations,
+    detection.cloudtrail_logs_detect_sqs_queues_without_encryption_at_rest,
+    detection.cloudtrail_logs_detect_public_access_granted_to_ssm_documents,
   ]
 
   tags = merge(local.mitre_v151_ta0010_t1567_common_tags, {

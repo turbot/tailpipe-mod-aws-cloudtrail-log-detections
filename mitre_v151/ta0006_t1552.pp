@@ -24,6 +24,8 @@ benchmark "mitre_v151_ta0006_t1552_004" {
     detection.cloudtrail_logs_detect_iam_access_keys_deletions,
     detection.cloudtrail_logs_detect_iam_user_login_profile_creations,
     detection.cloudtrail_logs_detect_codebuild_projects_with_environment_variable_changes,
+    detection.cloudtrail_logs_detect_ssm_parameters_with_encryption_disabled,
+    
     
   ]
 

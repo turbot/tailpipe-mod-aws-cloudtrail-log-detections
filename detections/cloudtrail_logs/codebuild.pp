@@ -10,7 +10,7 @@ benchmark "cloudtrail_logs_codebuild_detections" {
   title       = "CodeBuild Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs for CodeBuild events."
   type        = "detection"
-  children    = [
+  children = [
     detection.cloudtrail_logs_detect_codebuild_projects_with_environment_variable_changes,
     detection.cloudtrail_logs_detect_codebuild_projects_with_iam_role_changes,
     detection.cloudtrail_logs_detect_codebuild_projects_with_source_repository_changes,
@@ -18,7 +18,7 @@ benchmark "cloudtrail_logs_codebuild_detections" {
   ]
 
   tags = merge(local.cloudtrail_log_detection_codebuild_common_tags, {
-    type    = "Benchmark"
+    type = "Benchmark"
   })
 }
 
@@ -86,7 +86,7 @@ detection "cloudtrail_logs_detect_codebuild_projects_with_source_repository_chan
   query           = query.cloudtrail_logs_detect_codebuild_projects_with_source_repository_changes
 
   tags = merge(local.cloudtrail_log_detection_codebuild_common_tags, {
-    mitre_attack_ids = "TA0005:T1566"
+    mitre_attack_ids = "TA0001:T1566"
   })
 }
 
