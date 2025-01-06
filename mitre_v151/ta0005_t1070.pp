@@ -12,7 +12,10 @@ benchmark "mitre_v151_ta0005_t1070" {
     detection.cloudtrail_logs_detect_codebuild_projects_with_environment_variable_changes,
     detection.cloudtrail_logs_detect_kms_key_deletions,
     detection.cloudtrail_logs_detect_public_access_granted_to_s3_buckets,
+    detection.cloudtrail_logs_detect_ses_feedback_forwarding_disabled,
+    detection.cloudtrail_logs_detect_sqs_queues_with_dlq_disabled,
     detection.cloudtrail_logs_detect_vpc_deletions,
+    detection.cloudtrail_logs_detect_vpc_flow_log_deletions,
     detection.cloudtrail_logs_detect_vpc_peering_connection_deletions,
     detection.cloudtrail_logs_detect_vpc_route_table_deletions,
     detection.cloudtrail_logs_detect_vpc_route_table_replace_associations,
@@ -20,7 +23,6 @@ benchmark "mitre_v151_ta0005_t1070" {
     detection.cloudtrail_logs_detect_vpc_route_table_route_disassociations,
     detection.cloudtrail_logs_detect_vpc_security_group_ipv4_allow_all,
     detection.cloudtrail_logs_detect_vpc_security_group_ipv6_allow_all,
-    detection.cloudtrail_logs_detect_vpc_flow_log_deletions,
   ]
 
   tags = local.mitre_v151_ta0005_t1070_common_tags
