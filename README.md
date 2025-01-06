@@ -10,6 +10,7 @@ Or in a terminal:
 
 ## Documentation
 
+- **[Dashboards →](https://hub.powerpipe.io/mods/turbot/tailpipe-mod-aws-detections/dashboards)**
 - **[Benchmarks and detections →](https://hub.powerpipe.io/mods/turbot/tailpipe-mod-aws-detections/benchmarks)**
 - **[Named queries →](https://hub.powerpipe.io/mods/turbot/tailpipe-mod-aws-detections/queries)**
 
@@ -30,11 +31,17 @@ brew install turbot/tap/tailpipe
 tailpipe plugin install aws
 ```
 
-Tailpipe will automatically use your default AWS credentials. Optionally, you can [setup multiple accounts](https://hub.tailpipe.io/plugins/turbot/aws#multi-account-connections) or [customize AWS credentials](https://hub.tailpipe.io/plugins/turbot/aws#configuring-aws-credentials).
+Configure your log source:
 
-Collect logs from an S3 bucket:
+```shell
+vi ~/.tailpipe/config/aws.spc
+```
 
 ```terraform
+connection "aws" "dev" {
+  profile = "dev"
+}
+
 partition "aws_cloudtrail_log" "dev" {
   source "aws_s3_bucket" {
     bucket = "aws-cloudtrail-logs-bucket"
@@ -42,15 +49,7 @@ partition "aws_cloudtrail_log" "dev" {
 }
 ```
 
-Or from the CloudTrail API:
-
-```terraform
-partition "aws_cloudtrail_log" "dev" {
-  source "aws_cloudtrail_api" {
-    region = "us-east-2"
-  }
-}
-```
+Collect logs:
 
 ```shell
 tailpipe collect aws_cloudtrail_log.dev
@@ -66,12 +65,6 @@ powerpipe mod install github.com/turbot/tailpipe-mod-aws-detections
 ```
 
 ### Browsing Dashboards
-
-Start Tailpipe as the data source:
-
-```sh
-tailpipe service start
-```
 
 Start the dashboard server:
 

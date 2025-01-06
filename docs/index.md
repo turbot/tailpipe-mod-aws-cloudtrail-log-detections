@@ -4,6 +4,7 @@ View dashboards, run reports, and scan for anomalies across your AWS CloudTrail 
 
 ## Documentation
 
+- **[Dashboards →](https://hub.powerpipe.io/mods/turbot/tailpipe-mod-aws-detections/dashboards)**
 - **[Benchmarks and controls →](https://hub.powerpipe.io/mods/turbot/aws_compliance/controls)**
 - **[Named queries →](https://hub.powerpipe.io/mods/turbot/aws_compliance/queries)**
 
