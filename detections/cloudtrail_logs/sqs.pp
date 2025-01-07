@@ -1,8 +1,8 @@
 locals {
 
-  cloudtrail_logs_detect_sqs_queues_without_encryption_at_rest_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.attributes.QueueArn')")
+  cloudtrail_logs_detect_sqs_queues_without_encryption_at_rest_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.queueUrl')")
   cloudtrail_logs_detect_public_access_granted_to_sqs_queues_sql_columns   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.queueUrl')")
-  cloudtrail_logs_detect_sqs_queues_with_dlq_disabled_sql_columns          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.attributes.QueueArn')")
+  cloudtrail_logs_detect_sqs_queues_with_dlq_disabled_sql_columns          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.queueUrl')")
 }
 
 benchmark "cloudtrail_logs_sqs_detections" {
