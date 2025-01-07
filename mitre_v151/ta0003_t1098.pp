@@ -9,7 +9,7 @@ benchmark "mitre_v151_ta0003_t1098" {
   type          = "detection"
   documentation = file("./mitre_v151/docs/ta0003_t1098.md")
   children = [
-    detection.cloudtrail_logs_detect_iam_user_login_profile_creations,
+    detection.cloudtrail_logs_detect_iam_users_with_console_access_enabled,
     detection.cloudtrail_logs_detect_rds_db_instance_master_password_updates,
   ]
 

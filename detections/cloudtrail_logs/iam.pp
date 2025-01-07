@@ -33,7 +33,6 @@ benchmark "cloudtrail_logs_iam_detections" {
     detection.cloudtrail_logs_detect_iam_entities_created_without_cloudformation,
     detection.cloudtrail_logs_detect_iam_root_user_console_logins,
     detection.cloudtrail_logs_detect_iam_user_creations,
-    detection.cloudtrail_logs_detect_iam_user_login_profile_creations,
     detection.cloudtrail_logs_detect_iam_users_attached_to_administrator_groups,
     detection.cloudtrail_logs_detect_iam_users_with_administrative_password_resets,
     detection.cloudtrail_logs_detect_iam_users_with_password_change,
@@ -696,21 +695,9 @@ query "cloudtrail_logs_detect_iam_group_inline_policy_creations" {
   EOQ
 }
 
-detection "cloudtrail_logs_detect_iam_user_login_profile_creations" {
-  title           = "Detect IAM User Login Profile Creations"
-  description     = "Detect when a login profile is created for an IAM user, enabling console access and potential persistence."
-  severity        = "medium"
-  display_columns = local.cloudtrail_log_detection_display_columns
-  query           = query.cloudtrail_logs_detect_iam_user_login_profile_creations
-
-  tags = merge(local.cloudtrail_log_detection_iam_common_tags, {
-    mitre_attack_ids = "TA0003:T1078"
-  })
-}
-
 detection "cloudtrail_logs_detect_iam_user_creations" {
-  title           = "Detect New IAM Users Creation"
-  description     = "Detect when new IAM users are created."
+  title           = "Detect IAM User Creations"
+  description     = "Detect when new IAM users are created. Unauthorized user creation may indicate privilege escalation attempts, credential compromise, or lateral movement, potentially leading to unauthorized access and malicious activity."
   severity        = "high"
   display_columns = local.cloudtrail_log_detection_display_columns
   query           = query.cloudtrail_logs_detect_iam_user_creations
@@ -729,21 +716,6 @@ query "cloudtrail_logs_detect_iam_user_creations" {
     where
       event_source = 'iam.amazonaws.com'
       and event_name = 'CreateUser'
-      ${local.cloudtrail_log_detections_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "cloudtrail_logs_detect_iam_user_login_profile_creations" {
-  sql = <<-EOQ
-    select
-      ${local.cloudtrail_logs_detect_iam_user_login_profile_creations_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'iam.amazonaws.com'
-      and event_name = 'CreateLoginProfile'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;
