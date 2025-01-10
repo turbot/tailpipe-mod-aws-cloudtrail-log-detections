@@ -3,6 +3,7 @@ locals {
     service = "AWS/VPC"
   })
 
+  cloudtrail_logs_detect_vpc_creations_sql_columns                                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
   cloudtrail_logs_detect_vpc_deletions_sql_columns                                   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
   cloudtrail_logs_detect_vpc_full_network_packet_capture_updates_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(response_elements, '$.trafficMirrorTargetId')")
   cloudtrail_logs_detect_vpc_network_acl_updates_sql_columns                         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.networkAclId')")
@@ -29,6 +30,7 @@ benchmark "cloudtrail_logs_vpc_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for VPC events."
   type        = "detection"
   children = [
+    detection.cloudtrail_logs_detect_vpc_creations,
     detection.cloudtrail_logs_detect_vpc_deletions,
     detection.cloudtrail_logs_detect_vpc_flow_log_deletions,
     detection.cloudtrail_logs_detect_vpcs_with_internet_gateway_detachments,
@@ -125,6 +127,18 @@ detection "cloudtrail_logs_detect_vpc_route_table_replace_associations" {
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {
     mitre_attack_ids = "TA0005:T1070, TA0040:T1565.003"
+  })
+}
+
+detection "cloudtrail_logs_detect_vpc_creations" {
+  title           = "Detect VPC Creations"
+  description     = "Detect when a VPC is deleted, to check for unauthorized infrastructure setup, which could be used to isolate malicious activities, evade monitoring, or stage resources for lateral movement and data exfiltration. Monitoring VPC creation ensures compliance with security policies and detects potential misuse of cloud resources."
+  severity        = "high"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_vpc_deletions
+
+  tags = merge(local.cloudtrail_log_detection_common_tags, {
+    mitre_attack_ids = "TA0005:T1562.003"
   })
 }
 
@@ -279,6 +293,21 @@ query "cloudtrail_logs_detect_vpc_route_table_replace_associations" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name = 'ReplaceRouteTableAssociation'
+      ${local.cloudtrail_log_detections_where_conditions}
+    order by
+      event_time desc;
+  EOQ
+}
+
+query "cloudtrail_logs_detect_vpc_creations" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_vpc_creations_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'ec2.amazonaws.com'
+      and event_name = 'CreateVpc'
       ${local.cloudtrail_log_detections_where_conditions}
     order by
       event_time desc;

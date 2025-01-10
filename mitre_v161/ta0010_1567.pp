@@ -25,6 +25,7 @@ benchmark "mitre_v161_ta0010_t1567_001" {
     detection.cloudtrail_logs_detect_rds_db_manual_snapshot_creations,
     detection.cloudtrail_logs_detect_sqs_queues_without_encryption_at_rest,
     detection.cloudtrail_logs_detect_public_access_granted_to_ssm_documents,
+    detection.cloudtrail_logs_detect_public_access_granted_to_sns_topics,
   ]
 
   tags = merge(local.mitre_v161_ta0010_t1567_common_tags, {

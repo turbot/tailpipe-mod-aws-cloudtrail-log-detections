@@ -28,6 +28,7 @@ benchmark "cloudtrail_log_detections" {
     benchmark.cloudtrail_logs_s3_detections,
     benchmark.cloudtrail_logs_ses_detections,
     benchmark.cloudtrail_logs_ssm_detections,
+    benchmark.cloudtrail_logs_sns_detections,
     benchmark.cloudtrail_logs_sqs_detections,
     benchmark.cloudtrail_logs_vpc_detections,
     benchmark.cloudtrail_logs_waf_detections,
