@@ -3,10 +3,10 @@ locals {
     service = "AWS/SNS"
   })
 
-  cloudtrail_logs_detect_public_access_granted_to_sns_topics_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.topicArn')")
-  cloudtrail_logs_detect_sns_topics_subscription_deletions_sql_columns          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.subscriptionArn')")
-  cloudtrail_logs_detect_sns_topics_subscription_dead_letter_queue_updates_sql_columns          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.subscriptionArn')")
-  cloudtrail_logs_detect_sns_topics_with_encryption_setting_updates_sql_columns          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.topicArn')")
+  cloudtrail_logs_detect_public_access_granted_to_sns_topics_sql_columns               = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.topicArn')")
+  cloudtrail_logs_detect_sns_topics_subscription_deletions_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.subscriptionArn')")
+  cloudtrail_logs_detect_sns_topics_subscription_dead_letter_queue_updates_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.subscriptionArn')")
+  cloudtrail_logs_detect_sns_topics_with_encryption_setting_updates_sql_columns        = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.topicArn')")
 }
 
 benchmark "cloudtrail_logs_sns_detections" {
