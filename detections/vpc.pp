@@ -132,7 +132,7 @@ detection "cloudtrail_logs_detect_vpc_route_table_replace_associations" {
 
 detection "cloudtrail_logs_detect_vpc_creations" {
   title           = "Detect VPC Creations"
-  description     = "Detect when a VPC is deleted, to check for unauthorized infrastructure setup, which could be used to isolate malicious activities, evade monitoring, or stage resources for lateral movement and data exfiltration. Monitoring VPC creation ensures compliance with security policies and detects potential misuse of cloud resources."
+  description     = "Detect when a VPC is created, to check for unauthorized infrastructure setup, which could be used to isolate malicious activities, evade monitoring, or stage resources for lateral movement and data exfiltration. Monitoring VPC creation ensures compliance with security policies and detects potential misuse of cloud resources."
   severity        = "high"
   display_columns = local.cloudtrail_log_detection_display_columns
   query           = query.cloudtrail_logs_detect_vpc_deletions
