@@ -3,8 +3,8 @@ locals {
     service = "AWS/SSM"
   })
 
-  cloudtrail_logs_detect_ssm_with_unauthorized_input_captures_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
-  cloudtrail_logs_detect_ssm_with_unauthorized_data_access_from_local_systems_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.documentName')")
+  cloudtrail_logs_detect_ssm_documents_with_unauthorized_input_captures_sql_columns                 = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
+  cloudtrail_logs_detect_ssm_documents_with_unauthorized_data_access_from_local_systems_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.documentName')")
   cloudtrail_logs_detect_ssm_parameters_with_encryption_disabled_sql_columns              = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
   cloudtrail_logs_detect_public_access_granted_to_ssm_documents_sql_columns               = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
 }
@@ -14,8 +14,8 @@ benchmark "cloudtrail_logs_ssm_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for SSM events."
   type        = "detection"
   children = [
-    detection.cloudtrail_logs_detect_ssm_with_unauthorized_input_captures,
-    detection.cloudtrail_logs_detect_ssm_with_unauthorized_data_access_from_local_systems,
+    detection.cloudtrail_logs_detect_ssm_documents_with_unauthorized_input_captures,
+    detection.cloudtrail_logs_detect_ssm_documents_with_unauthorized_data_access_from_local_systems,
     detection.cloudtrail_logs_detect_ssm_parameters_with_encryption_disabled,
     detection.cloudtrail_logs_detect_public_access_granted_to_ssm_documents,
   ]
@@ -25,36 +25,36 @@ benchmark "cloudtrail_logs_ssm_detections" {
   })
 }
 
-detection "cloudtrail_logs_detect_ssm_with_unauthorized_input_captures" {
+detection "cloudtrail_logs_detect_ssm_documents_with_unauthorized_input_captures" {
   title           = "Detect SSM with Unauthorized Input Captures"
   description     = "Detect unauthorized input capture, such as keyboard input logging in AWS Systems Manager."
   severity        = "high"
   display_columns = local.cloudtrail_log_detection_display_columns
-  #documentation   = file("./detections/docs/cloudtrail_logs_detect_ssm_with_unauthorized_input_captures.md")
-  query = query.cloudtrail_logs_detect_ssm_with_unauthorized_input_captures
+  #documentation   = file("./detections/docs/cloudtrail_logs_detect_ssm_documents_with_unauthorized_input_captures.md")
+  query = query.cloudtrail_logs_detect_ssm_documents_with_unauthorized_input_captures
 
   tags = merge(local.cloudtrail_log_detection_ssm_common_tags, {
     mitre_attack_ids = "TA0009:T1056"
   })
 }
 
-detection "cloudtrail_logs_detect_ssm_with_unauthorized_data_access_from_local_systems" {
+detection "cloudtrail_logs_detect_ssm_documents_with_unauthorized_data_access_from_local_systems" {
   title           = "Detect SSM with Unauthorized Data Access from Local Systems"
   description     = "Detect attempts to use (SSM) to access local system data without authorization. This activity may indicate malicious attempts to collect sensitive information, such as configuration files, credentials, or logs, from compromised systems."
   severity        = "high"
   display_columns = local.cloudtrail_log_detection_display_columns
-  #documentation   = file("./detections/docs/cloudtrail_logs_detect_ssm_with_unauthorized_data_access_from_local_systems.md")
-  query = query.cloudtrail_logs_detect_ssm_with_unauthorized_data_access_from_local_systems
+  #documentation   = file("./detections/docs/cloudtrail_logs_detect_ssm_documents_with_unauthorized_data_access_from_local_systems.md")
+  query = query.cloudtrail_logs_detect_ssm_documents_with_unauthorized_data_access_from_local_systems
 
   tags = merge(local.cloudtrail_log_detection_ssm_common_tags, {
     mitre_attack_ids = "TA0009:T1005"
   })
 }
 
-query "cloudtrail_logs_detect_ssm_with_unauthorized_data_access_from_local_systems" {
+query "cloudtrail_logs_detect_ssm_documents_with_unauthorized_data_access_from_local_systems" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_ssm_with_unauthorized_data_access_from_local_systems_sql_columns}
+      ${local.cloudtrail_logs_detect_ssm_documents_with_unauthorized_data_access_from_local_systems_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -67,11 +67,10 @@ query "cloudtrail_logs_detect_ssm_with_unauthorized_data_access_from_local_syste
   EOQ
 }
 
-// TODO: rename this
-query "cloudtrail_logs_detect_ssm_with_unauthorized_input_captures" {
+query "cloudtrail_logs_detect_ssm_documents_with_unauthorized_input_captures" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_ssm_with_unauthorized_input_captures_sql_columns}
+      ${local.cloudtrail_logs_detect_ssm_documents_with_unauthorized_input_captures_sql_columns}
     from
       aws_cloudtrail_log
     where

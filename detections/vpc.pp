@@ -20,9 +20,10 @@ locals {
   cloudtrail_logs_detect_vpc_flow_log_deletions_sql_columns                          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.flowLogIds')")
   cloudtrail_logs_detect_traffic_mirror_targets_with_internet_facing_nlb_sql_columns = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.trafficMirrorTargetId')")
   cloudtrail_logs_detect_vpcs_with_internet_gateway_detachments_sql_columns          = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
-  cloudtrail_logs_detect_vpc_network_acls_with_deny_all_rule_deletions_sql_columns       = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.networkAclId')")
+  cloudtrail_logs_detect_vpc_network_acls_with_deny_all_rule_deletions_sql_columns   = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.networkAclId')")
   cloudtrail_logs_detect_vpcs_with_nacl_association_replacements_sql_columns         = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.associationId')")
   cloudtrail_logs_detect_internet_gateways_added_to_public_route_tables_sql_columns  = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
+  cloudtrail_logs_detect_vpc_security_group_deletions_sql_columns                    = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
 }
 
 benchmark "cloudtrail_logs_vpc_detections" {
@@ -33,6 +34,7 @@ benchmark "cloudtrail_logs_vpc_detections" {
     detection.cloudtrail_logs_detect_vpc_creations,
     detection.cloudtrail_logs_detect_vpc_deletions,
     detection.cloudtrail_logs_detect_vpc_flow_log_deletions,
+    detection.cloudtrail_logs_detect_vpc_security_group_deletions,
     detection.cloudtrail_logs_detect_vpcs_with_internet_gateway_detachments,
     detection.cloudtrail_logs_detect_vpcs_with_nacl_association_replacements,
     detection.cloudtrail_logs_detect_vpc_peering_connection_deletions,
@@ -52,6 +54,32 @@ benchmark "cloudtrail_logs_vpc_detections" {
   tags = merge(local.cloudtrail_log_detection_vpc_common_tags, {
     type = "Benchmark"
   })
+}
+
+detection "cloudtrail_logs_detect_vpc_security_group_deletions" {
+  title           = "Detect VPC Security Group Deletions"
+  description     = "Detect VPC security group deletions to check for unauthorized changes."
+  severity        = "high"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_vpc_security_group_deletions
+
+  tags = merge(local.cloudtrail_log_detection_vpc_common_tags, {
+    mitre_attack_ids = "TA0005:T1070,TA0002:T1059.009"
+  })
+}
+
+query "cloudtrail_logs_detect_vpc_security_group_deletions" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_vpc_security_group_deletions_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'ec2.amazonaws.com'
+      and event_name = 'DeleteSecurityGroup'
+      ${local.cloudtrail_log_detections_where_conditions}
+    order by event_time desc;
+  EOQ
 }
 
 detection "cloudtrail_logs_detect_internet_gateways_added_to_public_route_tables" {

@@ -15,6 +15,7 @@ benchmark "cloudtrail_logs_cloudtrail_detections" {
     detection.cloudtrail_logs_detect_cloudtrail_trails_with_global_service_logging_disabled,
     detection.cloudtrail_logs_detect_cloudtrail_trails_with_kms_key_updated,
     detection.cloudtrail_logs_detect_cloudtrail_trails_with_lambda_logging_disabled,
+    detection.cloudtrail_logs_detect_cloudtrail_trails_with_logging_stopped,
     detection.cloudtrail_logs_detect_cloudtrail_trails_with_s3_logging_bucket_modified,
     detection.cloudtrail_logs_detect_cloudtrail_trails_with_s3_logging_disabled,
   ]
@@ -22,6 +23,34 @@ benchmark "cloudtrail_logs_cloudtrail_detections" {
   tags = merge(local.cloudtrail_log_detection_cloudtrail_common_tags, {
     type = "Benchmark"
   })
+}
+
+detection "cloudtrail_logs_detect_cloudtrail_trails_with_logging_stopped" {
+  title           = "Detect CloudTrail Trails with Logging Stopped"
+  description     = "Detect CloudTrail trails with logging stopped to check for changes that could reduce visibility into critical AWS API activity, potentially obscuring unauthorized access or configuration changes."
+  severity        = "high"
+  display_columns = local.cloudtrail_log_detection_display_columns
+  query           = query.cloudtrail_logs_detect_cloudtrail_trails_with_logging_stopped
+
+  tags = merge(local.cloudtrail_log_detection_cloudtrail_common_tags, {
+    mitre_attack_ids = "TA0005:T1562.001,TA0002:T1059.009"
+  })
+}
+
+
+query "cloudtrail_logs_detect_cloudtrail_trails_with_logging_stopped" {
+  sql = <<-EOQ
+    select
+      ${local.cloudtrail_logs_detect_cloudtrail_trail_updates_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'cloudtrail.amazonaws.com'
+      and event_name = 'StopLogging'
+      ${local.cloudtrail_log_detections_where_conditions}
+    order by
+      event_time desc;
+  EOQ
 }
 
 detection "cloudtrail_logs_detect_cloudtrail_trails_with_s3_logging_disabled" {
