@@ -34,7 +34,7 @@ benchmark "mitre_v161_ta0005_t1562_001" {
     detection.cloudtrail_logs_detect_vpcs_with_classic_link_enabled,
     detection.cloudtrail_logs_detect_waf_acl_disassociation_from_cloudfront_distributions,
     detection.cloudtrail_logs_detect_waf_acl_disassociation_from_alb,
-    detection.cloudtrail_logs_detect_sns_topics_with_encryption_setting_updates,
+    detection.cloudtrail_logs_detect_sns_topics_with_encryption_at_rest_disabled,
     detection.cloudtrail_logs_detect_vpc_creations,
   ]
 
