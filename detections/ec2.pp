@@ -6,6 +6,7 @@ locals {
   detect_ec2_snapshot_updates_sql_columns    = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.snapshotId')")
   detect_ec2_ami_updates_sql_columns         = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
   detect_ec2_user_data_execution_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.userData')")
+  detect_ec2_instances_user_data_modifications_with_ssh_key_additions_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.userData')")
   detect_ec2_instance_updates_sql_columns    = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.instancesSet.items')")
   detect_ec2_amis_with_launch_permission_changes_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.imageId')")
 }
@@ -21,6 +22,7 @@ benchmark "ec2_detections" {
     detection.detect_ec2_ami_store_image_tasks_from_external_accounts,
     detection.detect_ec2_amis_with_launch_permission_changes,
     detection.detect_ec2_instances_with_source_dest_check_disabled,
+    detection.detect_ec2_instances_user_data_modifications_with_ssh_key_additions,
   ]
 
   tags = merge(local.ec2_common_tags, {
@@ -51,6 +53,35 @@ query "detect_ec2_instances_with_source_dest_check_disabled" {
       and event_name = 'ModifyInstanceAttribute'
       and json_extract_string(request_parameters, '$.attribute') = 'sourceDestCheck'
       and json_extract_string(request_parameters, '$.value') = 'false'
+      ${local.detection_sql_where_conditions}
+    order by
+      event_time desc;
+  EOQ
+}
+
+detection "cloudtrail_logs_detect_ec2_instances_user_data_modifications_with_ssh_key_additions" {
+  title           = "Detect EC2 Instances User Data Modifications with SSH Key Additions"
+  description     = "Detect EC2 instances user data modifications to check for SSH key additions, which may indicate unauthorized access attempts."
+  severity        = "critical"
+  display_columns = local.detection_display_columns
+  query           = query.cloudtrail_logs_detect_ec2_instances_user_data_modifications_with_ssh_key_additions
+
+  tags = merge(local.cloudtrail_log_cloudwatch_detection_common_tags, {
+    mitre_attack_ids = "TA0003:T1098.004"
+  })
+}
+
+query "detect_ec2_instances_user_data_modifications_with_ssh_key_additions" {
+  sql = <<-EOQ
+    select
+      ${local.detect_ec2_instances_user_data_modifications_with_ssh_key_additions_sql_columns}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'ec2.amazonaws.com'
+      and event_name = 'ModifyInstanceAttribute'
+      and json_extract_string(request_parameters, '$.attributeName.userData') is not null
+      and json_extract_string(request_parameters, '$.value') like '%ssh-rsa%'
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
