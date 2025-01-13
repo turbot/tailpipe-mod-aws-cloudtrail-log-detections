@@ -28,30 +28,29 @@ benchmark "iam_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for IAM events."
   type        = "detection"
   children = [
+    detection.detect_iam_user_inline_policy_creations,
+    detection.detect_admin_access_granted_to_iam_groups,
+    detection.detect_admin_access_granted_to_iam_roles,
+    detection.detect_admin_access_granted_to_iam_users,
     detection.detect_iam_access_key_creations,
     detection.detect_iam_access_key_deletions,
     detection.detect_iam_entities_created_without_cloudformation,
+    detection.detect_iam_group_inline_policy_creations,
+    detection.detect_iam_role_inline_policy_creations,
     detection.detect_iam_root_user_console_logins,
     detection.detect_iam_user_creations,
     detection.detect_iam_users_attached_to_administrator_groups,
     detection.detect_iam_users_with_administrative_password_resets,
+    detection.detect_iam_users_with_console_access_enabled,
+    detection.detect_iam_users_with_email_address_updates,
+    detection.detect_iam_users_with_mfa_disabled,
     detection.detect_iam_users_with_password_change,
     detection.detect_inline_policies_attached_to_iam_users,
     detection.detect_managed_policies_attached_to_iam_roles,
     detection.detect_managed_policies_attached_to_iam_users,
-    detection.detect_iam_users_with_console_access_enabled,
-    detection.detect_iam_users_with_email_address_updates,
-    detection.detect_iam_users_with_mfa_disabled,
+    detection.detect_public_access_granted_to_iam_groups,
     detection.detect_public_access_granted_to_iam_roles,
     detection.detect_public_access_granted_to_iam_users,
-    detection.detect_admin_access_granted_to_iam_roles,
-    detection.detect_admin_access_granted_to_iam_users,
-    detection.detect_iam_role_inline_policy_creations,
-    detection.detect_public_access_granted_to_iam_groups,
-    detection.detect_admin_access_granted_to_iam_groups,
-    detection.detect_iam_group_inline_policy_creations,
-    detection detect_iam_user_inline_policy_creations,
-    
   ]
 
   tags = merge(local.iam_common_tags, {
