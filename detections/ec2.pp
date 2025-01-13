@@ -59,14 +59,14 @@ query "detect_ec2_instances_with_source_dest_check_disabled" {
   EOQ
 }
 
-detection "cloudtrail_logs_detect_ec2_instances_user_data_modifications_with_ssh_key_additions" {
+detection "detect_ec2_instances_user_data_modifications_with_ssh_key_additions" {
   title           = "Detect EC2 Instances User Data Modifications with SSH Key Additions"
   description     = "Detect EC2 instances user data modifications to check for SSH key additions, which may indicate unauthorized access attempts."
   severity        = "critical"
   display_columns = local.detection_display_columns
-  query           = query.cloudtrail_logs_detect_ec2_instances_user_data_modifications_with_ssh_key_additions
+  query           = query.detect_ec2_instances_user_data_modifications_with_ssh_key_additions
 
-  tags = merge(local.cloudtrail_log_cloudwatch_detection_common_tags, {
+  tags = merge(local.ec2_common_tags, {
     mitre_attack_ids = "TA0003:T1098.004"
   })
 }
