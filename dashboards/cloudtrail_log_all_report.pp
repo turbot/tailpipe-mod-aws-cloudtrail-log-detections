@@ -15,6 +15,7 @@ dashboard "cloudtrail_logs_all_report" {
     }
   }
 
+  /*
   container {
     input "source_ip" {
       title = "Select a source IP address:"
@@ -31,14 +32,15 @@ dashboard "cloudtrail_logs_all_report" {
       width = 4
     }
   }
+  */
 
   container {
     card {
       query = query.cloudtrail_log_all_total_logs
       width = 2
       args  = [
-        self.input.source_ip.value,
-        self.input.aws_region.value
+        #self.input.source_ip.value,
+        #self.input.aws_region.value
       ]
     }
   }
@@ -49,8 +51,8 @@ dashboard "cloudtrail_logs_all_report" {
       query = query.cloudtrail_log_all_table
 
       args  = [
-        self.input.source_ip.value,
-        self.input.aws_region.value
+        #self.input.source_ip.value,
+        #self.input.aws_region.value
       ]
 
       column "actor" {
@@ -115,32 +117,33 @@ query "cloudtrail_log_all_total_logs" {
       count(*) as "Total Logs"
     from
       aws_cloudtrail_log
-    where
-      tp_source_ip in $1
-      and aws_region in $2
+    --where
+    --  tp_source_ip in $1
+    --  and aws_region in $2
   EOQ
 }
 
 query "cloudtrail_log_all_table" {
   sql = <<-EOQ
     select
-      epoch_ms(tp_timestamp) as timestamp,
-      string_split(event_source, '.')[1] || ':' || event_name as operation,
-      user_identity.arn as actor,
-      tp_source_ip as source_ip,
-      tp_index::varchar as account_id,
-      aws_region as region,
-      error_code,
-      error_message,
-      tp_id as source_id,
+      --epoch_ms(tp_timestamp) as timestamp,
+      --string_split(event_source, '.')[1] || ':' || event_name as operation,
+      --user_identity.arn as actor,
+      --tp_source_ip as source_ip,
+      --tp_index::varchar as account_id,
+      --aws_region as region,
+      --error_code,
+      --error_message,
+      --tp_id as source_id,
       *
     from
       aws_cloudtrail_log
-    where
-      tp_source_ip in $1
-      and aws_region in $2
+    --where
+    --  tp_source_ip in $1
+    --  and aws_region in $2
     order by
-      timestamp desc
+      tp_timestamp desc
+      --timestamp desc
     limit 1000;
   EOQ
 }
