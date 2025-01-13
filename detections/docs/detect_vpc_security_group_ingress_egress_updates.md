@@ -1,27 +1,15 @@
-# Overview
+## Description
 
-AWS VPC Security Groups control inbound and outbound traffic to your EC2 instances. Monitoring changes to these rules is critical to detect and prevent unauthorized access to your VPC or the potential export of sensitive data. Unauthorized changes to ingress and egress rules can be a sign of malicious activity or misconfiguration that could expose your environment to threats.
+This detection identifies updates to ingress or egress rules in security groups within a Virtual Private Cloud (VPC) in an AWS account. Security group rules define the allowed inbound and outbound traffic for resources in the VPC. Modifications to these rules can significantly impact the security posture and network behavior.
 
-## Potential Impact of Unmonitored Security Group Changes
+## Risks
 
-Failing to monitor VPC Security Group changes can expose your environment to:
+Updating ingress or egress rules in a security group can introduce unintended exposure of resources to unauthorized access or disrupt legitimate communication. For example, adding overly permissive rules may expose resources to the internet, while removing essential rules could block critical application traffic.
 
-1. **External Threats:** 
-   - Unauthorized ingress rules may allow attackers to exploit open ports, enabling lateral movement or establishing persistence for malicious activities.
-
-2. **Data Exfiltration:** 
-   - Unmonitored egress rule modifications can allow sensitive data to be sent to unauthorized destinations, compromising confidentiality and breaching regulatory requirements.
-
-3. **Operational Downtime:** 
-   - Security group misconfigurations can disrupt critical applications by blocking legitimate traffic or exposing resources to attacks, causing costly downtime.
-
-4. **Regulatory Non-Compliance:** 
-   - Unchecked changes may lead to non-compliance with security and privacy standards (e.g., PCI DSS, SOC 2, GDPR), resulting in penalties or reputational damage.
-
-5. **Delayed Threat Detection:** 
-   - Without visibility into security group changes, malicious activity from compromised IAM users or external attackers can go unnoticed, delaying incident response.
-
+Unauthorized or accidental changes to security group rules may indicate mismanagement or malicious intent. An attacker with access to the account could modify rules to allow unauthorized access or facilitate data exfiltration. Without proper monitoring and auditing, these changes could go unnoticed, compromising the security and availability of your resources.
 
 ## References
 
-- https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/working-with-security-groups.html
+- [AWS Documentation: Security Groups for Your VPC](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html)
+- [AWS CLI Command: authorize-security-group-ingress](https://docs.aws.amazon.com/cli/latest/reference/ec2/authorize-security-group-ingress.html)
+- [AWS CLI Command: revoke-security-group-ingress](https://docs.aws.amazon.com/cli/latest/reference/ec2/revoke-security-group-ingress.html)
