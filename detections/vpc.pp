@@ -59,6 +59,7 @@ benchmark "vpc_detections" {
 detection "detect_vpc_security_group_deletions" {
   title           = "Detect VPC Security Group Deletions"
   description     = "Detect VPC security group deletions to check for unauthorized changes."
+  documentation   = file("./detections/docs/detect_vpc_security_group_deletions.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_vpc_security_group_deletions
@@ -85,6 +86,7 @@ query "detect_vpc_security_group_deletions" {
 detection "detect_internet_gateways_added_to_public_route_tables" {
   title           = "Detect Internet Gateways Added to Public Route Tables"
   description     = "Detect when a route table is updated to add a route to 0.0.0.0/0 via an Internet Gateway, potentially exposing resources to public access."
+  documentation   = file("./detections/docs/detect_internet_gateways_added_to_public_route_tables.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_internet_gateways_added_to_public_route_tables
@@ -113,6 +115,7 @@ query "detect_internet_gateways_added_to_public_route_tables" {
 detection "detect_vpc_route_table_deletions" {
   title           = "Detect VPC Route Tables Deletions"
   description     = "Detect route tables deletions to check for changes in network configurations."
+  documentation   = file("./detections/docs/detect_vpc_route_table_deletions.md")
   severity        = "low"
   display_columns = local.detection_display_columns
   query           = query.detect_vpc_route_table_deletions
@@ -125,6 +128,7 @@ detection "detect_vpc_route_table_deletions" {
 detection "detect_vpc_route_table_route_deletions" {
   title           = "Detect VPC Route Table Route Deletions"
   description     = "Detect when routes are deleted from VPC route tables, which could disrupt network traffic, impair defenses, or facilitate unauthorized traffic manipulation."
+  documentation   = file("./detections/docs/detect_vpc_route_table_route_deletions.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_vpc_route_table_route_deletions
@@ -137,6 +141,7 @@ detection "detect_vpc_route_table_route_deletions" {
 detection "detect_vpc_route_table_route_disassociations" {
   title           = "Detect VPC Route Table Disassociations"
   description     = "Detect when VPC route tables are disassociated from subnets, which could disrupt network routing or facilitate malicious traffic manipulation."
+  documentation   = file("./detections/docs/detect_vpc_route_table_route_disassociations.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_vpc_route_table_route_disassociations
@@ -149,6 +154,7 @@ detection "detect_vpc_route_table_route_disassociations" {
 detection "detect_vpc_route_table_replace_associations" {
   title           = "Detect VPC Route Table Replace Associations"
   description     = "Detect when a VPC route table association is replaced, which could manipulate network traffic, bypass security controls, or disrupt connectivity."
+  documentation   = file("./detections/docs/detect_vpc_route_table_replace_associations.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.detect_vpc_route_table_replace_associations
@@ -161,6 +167,7 @@ detection "detect_vpc_route_table_replace_associations" {
 detection "detect_vpc_creations" {
   title           = "Detect VPC Creations"
   description     = "Detect when a VPC is created, to check for unauthorized infrastructure setup, which could be used to isolate malicious activities, evade monitoring, or stage resources for lateral movement and data exfiltration. Monitoring VPC creation ensures compliance with security policies and detects potential misuse of cloud resources."
+  documentation   = file("./detections/docs/detect_vpc_creations.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_vpc_deletions
@@ -173,6 +180,7 @@ detection "detect_vpc_creations" {
 detection "detect_vpc_deletions" {
   title           = "Detect VPC Deletions"
   description     = "Detect when a VPC is deleted, which can disrupt network infrastructure and impair defenses."
+  documentation   = file("./detections/docs/detect_vpc_deletions.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_vpc_deletions
@@ -185,6 +193,7 @@ detection "detect_vpc_deletions" {
 detection "detect_vpcs_with_classic_link_enabled" {
   title           = "Detect VPC ClassicLink Enabled"
   description     = "Detect when VPC ClassicLink is enabled, which could increase the attack surface by allowing connections to legacy EC2-Classic instances."
+  documentation   = file("./detections/docs/detect_vpcs_with_classic_link_enabled.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.detect_vpcs_with_classic_link_enabled
@@ -197,6 +206,7 @@ detection "detect_vpcs_with_classic_link_enabled" {
 detection "detect_vpc_peering_connection_deletions" {
   title           = "Detect VPC Peering Connection Deletions"
   description     = "Detect when a VPC peering connection is deleted, which could disrupt network communication between VPCs or impair defenses."
+  documentation   = file("./detections/docs/detect_vpc_peering_connection_deletions.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_vpc_peering_connection_deletions
@@ -209,9 +219,9 @@ detection "detect_vpc_peering_connection_deletions" {
 detection "detect_vpc_security_group_ingress_egress_updates" {
   title           = "Detect VPC Security Groups Ingress/Egress Updates"
   description     = "Detect VPC security groups ingress and egress rule updates to check for unauthorized VPC access or export of data."
+  documentation   = file("./detections/docs/detect_vpc_security_group_ingress_egress_updates.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  documentation   = file("./detections/docs/detect_vpc_security_group_ingress_egress_updates.md")
   query           = query.detect_vpc_security_group_ingress_egress_updates
 
   tags = merge(local.vpc_common_tags, {
@@ -222,6 +232,7 @@ detection "detect_vpc_security_group_ingress_egress_updates" {
 detection "detect_vpc_network_acl_updates" {
   title           = "Detect VPC Network ACL Updates"
   description     = "Detect VPC gateways updates to check for changes in network configurations."
+  documentation   = file("./detections/docs/detect_vpc_network_acl_updates.md")
   severity        = "low"
   display_columns = local.detection_display_columns
   query           = query.detect_vpc_network_acl_updates
@@ -234,6 +245,7 @@ detection "detect_vpc_network_acl_updates" {
 detection "detect_vpc_flow_log_deletions" {
   title           = "Detect VPC Flow Logs Deletions"
   description     = "Detect VPC flow logs deletions updates to check for unauthorized changes."
+  documentation   = file("./detections/docs/detect_vpc_flow_log_deletions.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_vpc_flow_log_deletions
@@ -246,6 +258,7 @@ detection "detect_vpc_flow_log_deletions" {
 detection "detect_vpc_security_group_ipv4_allow_all" {
   title           = "Detect Security Groups Rule Modifications to Allow All Traffic to IPv4"
   description     = "Detect when security group rules are modified to allow all traffic to IPv4."
+  documentation   = file("./detections/docs/detect_vpc_security_group_ipv4_allow_all.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_vpc_security_group_ipv4_allow_all
@@ -258,6 +271,7 @@ detection "detect_vpc_security_group_ipv4_allow_all" {
 detection "detect_vpc_security_group_ipv6_allow_all" {
   title           = "Detect Security Group Rule Modification to Allow All Traffic to IPv6"
   description     = "Detect when a security group rule is modified to allow all traffic to to IPv6."
+  documentation   = file("./detections/docs/detect_vpc_security_group_ipv6_allow_all.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_vpc_security_group_ipv6_allow_all
@@ -468,6 +482,7 @@ query "detect_vpc_network_acl_updates" {
 detection "detect_vpcs_with_nacl_association_replacements" {
   title           = "Detect VPCs with Network ACL Association Replacements"
   description     = "Detect when a Network ACL association is replaced, potentially redirecting traffic through a different ACL with weaker security rules, leading to unauthorized access."
+  documentation   = file("./detections/docs/detect_vpcs_with_nacl_association_replacements.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.detect_vpcs_with_nacl_association_replacements
@@ -495,6 +510,7 @@ query "detect_vpcs_with_nacl_association_replacements" {
 detection "detect_vpc_network_acls_with_deny_all_rule_deletions" {
   title           = "Detect Network ACLs with Deny-All Rule Deletions"
   description     = "Detect when Network ACL rules that block all traffic (deny all rules) are deleted, potentially allowing unrestricted traffic and exposing resources to unauthorized access."
+  documentation   = file("./detections/docs/detect_vpc_network_acls_with_deny_all_rule_deletions.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_vpc_network_acls_with_deny_all_rule_deletions
@@ -523,6 +539,7 @@ query "detect_vpc_network_acls_with_deny_all_rule_deletions" {
 detection "detect_public_access_granted_to_nacl" {
   title           = "Detect Public Access Granted in Network ACL Rules"
   description     = "Detect when Network ACL rules are created or modified to allow public access (0.0.0.0/0), potentially exposing resources to unauthorized access or disrupting security controls."
+  documentation   = file("./detections/docs/detect_public_access_granted_to_nacl.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_public_access_granted_to_nacl
@@ -551,6 +568,7 @@ query "detect_public_access_granted_to_nacl" {
 detection "detect_traffic_mirror_targets_with_internet_facing_nlb" {
   title           = "Detect Traffic Mirroring Targets with Internet-Facing Network Load Balancer"
   description     = "Detect when a Traffic Mirroring target is created with an internet-facing Network Load Balancer, potentially exposing sensitive traffic to unauthorized access."
+  documentation   = file("./detections/docs/detect_traffic_mirror_targets_with_internet_facing_nlb.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_traffic_mirror_targets_with_internet_facing_nlb
@@ -582,6 +600,7 @@ query "detect_traffic_mirror_targets_with_internet_facing_nlb" {
 detection "detect_vpcs_with_internet_gateway_detachments" {
   title           = "Detect VPCs with Internet Gateway Detachments"
   description     = "Detect when an Internet Gateway is detached from a VPC, potentially disrupting security configurations or impairing network defenses, leading to isolation of critical resources."
+  documentation   = file("./detections/docs/detect_vpcs_with_internet_gateway_detachments.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_vpcs_with_internet_gateway_detachments
