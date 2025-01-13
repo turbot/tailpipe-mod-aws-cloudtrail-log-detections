@@ -49,6 +49,9 @@ benchmark "iam_detections" {
     detection.detect_iam_role_inline_policy_creations,
     detection.detect_public_access_granted_to_iam_groups,
     detection.detect_admin_access_granted_to_iam_groups,
+    detection.detect_iam_group_inline_policy_creations,
+    detection detect_iam_user_inline_policy_creations,
+    
   ]
 
   tags = merge(local.iam_common_tags, {

@@ -31,24 +31,25 @@ benchmark "vpc_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for VPC events."
   type        = "detection"
   children = [
+    detection.detect_internet_gateways_added_to_public_route_tables,
+    detection.detect_traffic_mirror_targets_with_internet_facing_nlb,
     detection.detect_vpc_creations,
     detection.detect_vpc_deletions,
     detection.detect_vpc_flow_log_deletions,
-    detection.detect_vpc_security_group_deletions,
-    detection.detect_vpcs_with_internet_gateway_detachments,
-    detection.detect_vpcs_with_nacl_association_replacements,
+    detection.detect_vpc_network_acl_updates,
+    detection.detect_vpc_network_acls_with_deny_all_rule_deletions,
     detection.detect_vpc_peering_connection_deletions,
     detection.detect_vpc_route_table_deletions,
     detection.detect_vpc_route_table_replace_associations,
     detection.detect_vpc_route_table_route_deletions,
     detection.detect_vpc_route_table_route_disassociations,
+    detection.detect_vpc_security_group_deletions,
     detection.detect_vpc_security_group_ingress_egress_updates,
     detection.detect_vpc_security_group_ipv4_allow_all,
     detection.detect_vpc_security_group_ipv6_allow_all,
     detection.detect_vpcs_with_classic_link_enabled,
-    detection.detect_traffic_mirror_targets_with_internet_facing_nlb,
-    detection.detect_internet_gateways_added_to_public_route_tables,
-    detection.detect_vpc_network_acls_with_deny_all_rule_deletions,
+    detection.detect_vpcs_with_internet_gateway_detachments,
+    detection.detect_vpcs_with_nacl_association_replacements,
   ]
 
   tags = merge(local.vpc_common_tags, {
