@@ -16,13 +16,13 @@ locals {
   detect_vpc_security_group_ingress_egress_updates_sql_columns       = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
   detect_vpc_security_group_ipv4_allow_all_sql_columns               = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
   detect_vpc_security_group_ipv6_allow_all_sql_columns               = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
-  detect_vpcs_with_classic_link_enabled_sql_columns                  = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
+  detect_vpc_with_classic_link_enabled_sql_columns                  = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
   detect_vpc_flow_log_deletions_sql_columns                          = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.flowLogIds')")
-  detect_traffic_mirror_targets_with_internet_facing_nlb_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.trafficMirrorTargetId')")
-  detect_vpcs_with_internet_gateway_detachments_sql_columns          = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
+  detect_vpc_traffic_mirror_targets_with_internet_facing_nlb_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.trafficMirrorTargetId')")
+  detect_vpc_with_internet_gateway_detachments_sql_columns          = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
   detect_vpc_network_acls_with_deny_all_rule_deletions_sql_columns   = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.networkAclId')")
-  detect_vpcs_with_nacl_association_replacements_sql_columns         = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.associationId')")
-  detect_internet_gateways_added_to_public_route_tables_sql_columns  = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
+  detect_vpc_with_nacl_association_replacements_sql_columns         = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.associationId')")
+  detect_vpc_internet_gateways_added_to_public_route_tables_sql_columns  = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
   detect_vpc_security_group_deletions_sql_columns                    = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
 }
 
@@ -31,8 +31,8 @@ benchmark "vpc_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for VPC events."
   type        = "detection"
   children = [
-    detection.detect_internet_gateways_added_to_public_route_tables,
-    detection.detect_traffic_mirror_targets_with_internet_facing_nlb,
+    detection.detect_vpc_internet_gateways_added_to_public_route_tables,
+    detection.detect_vpc_traffic_mirror_targets_with_internet_facing_nlb,
     detection.detect_vpc_creations,
     detection.detect_vpc_deletions,
     detection.detect_vpc_flow_log_deletions,
@@ -47,9 +47,9 @@ benchmark "vpc_detections" {
     detection.detect_vpc_security_group_ingress_egress_updates,
     detection.detect_vpc_security_group_ipv4_allow_all,
     detection.detect_vpc_security_group_ipv6_allow_all,
-    detection.detect_vpcs_with_classic_link_enabled,
-    detection.detect_vpcs_with_internet_gateway_detachments,
-    detection.detect_vpcs_with_nacl_association_replacements,
+    detection.detect_vpc_with_classic_link_enabled,
+    detection.detect_vpc_with_internet_gateway_detachments,
+    detection.detect_vpc_with_nacl_association_replacements,
   ]
 
   tags = merge(local.vpc_common_tags, {
@@ -84,23 +84,23 @@ query "detect_vpc_security_group_deletions" {
   EOQ
 }
 
-detection "detect_internet_gateways_added_to_public_route_tables" {
-  title           = "Detect Internet Gateways Added to Public Route Tables"
-  description     = "Detect when a route table is updated to add a route to 0.0.0.0/0 via an Internet Gateway, potentially exposing resources to public access."
-  documentation   = file("./detections/docs/detect_internet_gateways_added_to_public_route_tables.md")
+detection "detect_vpc_internet_gateways_added_to_public_route_tables" {
+  title           = "Detect VPC Internet Gateways Added to Public Route Tables"
+  description     = "Detect when a VPC route table is updated to add a route to 0.0.0.0/0 via an Internet Gateway, potentially exposing resources to public access."
+  documentation   = file("./detections/docs/detect_vpc_internet_gateways_added_to_public_route_tables.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_internet_gateways_added_to_public_route_tables
+  query           = query.detect_vpc_internet_gateways_added_to_public_route_tables
 
   tags = merge(local.vpc_common_tags, {
     mitre_attack_ids = "TA0040:T1578"
   })
 }
 
-query "detect_internet_gateways_added_to_public_route_tables" {
+query "detect_vpc_internet_gateways_added_to_public_route_tables" {
   sql = <<-EOQ
     select
-      ${local.detect_internet_gateways_added_to_public_route_tables_sql_columns}
+      ${local.detect_vpc_internet_gateways_added_to_public_route_tables_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -191,13 +191,13 @@ detection "detect_vpc_deletions" {
   })
 }
 
-detection "detect_vpcs_with_classic_link_enabled" {
+detection "detect_vpc_with_classic_link_enabled" {
   title           = "Detect VPC ClassicLink Enabled"
   description     = "Detect when VPC ClassicLink is enabled, which could increase the attack surface by allowing connections to legacy EC2-Classic instances."
-  documentation   = file("./detections/docs/detect_vpcs_with_classic_link_enabled.md")
+  documentation   = file("./detections/docs/detect_vpc_with_classic_link_enabled.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.detect_vpcs_with_classic_link_enabled
+  query           = query.detect_vpc_with_classic_link_enabled
 
   tags = merge(local.vpc_common_tags, {
     mitre_attack_ids = "TA0003:T1078, TA0005:T1562.001"
@@ -257,7 +257,7 @@ detection "detect_vpc_flow_log_deletions" {
 }
 
 detection "detect_vpc_security_group_ipv4_allow_all" {
-  title           = "Detect Security Groups Rule Modifications to Allow All Traffic to IPv4"
+  title           = "Detect VPC Security Groups Rule Modifications to Allow All Traffic to IPv4"
   description     = "Detect when security group rules are modified to allow all traffic to IPv4."
   documentation   = file("./detections/docs/detect_vpc_security_group_ipv4_allow_all.md")
   severity        = "high"
@@ -270,7 +270,7 @@ detection "detect_vpc_security_group_ipv4_allow_all" {
 }
 
 detection "detect_vpc_security_group_ipv6_allow_all" {
-  title           = "Detect Security Group Rule Modification to Allow All Traffic to IPv6"
+  title           = "Detect VPC Security Group Rule Modification to Allow All Traffic to IPv6"
   description     = "Detect when a security group rule is modified to allow all traffic to to IPv6."
   documentation   = file("./detections/docs/detect_vpc_security_group_ipv6_allow_all.md")
   severity        = "high"
@@ -372,10 +372,10 @@ query "detect_vpc_deletions" {
   EOQ
 }
 
-query "detect_vpcs_with_classic_link_enabled" {
+query "detect_vpc_with_classic_link_enabled" {
   sql = <<-EOQ
     select
-      ${local.detect_vpcs_with_classic_link_enabled_sql_columns}
+      ${local.detect_vpc_with_classic_link_enabled_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -480,23 +480,23 @@ query "detect_vpc_network_acl_updates" {
   EOQ
 }
 
-detection "detect_vpcs_with_nacl_association_replacements" {
-  title           = "Detect VPCs with Network ACL Association Replacements"
+detection "detect_vpc_with_nacl_association_replacements" {
+  title           = "Detect VPC with Network ACL Association Replacements"
   description     = "Detect when a Network ACL association is replaced, potentially redirecting traffic through a different ACL with weaker security rules, leading to unauthorized access."
-  documentation   = file("./detections/docs/detect_vpcs_with_nacl_association_replacements.md")
+  documentation   = file("./detections/docs/detect_vpc_with_nacl_association_replacements.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.detect_vpcs_with_nacl_association_replacements
+  query           = query.detect_vpc_with_nacl_association_replacements
 
   tags = merge(local.vpc_common_tags, {
     mitre_attack_ids = "TA0040:T1562.004"
   })
 }
 
-query "detect_vpcs_with_nacl_association_replacements" {
+query "detect_vpc_with_nacl_association_replacements" {
   sql = <<-EOQ
     select
-      ${local.detect_vpcs_with_nacl_association_replacements_sql_columns}
+      ${local.detect_vpc_with_nacl_association_replacements_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -509,7 +509,7 @@ query "detect_vpcs_with_nacl_association_replacements" {
 }
 
 detection "detect_vpc_network_acls_with_deny_all_rule_deletions" {
-  title           = "Detect Network ACLs with Deny-All Rule Deletions"
+  title           = "Detect VPC Network ACLs with Deny-All Rule Deletions"
   description     = "Detect when Network ACL rules that block all traffic (deny all rules) are deleted, potentially allowing unrestricted traffic and exposing resources to unauthorized access."
   documentation   = file("./detections/docs/detect_vpc_network_acls_with_deny_all_rule_deletions.md")
   severity        = "high"
@@ -538,7 +538,7 @@ query "detect_vpc_network_acls_with_deny_all_rule_deletions" {
 }
 
 detection "detect_public_access_granted_to_nacl" {
-  title           = "Detect Public Access Granted in Network ACL Rules"
+  title           = "Detect VPC Public Access Granted in Network ACL Rules"
   description     = "Detect when Network ACL rules are created or modified to allow public access (0.0.0.0/0), potentially exposing resources to unauthorized access or disrupting security controls."
   documentation   = file("./detections/docs/detect_public_access_granted_to_nacl.md")
   severity        = "high"
@@ -566,23 +566,23 @@ query "detect_public_access_granted_to_nacl" {
   EOQ
 }
 
-detection "detect_traffic_mirror_targets_with_internet_facing_nlb" {
-  title           = "Detect Traffic Mirroring Targets with Internet-Facing Network Load Balancer"
+detection "detect_vpc_traffic_mirror_targets_with_internet_facing_nlb" {
+  title           = "Detect VPC Traffic Mirroring Targets with Internet-Facing Network Load Balancer"
   description     = "Detect when a Traffic Mirroring target is created with an internet-facing Network Load Balancer, potentially exposing sensitive traffic to unauthorized access."
-  documentation   = file("./detections/docs/detect_traffic_mirror_targets_with_internet_facing_nlb.md")
+  documentation   = file("./detections/docs/detect_vpc_traffic_mirror_targets_with_internet_facing_nlb.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_traffic_mirror_targets_with_internet_facing_nlb
+  query           = query.detect_vpc_traffic_mirror_targets_with_internet_facing_nlb
 
   tags = merge(local.vpc_common_tags, {
     mitre_attack_ids = "TA0010:T1020"
   })
 }
 
-query "detect_traffic_mirror_targets_with_internet_facing_nlb" {
+query "detect_vpc_traffic_mirror_targets_with_internet_facing_nlb" {
   sql = <<-EOQ
     select
-      ${local.detect_traffic_mirror_targets_with_internet_facing_nlb_sql_columns}
+      ${local.detect_vpc_traffic_mirror_targets_with_internet_facing_nlb_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -598,23 +598,23 @@ query "detect_traffic_mirror_targets_with_internet_facing_nlb" {
   EOQ
 }
 
-detection "detect_vpcs_with_internet_gateway_detachments" {
-  title           = "Detect VPCs with Internet Gateway Detachments"
+detection "detect_vpc_with_internet_gateway_detachments" {
+  title           = "Detect VPC with Internet Gateway Detachments"
   description     = "Detect when an Internet Gateway is detached from a VPC, potentially disrupting security configurations or impairing network defenses, leading to isolation of critical resources."
-  documentation   = file("./detections/docs/detect_vpcs_with_internet_gateway_detachments.md")
+  documentation   = file("./detections/docs/detect_vpc_with_internet_gateway_detachments.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_vpcs_with_internet_gateway_detachments
+  query           = query.detect_vpc_with_internet_gateway_detachments
 
   tags = merge(local.vpc_common_tags, {
     mitre_attack_ids = "TA0040:T1562.004" # Disable or Modify Firewall
   })
 }
 
-query "detect_vpcs_with_internet_gateway_detachments" {
+query "detect_vpc_with_internet_gateway_detachments" {
   sql = <<-EOQ
     select
-      ${local.detect_vpcs_with_internet_gateway_detachments_sql_columns}
+      ${local.detect_vpc_with_internet_gateway_detachments_sql_columns}
     from
       aws_cloudtrail_log
     where
