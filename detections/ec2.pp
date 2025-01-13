@@ -60,6 +60,7 @@ query "detect_ec2_instances_with_source_dest_check_disabled" {
 detection "detect_ec2_amis_with_launch_permission_changes" {
   title           = "Detect EC2 AMIs with Launch Permission Changes"
   description     = "Detect changes to EC2 AMI launch permissions to check for potential unauthorized access or privilege escalation."
+  documentation   = file("./detections/docs/detect_ec2_amis_with_launch_permission_changes.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.detect_ec2_amis_with_launch_permission_changes

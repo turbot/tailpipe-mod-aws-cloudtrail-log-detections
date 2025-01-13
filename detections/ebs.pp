@@ -28,6 +28,7 @@ benchmark "ebs_detections" {
 detection "detect_regions_with_default_ebs_encryption_disabled" {
   title           = "Detect Regions with Default EBS Encryption Disabled"
   description     = "Detect regions with default EBS encryption disabled to check for potential misconfigurations that could leave data at rest unencrypted, increasing the risk of unauthorized access or data breaches."
+  documentation   = file("./detections/docs/detect_regions_with_default_ebs_encryption_disabled.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.detect_regions_with_default_ebs_encryption_disabled
