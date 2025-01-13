@@ -5,7 +5,7 @@ mod "aws_cloudtrail_log_detections" {
   color         = "#FF9900"
   documentation = file("./docs/index.md")
   #icon          = "/images/mods/turbot/aws.svg"
-  categories    = ["aws", "security"]
+  categories    = ["aws", "dashboard", "detections", "public cloud"]
   database      = var.database
 
   opengraph {
