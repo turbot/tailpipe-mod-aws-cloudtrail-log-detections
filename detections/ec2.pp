@@ -33,6 +33,7 @@ benchmark "ec2_detections" {
 detection "detect_ec2_instances_with_source_dest_check_disabled" {
   title           = "Detect EC2 Source/Destination Check Disabled"
   description     = "Identify attempts to disable the EC2 source/destination check, which could enable unauthorized traffic routing."
+  documentation   = file("./detections/docs/detect_ec2_instances_with_source_dest_check_disabled.md")
   severity        = "critical"
   display_columns = local.detection_display_columns
   query           = query.detect_ec2_instances_with_source_dest_check_disabled
@@ -62,6 +63,7 @@ query "detect_ec2_instances_with_source_dest_check_disabled" {
 detection "detect_ec2_instances_user_data_modifications_with_ssh_key_additions" {
   title           = "Detect EC2 Instances User Data Modifications with SSH Key Additions"
   description     = "Detect EC2 instances user data modifications to check for SSH key additions, which may indicate unauthorized access attempts."
+  documentation   = file("./detections/docs/detect_ec2_instances_user_data_modifications_with_ssh_key_additions.md")
   severity        = "critical"
   display_columns = local.detection_display_columns
   query           = query.detect_ec2_instances_user_data_modifications_with_ssh_key_additions
@@ -120,6 +122,7 @@ query "detect_ec2_amis_with_launch_permission_changes" {
 detection "detect_ec2_ami_copied_from_external_accounts" {
   title           = "Detect EC2 AMIs Copied from External Accounts"
   description     = "Detect events where EC2 AMIs are copied across accounts to check for potential unauthorized duplication or data exfiltration."
+  documentation   = file("./detections/docs/detect_ec2_ami_copied_from_external_accounts.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_ec2_ami_copied_from_external_accounts
@@ -148,6 +151,7 @@ query "detect_ec2_ami_copied_from_external_accounts" {
 detection "detect_ec2_ami_restore_image_task_from_external_accounts" {
   title           = "Detect EC2 AMI Restore Image Task from External Accounts"
   description     = "Identify tasks to restore EC2 AMI images from different accounts, which could indicate unauthorized restoration or data recovery."
+  documentation   = file("./detections/docs/detect_ec2_ami_restore_image_task_from_external_accounts.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_ec2_ami_restore_image_task_from_external_accounts
@@ -176,6 +180,7 @@ query "detect_ec2_ami_restore_image_task_from_external_accounts" {
 detection "detect_ec2_ami_store_image_tasks_from_external_accounts" {
   title           = "Detect EC2 AMI Store Image Tasks from External Accounts"
   description     = "Detect events where EC2 AMIs are stored in external accounts to check for potential data exfiltration or unauthorized usage."
+  documentation   = file("./detections/docs/detect_ec2_ami_store_image_tasks_from_external_accounts.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_ec2_ami_store_image_tasks_from_external_accounts
@@ -204,6 +209,7 @@ query "detect_ec2_ami_store_image_tasks_from_external_accounts" {
 detection "detect_ec2_ami_imported_from_external_accounts" {
   title           = "Detect EC2 AMI Imported from External Accounts"
   description     = "Identify events where AMIs are imported from external accounts, potentially introducing unauthorized or untrusted images."
+  documentation   = file("./detections/docs/detect_ec2_ami_imported_from_external_accounts.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_ec2_ami_imported_from_external_accounts
