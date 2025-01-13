@@ -3,7 +3,7 @@ benchmark "cloudtrail_log_error_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs."
   type        = "detection"
   children = [
-    detection.cloudtrail_logs_detect_errors,
+    detection.detect_errors,
   ]
 
   tags = {
@@ -13,14 +13,14 @@ benchmark "cloudtrail_log_error_detections" {
 }
 
 
-detection "cloudtrail_logs_detect_errors" {
+detection "detect_errors" {
   title       = "Detect CloudTrail Log Errors"
   description = "Detect CloudTrail log errors."
   severity    = "low"
-  query       = query.cloudtrail_logs_detect_errors
+  query       = query.detect_errors
 }
 
-query "cloudtrail_logs_detect_errors" {
+query "detect_errors" {
   sql = <<-EOQ
     select
       epoch_ms(tp_timestamp) as timestamp,

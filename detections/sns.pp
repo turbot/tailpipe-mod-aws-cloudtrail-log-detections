@@ -1,43 +1,43 @@
 locals {
-  cloudtrail_log_detection_sns_common_tags = merge(local.cloudtrail_log_detection_common_tags, {
+  sns_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
     service = "AWS/SNS"
   })
 
-  cloudtrail_logs_detect_public_access_granted_to_sns_topics_sql_columns               = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.topicArn')")
-  cloudtrail_logs_detect_sns_topics_with_encryption_at_rest_disabled_sql_columns        = replace(local.cloudtrail_log_detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.topicArn')")
+  detect_public_access_granted_to_sns_topics_sql_columns               = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.topicArn')")
+  detect_sns_topics_with_encryption_at_rest_disabled_sql_columns        = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.topicArn')")
 }
 
-benchmark "cloudtrail_logs_sns_detections" {
+benchmark "sns_detections" {
   title       = "SNS Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs for SNS events."
   type        = "detection"
   children = [
-    detection.cloudtrail_logs_detect_public_access_granted_to_sns_topics,
-    detection.cloudtrail_logs_detect_sns_topics_with_encryption_at_rest_disabled,
+    detection.detect_public_access_granted_to_sns_topics,
+    detection.detect_sns_topics_with_encryption_at_rest_disabled,
   ]
 
-  tags = merge(local.cloudtrail_log_detection_sns_common_tags, {
+  tags = merge(local.sns_common_tags, {
     type    = "Benchmark"
   })
 }
 
-detection "cloudtrail_logs_detect_public_access_granted_to_sns_topics" {
+detection "detect_public_access_granted_to_sns_topics" {
   title           = "Detect Public Access Granted to SNS Topics"
   description     = "Detect when a public policy is added to an SNS topic to check for potential unauthorized access, which could expose sensitive notifications to external entities."
   severity        = "high"
-  display_columns = local.cloudtrail_log_detection_display_columns
-  query           = query.cloudtrail_logs_detect_sqs_queues_without_encryption_at_rest
+  display_columns = local.detection_display_columns
+  query           = query.detect_sqs_queues_without_encryption_at_rest
 
-  tags = merge(local.cloudtrail_log_detection_sns_common_tags, {
+  tags = merge(local.sns_common_tags, {
     mitre_attack_ids = "TA0010:T1567"
   })
 }
 
 // Need to refactor the query to iterate the policy statements from the logs and check any of the statement have public access.
-query "cloudtrail_logs_detect_public_access_granted_to_sns_topics" {
+query "detect_public_access_granted_to_sns_topics" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_public_access_granted_to_sns_topics_sql_columns}
+      ${local.detect_public_access_granted_to_sns_topics_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -46,28 +46,28 @@ query "cloudtrail_logs_detect_public_access_granted_to_sns_topics" {
       and json_extract_string(request_parameters, '$.attributeName') = 'Policy'
       and json_extract_string(request_parameters, '$.attributeValue') like '%"Effect": "Allow"%'
       and json_extract_string(request_parameters, '$.attributeValue') like '%"AWS": "*"%'
-      ${local.cloudtrail_log_detections_where_conditions}
+      ${local.detection_sql_where_conditions}
     order by
       event_time desc;
   EOQ
 }
 
-detection "cloudtrail_logs_detect_sns_topics_with_encryption_at_rest_disabled" {
+detection "detect_sns_topics_with_encryption_at_rest_disabled" {
   title           = "Detect SNS Topics with Encryption at Rest Disabled"
   description     = "Detect SNS topics with encryption at rest disabled to check for events where KMS keys are removed, potentially exposing sensitive log data to unauthorized access or tampering."
   severity        = "high"
-  display_columns = local.cloudtrail_log_detection_display_columns
-  query           = query.cloudtrail_logs_detect_sns_topics_with_encryption_at_rest_disabled
+  display_columns = local.detection_display_columns
+  query           = query.detect_sns_topics_with_encryption_at_rest_disabled
 
-  tags = merge(local.cloudtrail_log_detection_cloudtrail_common_tags, {
+  tags = merge(local.cloudtrail_common_tags, {
     mitre_attack_ids = "TA0005:T1562.001"
   })
 }
 
-query "cloudtrail_logs_detect_sns_topics_with_encryption_at_rest_disabled" {
+query "detect_sns_topics_with_encryption_at_rest_disabled" {
   sql = <<-EOQ
     select
-      ${local.cloudtrail_logs_detect_sns_topics_with_encryption_at_rest_disabled_sql_columns}
+      ${local.detect_sns_topics_with_encryption_at_rest_disabled_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -75,7 +75,7 @@ query "cloudtrail_logs_detect_sns_topics_with_encryption_at_rest_disabled" {
       and event_name = 'SetTopicAttributes'
       and json_extract_string(request_parameters, '$.attributeName') = 'KmsMasterKeyId'
       and json_extract_string(request_parameters, '$.attributeValue') is null
-      ${local.cloudtrail_log_detections_where_conditions}
+      ${local.detection_sql_where_conditions}
     order by
       event_time desc;
   EOQ

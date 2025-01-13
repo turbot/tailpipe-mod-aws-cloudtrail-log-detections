@@ -1,4 +1,4 @@
-dashboard "cloudtrail_logs_error_report" {
+dashboard "error_report" {
 
   title         = "CloudTrail Logs Error Report"
 
@@ -41,15 +41,15 @@ dashboard "cloudtrail_logs_error_report" {
 
       /*
       column "principal_id" {
-        href = "/aws.dashboard.cloudtrail_logs_search_by_principal_id?input.principal_id={{ .'principal_id' | @uri }}"
+        href = "/aws.dashboard.search_by_principal_id?input.principal_id={{ .'principal_id' | @uri }}"
       }
 
       column "source_ip" {
-        href = "/aws.dashboard.cloudtrail_logs_search_by_source_ip?input.source_ip={{ .'source_ip' | @uri }}"
+        href = "/aws.dashboard.search_by_source_ip?input.source_ip={{ .'source_ip' | @uri }}"
       }
 
       column "source_id" {
-        href = "/aws.dashboard.cloudtrail_logs_search_by_tp_id?input.tp_id={{ .'source_id' | @uri }}"
+        href = "/aws.dashboard.search_by_tp_id?input.tp_id={{ .'source_id' | @uri }}"
       }
 
       column "additional_event_data" {

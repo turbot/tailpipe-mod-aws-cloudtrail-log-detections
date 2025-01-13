@@ -1,40 +1,34 @@
-locals {
-  cloudtrail_log_detection_common_tags = merge(local.aws_detections_common_tags, {
-    service = "AWS/CloudTrail"
-  })
-}
-
 benchmark "cloudtrail_log_detections" {
   title       = "CloudTrail Log Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs."
   type        = "detection"
   children = [
-    benchmark.cloudtrail_logs_apigateway_detections,
-    benchmark.cloudtrail_logs_cloudfront_detections,
-    benchmark.cloudtrail_logs_cloudtrail_detections,
-    benchmark.cloudtrail_logs_cloudwatch_detections,
-    benchmark.cloudtrail_logs_codebuild_detections,
-    benchmark.cloudtrail_logs_config_detections,
-    benchmark.cloudtrail_logs_ebs_detections,
-    benchmark.cloudtrail_logs_ec2_detections,
-    benchmark.cloudtrail_logs_efs_detections,
-    benchmark.cloudtrail_logs_eventbridge_detections,
-    benchmark.cloudtrail_logs_guardduty_detections,
-    benchmark.cloudtrail_logs_iam_detections,
-    benchmark.cloudtrail_logs_kms_detections,
-    benchmark.cloudtrail_logs_lambda_detections,
-    benchmark.cloudtrail_logs_rds_detections,
-    benchmark.cloudtrail_logs_route53_detections,
-    benchmark.cloudtrail_logs_s3_detections,
-    benchmark.cloudtrail_logs_ses_detections,
-    benchmark.cloudtrail_logs_ssm_detections,
-    benchmark.cloudtrail_logs_sns_detections,
-    benchmark.cloudtrail_logs_sqs_detections,
-    benchmark.cloudtrail_logs_vpc_detections,
-    benchmark.cloudtrail_logs_waf_detections,
+    benchmark.apigateway_detections,
+    benchmark.cloudfront_detections,
+    benchmark.cloudtrail_detections,
+    benchmark.cloudwatch_detections,
+    benchmark.codebuild_detections,
+    benchmark.config_detections,
+    benchmark.ebs_detections,
+    benchmark.ec2_detections,
+    benchmark.efs_detections,
+    benchmark.eventbridge_detections,
+    benchmark.guardduty_detections,
+    benchmark.iam_detections,
+    benchmark.kms_detections,
+    benchmark.lambda_detections,
+    benchmark.rds_detections,
+    benchmark.route53_detections,
+    benchmark.s3_detections,
+    benchmark.ses_detections,
+    benchmark.ssm_detections,
+    benchmark.sns_detections,
+    benchmark.sqs_detections,
+    benchmark.vpc_detections,
+    benchmark.waf_detections,
   ]
 
-  tags = merge(local.cloudtrail_log_detection_common_tags, {
+  tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
     type = "Benchmark"
   })
 }
