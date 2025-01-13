@@ -211,7 +211,7 @@ detection "cloudtrail_logs_detect_vpc_security_group_ingress_egress_updates" {
   description     = "Detect VPC security groups ingress and egress rule updates to check for unauthorized VPC access or export of data."
   severity        = "medium"
   display_columns = local.cloudtrail_log_detection_display_columns
-  documentation   = file("./detections/docs/cloudtrail_logs_detect_vpc_security_group_ingress_egress_updates.md")
+  documentation   = file("./detections/docs/detect_vpc_security_group_ingress_egress_updates.md")
   query           = query.cloudtrail_logs_detect_vpc_security_group_ingress_egress_updates
 
   tags = merge(local.cloudtrail_log_detection_common_tags, {

@@ -30,7 +30,7 @@ detection "cloudtrail_logs_detect_ssm_documents_with_unauthorized_input_captures
   description     = "Detect unauthorized input capture, such as keyboard input logging in AWS Systems Manager."
   severity        = "high"
   display_columns = local.cloudtrail_log_detection_display_columns
-  #documentation   = file("./detections/docs/cloudtrail_logs_detect_ssm_documents_with_unauthorized_input_captures.md")
+  #documentation   = file("./detections/docs/detect_ssm_documents_with_unauthorized_input_captures.md")
   query = query.cloudtrail_logs_detect_ssm_documents_with_unauthorized_input_captures
 
   tags = merge(local.cloudtrail_log_detection_ssm_common_tags, {
@@ -43,7 +43,7 @@ detection "cloudtrail_logs_detect_ssm_documents_with_unauthorized_data_access_fr
   description     = "Detect attempts to use (SSM) to access local system data without authorization. This activity may indicate malicious attempts to collect sensitive information, such as configuration files, credentials, or logs, from compromised systems."
   severity        = "high"
   display_columns = local.cloudtrail_log_detection_display_columns
-  #documentation   = file("./detections/docs/cloudtrail_logs_detect_ssm_documents_with_unauthorized_data_access_from_local_systems.md")
+  #documentation   = file("./detections/docs/detect_ssm_documents_with_unauthorized_data_access_from_local_systems.md")
   query = query.cloudtrail_logs_detect_ssm_documents_with_unauthorized_data_access_from_local_systems
 
   tags = merge(local.cloudtrail_log_detection_ssm_common_tags, {
