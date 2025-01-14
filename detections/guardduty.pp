@@ -22,6 +22,7 @@ benchmark "guardduty_detections" {
 detection "detect_guardduty_detector_deletions" {
   title           = "Detect GuardDuty Detector Deletions"
   description     = "Detect when GuardDuty detectors are deleted. Deleting GuardDuty detectors disables threat detection capabilities, which can allow malicious activities to go undetected and impair your ability to respond to security incidents."
+  documentation   = file("./detections/docs/detect_guardduty_detector_deletions.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_guardduty_detector_deletions

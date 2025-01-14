@@ -22,6 +22,7 @@ benchmark "efs_detections" {
 detection "detect_efs_file_systems_with_backup_policy_disabled" {
   title           = "Detect EFS File Systems with Backup Policy Disabled"
   description     = "Identify events where backup policies are disabled for EFS file systems, potentially leaving data unprotected."
+  documentation   = file("./detections/docs/detect_efs_file_systems_with_backup_policy_disabled.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_efs_file_systems_with_backup_policy_disabled

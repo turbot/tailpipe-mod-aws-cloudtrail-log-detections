@@ -22,6 +22,7 @@ benchmark "apigateway_detections" {
 detection "detect_public_access_granted_to_api_gateways" {
   title       = "Detect Public Access Granted to API Gateways"
   description = "Detect when an API Gateway is created with public access, potentially exposing internal services."
+  documentation   = file("./detections/docs/detect_public_access_granted_to_api_gateways.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_public_access_granted_to_api_gateways

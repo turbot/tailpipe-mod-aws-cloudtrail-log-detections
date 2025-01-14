@@ -4,13 +4,13 @@ locals {
   })
 
   detect_cloudwatch_log_groups_created_without_encryption_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
-  detect_cloudwatch_alarm_threshold_changes_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.alarmName')")
-  detect_cloudwatch_log_retention_period_changes_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
-  detect_cloudwatch_subscription_filter_changes_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
-  detect_cloudwatch_alarm_action_changes_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.alarmName')")
-  detect_cloudwatch_log_group_shared_via_cross_account_role_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
-  detect_cloudwatch_alarm_actions_via_cross_account_role_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.alarmName')")
-  detect_cloudwatch_subscription_filters_via_cross_account_role_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
+  detect_cloudwatch_alarms_threshold_updates_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.alarmName')")
+  detect_cloudwatch_logs_retention_period_updates_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
+  detect_cloudwatch_subscriptions_filter_updates_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
+  detect_cloudwatch_alarms_action_updates_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.alarmName')")
+  detect_cloudwatch_log_groups_shared_via_cross_account_roles_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
+  detect_cloudwatch_alarms_actions_via_cross_account_roles_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.alarmName')")
+  detect_cloudwatch_subscription_filters_via_cross_account_roles_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
 }
 
 benchmark "cloudwatch_detections" {
@@ -19,13 +19,13 @@ benchmark "cloudwatch_detections" {
   type        = "detection"
   children    = [
     detection.detect_cloudwatch_log_groups_created_without_encryption,
-    detection.detect_cloudwatch_alarm_threshold_changes,
-    detection.detect_cloudwatch_log_retention_period_changes,
-    detection.detect_cloudwatch_subscription_filter_changes,
-    detection.detect_cloudwatch_alarm_action_changes,
-    detection.detect_cloudwatch_log_group_shared_via_cross_account_role,
-    detection.detect_cloudwatch_alarm_actions_via_cross_account_role,
-    detection.detect_cloudwatch_subscription_filters_via_cross_account_role,
+    detection.detect_cloudwatch_alarms_threshold_updates,
+    detection.detect_cloudwatch_logs_retention_period_updates,
+    detection.detect_cloudwatch_subscriptions_filter_updates,
+    detection.detect_cloudwatch_alarms_action_updates,
+    detection.detect_cloudwatch_log_groups_shared_via_cross_account_roles,
+    detection.detect_cloudwatch_alarms_actions_via_cross_account_roles,
+    detection.detect_cloudwatch_subscription_filters_via_cross_account_roles,
   ]
 
   tags = merge(local.cloudwatch_common_tags, {
@@ -36,6 +36,7 @@ benchmark "cloudwatch_detections" {
 detection "detect_cloudwatch_log_groups_created_without_encryption" {
   title           = "Detect CloudWatch Log Groups Created Without Encryption"
   description     = "Detect events where CloudWatch log groups are created without KMS encryption enabled, potentially exposing sensitive log data to unauthorized access."
+  documentation   = file("./detections/docs/detect_cloudwatch_log_groups_created_without_encryption.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.detect_cloudwatch_log_groups_created_without_encryption
@@ -61,22 +62,23 @@ query "detect_cloudwatch_log_groups_created_without_encryption" {
   EOQ
 }
 
-detection "detect_cloudwatch_alarm_threshold_changes" {
-  title           = "Detect CloudWatch Alarm Threshold Changes"
+detection "detect_cloudwatch_alarms_threshold_updates" {
+  title           = "Detect CloudWatch Alarm Threshold Updates"
   description     = "Detect events where thresholds for CloudWatch alarms are modified, potentially impacting the accuracy of monitoring alerts."
+  documentation   = file("./detections/docs/detect_cloudwatch_alarms_threshold_updates.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.detect_cloudwatch_alarm_threshold_changes
+  query           = query.detect_cloudwatch_alarms_threshold_updates
 
   tags = merge(local.cloudwatch_common_tags, {
     mitre_attack_ids = "T1562.003"
   })
 }
 
-query "detect_cloudwatch_alarm_threshold_changes" {
+query "detect_cloudwatch_alarms_threshold_updates" {
   sql = <<-EOQ
     select
-      ${local.detect_cloudwatch_alarm_threshold_changes_sql_columns}
+      ${local.detect_cloudwatch_alarms_threshold_updates_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -89,22 +91,23 @@ query "detect_cloudwatch_alarm_threshold_changes" {
   EOQ
 }
 
-detection "detect_cloudwatch_log_retention_period_changes" {
+detection "detect_cloudwatch_logs_retention_period_updates" {
   title           = "Detect CloudWatch Log Retention Period Changes"
   description     = "Detect events where retention periods for CloudWatch logs are modified, potentially reducing the duration of stored log data."
+  documentation   = file("./detections/docs/detect_cloudwatch_logs_retention_period_updates.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.detect_cloudwatch_log_retention_period_changes
+  query           = query.detect_cloudwatch_logs_retention_period_updates
 
   tags = merge(local.cloudwatch_common_tags, {
     mitre_attack_ids = "T1562.001"
   })
 }
 
-query "detect_cloudwatch_log_retention_period_changes" {
+query "detect_cloudwatch_logs_retention_period_updates" {
   sql = <<-EOQ
     select
-      ${local.detect_cloudwatch_log_retention_period_changes_sql_columns}
+      ${local.detect_cloudwatch_logs_retention_period_updates_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -117,22 +120,23 @@ query "detect_cloudwatch_log_retention_period_changes" {
   EOQ
 }
 
-detection "detect_cloudwatch_subscription_filter_changes" {
-  title           = "Detect CloudWatch Subscription Filter Changes"
+detection "detect_cloudwatch_subscriptions_filter_updates" {
+  title           = "Detect CloudWatch Subscription Filter Updates"
   description     = "Detect events where subscription filters for CloudWatch logs are modified, potentially redirecting logs to unauthorized destinations."
+  documentation   = file("./detections/docs/detect_cloudwatch_subscriptions_filter_updates.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_cloudwatch_subscription_filter_changes
+  query           = query.detect_cloudwatch_subscriptions_filter_updates
 
   tags = merge(local.cloudwatch_common_tags, {
     mitre_attack_ids = "T1537"
   })
 }
 
-query "detect_cloudwatch_subscription_filter_changes" {
+query "detect_cloudwatch_subscriptions_filter_updates" {
   sql = <<-EOQ
     select
-      ${local.detect_cloudwatch_subscription_filter_changes_sql_columns}
+      ${local.detect_cloudwatch_subscriptions_filter_updates_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -145,22 +149,23 @@ query "detect_cloudwatch_subscription_filter_changes" {
   EOQ
 }
 
-detection "detect_cloudwatch_alarm_action_changes" {
-  title           = "Detect CloudWatch Alarm Action Changes"
+detection "detect_cloudwatch_alarms_action_updates" {
+  title           = "Detect CloudWatch Alarm Action Updates"
   description     = "Detect events where actions for CloudWatch alarms are modified, potentially affecting the response to triggered alarms."
+  documentation   = file("./detections/docs/detect_cloudwatch_alarms_action_updates.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.detect_cloudwatch_alarm_action_changes
+  query           = query.detect_cloudwatch_alarms_action_updates
 
   tags = merge(local.cloudwatch_common_tags, {
     mitre_attack_ids = "T1562.003"
   })
 }
 
-query "detect_cloudwatch_alarm_action_changes" {
+query "detect_cloudwatch_alarms_action_updates" {
   sql = <<-EOQ
     select
-      ${local.detect_cloudwatch_alarm_action_changes_sql_columns}
+      ${local.detect_cloudwatch_alarms_action_updates_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -173,22 +178,23 @@ query "detect_cloudwatch_alarm_action_changes" {
   EOQ
 }
 
-detection "detect_cloudwatch_log_group_shared_via_cross_account_role" {
-  title           = "Detect CloudWatch Log Group Shared via Cross-Account Role"
+detection "detect_cloudwatch_log_groups_shared_via_cross_account_roles" {
+  title           = "Detect CloudWatch Log Group Shared via Cross-Account Roles"
   description     = "Detect events where CloudWatch log groups are shared using the `CloudWatch-CrossAccountSharingRole`, which could indicate intentional or unintentional cross-account sharing."
+  documentation   = file("./detections/docs/detect_cloudwatch_log_groups_shared_via_cross_account_roles.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_cloudwatch_log_group_shared_via_cross_account_role
+  query           = query.detect_cloudwatch_log_groups_shared_via_cross_account_roles
 
   tags = merge(local.cloudwatch_common_tags, {
     mitre_attack_ids = "T1537"
   })
 }
 
-query "detect_cloudwatch_log_group_shared_via_cross_account_role" {
+query "detect_cloudwatch_log_groups_shared_via_cross_account_roles" {
   sql = <<-EOQ
     select
-      ${local.detect_cloudwatch_log_group_shared_via_cross_account_role_sql_columns}
+      ${local.detect_cloudwatch_log_groups_shared_via_cross_account_roles_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -201,22 +207,23 @@ query "detect_cloudwatch_log_group_shared_via_cross_account_role" {
   EOQ
 }
 
-detection "detect_cloudwatch_alarm_actions_via_cross_account_role" {
-  title           = "Detect CloudWatch Alarm Actions Configured via Cross-Account Role"
+detection "detect_cloudwatch_alarms_actions_via_cross_account_roles" {
+  title           = "Detect CloudWatch Alarm Actions Configured via Cross-Account Roles"
   description     = "Detect events where CloudWatch alarm actions are configured to use the `CloudWatch-CrossAccountSharingRole`, potentially allowing cross-account activity."
+  documentation   = file("./detections/docs/detect_cloudwatch_alarms_actions_via_cross_account_roles.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_cloudwatch_alarm_actions_via_cross_account_role
+  query           = query.detect_cloudwatch_alarms_actions_via_cross_account_roles
 
   tags = merge(local.cloudwatch_common_tags, {
     mitre_attack_ids = "T1537"
   })
 }
 
-query "detect_cloudwatch_alarm_actions_via_cross_account_role" {
+query "detect_cloudwatch_alarms_actions_via_cross_account_roles" {
   sql = <<-EOQ
     select
-      ${local.detect_cloudwatch_alarm_actions_via_cross_account_role_sql_columns}
+      ${local.detect_cloudwatch_alarms_actions_via_cross_account_roles_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -229,22 +236,22 @@ query "detect_cloudwatch_alarm_actions_via_cross_account_role" {
   EOQ
 }
 
-detection "detect_cloudwatch_subscription_filters_via_cross_account_role" {
+detection "detect_cloudwatch_subscription_filters_via_cross_account_roles" {
   title           = "Detect CloudWatch Subscription Filters Redirected via Cross-Account Role"
   description     = "Detect events where CloudWatch subscription filters redirect logs using the `CloudWatch-CrossAccountSharingRole`, potentially leading to cross-account data access."
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_cloudwatch_subscription_filters_via_cross_account_role
+  query           = query.detect_cloudwatch_subscription_filters_via_cross_account_roles
 
   tags = merge(local.cloudwatch_common_tags, {
     mitre_attack_ids = "T1537"
   })
 }
 
-query "detect_cloudwatch_subscription_filters_via_cross_account_role" {
+query "detect_cloudwatch_subscription_filters_via_cross_account_roles" {
   sql = <<-EOQ
     select
-      ${local.detect_cloudwatch_subscription_filters_via_cross_account_role_sql_columns}
+      ${local.detect_cloudwatch_subscription_filters_via_cross_account_roles_sql_columns}
     from
       aws_cloudtrail_log
     where

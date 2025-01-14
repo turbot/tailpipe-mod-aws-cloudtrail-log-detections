@@ -26,6 +26,7 @@ benchmark "cloudfront_detections" {
 detection "detect_cloudfront_distributions_with_default_certificates_disabled" {
   title           = "Detect CloudFront Distributions with Default Certificates Disabled"
   description     = "Detect CloudFront distributions with default certificates disabled to check for misconfigurations that could lead to insecure connections or unauthorized access, compromising data integrity and security."
+  documentation   = file("./detections/docs/detect_cloudfront_distributions_with_default_certificates_disabled.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_cloudfront_distributions_with_default_certificates_disabled
@@ -52,7 +53,8 @@ query "detect_cloudfront_distributions_with_default_certificates_disabled" {
 
 detection "detect_cloudfront_distributions_with_geo_restriction_disabled" {
   title           = "Detect CloudFront Distributions with Geo-restriction Disabled"
-  description = "Detect CloudFront distributions with geo-restriction disabled to check for misconfigurations that could allow access from restricted geographic locations, potentially exposing resources to unauthorized or malicious activity."
+  description     = "Detect CloudFront distributions with geo-restriction disabled to check for misconfigurations that could allow access from restricted geographic locations, potentially exposing resources to unauthorized or malicious activity."
+  documentation   = file("./detections/docs/detect_cloudfront_distributions_with_geo_restriction_disabled.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_cloudfront_distributions_with_geo_restriction_disabled
@@ -80,6 +82,7 @@ query "detect_cloudfront_distributions_with_geo_restriction_disabled" {
 detection "detect_public_access_granted_to_cloudfront_distribution_origins" {
   title           = "Detect Public Access Granted to CloudFront Distribution Origins"
   description     = "Detect CloudFront origins that allow public access, which can enable data exfiltration."
+  documentation   = file("./detections/docs/detect_public_access_granted_to_cloudfront_distribution_origins.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.detect_public_access_granted_to_cloudfront_distribution_origins
@@ -107,7 +110,8 @@ query "detect_public_access_granted_to_cloudfront_distribution_origins" {
 
 detection "detect_cloudfront_distributions_with_logging_disabled" {
   title           = "Detect CloudFront Distributions with Logging Disabled"
-  description = "Detect CloudFront distributions with logging disabled to check for changes that could hinder monitoring and auditing, potentially obscuring malicious activity or misconfigurations."
+  description     = "Detect CloudFront distributions with logging disabled to check for changes that could hinder monitoring and auditing, potentially obscuring malicious activity or misconfigurations."
+  documentation   = file("./detections/docs/detect_cloudfront_distributions_with_logging_disabled.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_cloudfront_distributions_with_logging_disabled
@@ -135,6 +139,7 @@ query "detect_cloudfront_distributions_with_logging_disabled" {
 detection "detect_cloudfront_distributions_with_failover_criteria_modified" {
   title           = "Detect CloudFront Distributions with Failover Criteria Modified"
   description = "Detect modifications to CloudFront distribution failover criteria to check for changes that could enable unintended data redirection or exfiltration, compromising data confidentiality and availability."
+  documentation   = file("./detections/docs/detect_cloudfront_distributions_with_failover_criteria_modified.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.detect_cloudfront_distributions_with_failover_criteria_modified

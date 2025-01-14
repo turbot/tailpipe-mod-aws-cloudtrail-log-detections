@@ -9,7 +9,7 @@ benchmark "mitre_attack_v161_ta0005_t1070" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0005_t1070.md")
   children = [
-    detection.detect_codebuild_projects_with_environment_variable_changes,
+    detection.detect_codebuild_projects_with_environment_variable_updates,
     detection.detect_kms_key_deletions,
     detection.detect_public_access_granted_to_s3_buckets,
     detection.detect_ses_feedback_forwarding_disabled,

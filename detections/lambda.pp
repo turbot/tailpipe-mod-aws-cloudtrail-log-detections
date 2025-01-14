@@ -28,6 +28,7 @@ benchmark "lambda_detections" {
 detection "detect_public_access_granted_to_lambda_functions" {
   title           = "Detect Public Access Granted to Lambda Functions"
   description     = "Detect when a public policy is added to a Lambda function to check for unintended exposure, which could allow unauthorized users to invoke the function and potentially exploit sensitive operations."
+  documentation   = file("./detections/docs/detect_public_access_granted_to_lambda_functions.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_public_access_granted_to_lambda_functions
@@ -56,6 +57,7 @@ query "detect_public_access_granted_to_lambda_functions" {
 detection "detect_lambda_function_code_updates_without_publish" {
   title           = "Detect Lambda Function Code Updates Without Publish"
   description     = "Detect when a Lambda function's code is updated but not published, potentially indicating unapproved testing or staging of code."
+  documentation   = file("./detections/docs/detect_lambda_function_code_updates_without_publish.md")
   severity        = "low"
   display_columns = local.detection_display_columns
   query           = query.detect_lambda_function_code_updates_without_publish
@@ -84,6 +86,7 @@ query "detect_lambda_function_code_updates_without_publish" {
 detection "detect_lambda_functions_with_unencrypted_environment_variables" {
   title           = "Detect Lambda Functions with Unencrypted Environment Variables"
   description     = "Detect when Lambda functions are created or updated with environment variables that are not encrypted, which could expose sensitive information to unauthorized access."
+  documentation   = file("./detections/docs/detect_lambda_functions_with_unencrypted_environment_variables.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_lambda_functions_with_unencrypted_environment_variables
@@ -112,6 +115,7 @@ query "detect_lambda_functions_with_unencrypted_environment_variables" {
 detection "detect_lambda_functions_with_unencrypted_code" {
   title           = "Detect Lambda Functions with Unencrypted Code"
   description     = "Detect when Lambda functions are created or updated with code that is not encrypted, which could expose sensitive information to unauthorized access."
+  documentation   = file("./detections/docs/detect_lambda_functions_with_unencrypted_code.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_lambda_functions_with_unencrypted_code

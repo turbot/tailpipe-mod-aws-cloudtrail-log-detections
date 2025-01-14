@@ -56,9 +56,9 @@ query "detect_regions_with_default_ebs_encryption_disabled" {
 detection "detect_ebs_volume_detachments" {
   title           = "Detect EBS Volume Detachments"
   description     = "Detect attempts to detach EBS volumes to check for potential risks of unauthorized modification, corruption, or data loss."
+  documentation   = file("./detections/docs/detect_ebs_volume_detachments.md")
   severity        = "critical"
   display_columns = local.detection_display_columns
-  # documentation = file("./detections/docs/detect_ebs_volume_detachments.md")
   query = query.detect_ebs_volume_detachments
 
   tags = merge(local.ebs_common_tags, {
@@ -84,6 +84,7 @@ query "detect_ebs_volume_detachments" {
 detection "detect_public_access_granted_to_ebs_snapshots" {
   title           = "Detect Public Access Granted to EBS Snapshots"
   description     = "Detect when an EBS snapshot is shared publicly, potentially exposing sensitive data to unauthorized users."
+  documentation   = file("./detections/docs/detect_public_access_granted_to_ebs_snapshots.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_public_access_granted_to_ebs_snapshots
@@ -113,6 +114,7 @@ query "detect_public_access_granted_to_ebs_snapshots" {
 detection "detect_ebs_snapshots_with_encryption_disabled" {
   title           = "Detect EBS Snapshots Created with Encryption Disabled"
   description     = "Detect when EBS snapshots are created with encryption disabled, which could lead to data exposure and non-compliance with security policies."
+  documentation   = file("./detections/docs/detect_ebs_snapshots_with_encryption_disabled.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_ebs_snapshots_with_encryption_disabled

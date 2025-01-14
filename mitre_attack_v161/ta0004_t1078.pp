@@ -10,7 +10,7 @@ benchmark "mitre_attack_v161_ta0004_t1078" {
   documentation = file("./mitre_attack_v161/docs/ta0004_t1078.md")
   children = [
     detection.detect_iam_users_attached_to_admin_groups,
-    detection.detect_codebuild_projects_with_iam_role_changes,
+    detection.detect_codebuild_projects_with_iam_role_updates,
   ]
 
   tags = local.mitre_attack_v161_ta0004_t1078_common_tags

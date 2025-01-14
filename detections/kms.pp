@@ -22,6 +22,7 @@ benchmark "kms_detections" {
 detection "detect_kms_key_deletions" {
   title           = "Detect AWS KMS Key Deletions"
   description     = "Detect when an AWS KMS key is scheduled for deletion. Deleting a KMS key can render encrypted data permanently inaccessible, disrupt critical services, and impair data protection mechanisms. Unauthorized deletions may indicate an attempt to destroy evidence or disable security controls."
+  documentation   = file("./detections/docs/detect_kms_key_deletions.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_kms_key_deletions

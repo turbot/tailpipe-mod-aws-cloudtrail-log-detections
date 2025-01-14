@@ -11,9 +11,9 @@ benchmark "codebuild_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for CodeBuild events."
   type        = "detection"
   children = [
-    detection.detect_codebuild_projects_with_environment_variable_changes,
-    detection.detect_codebuild_projects_with_iam_role_changes,
-    detection.detect_codebuild_projects_with_source_repository_changes,
+    detection.detect_codebuild_projects_with_environment_variable_updates,
+    detection.detect_codebuild_projects_with_iam_role_updates,
+    detection.detect_codebuild_projects_with_source_repository_updates,
     detection.detect_public_access_granted_to_codebuild_projects,
   ]
 
@@ -25,6 +25,7 @@ benchmark "codebuild_detections" {
 detection "detect_public_access_granted_to_codebuild_projects" {
   title           = "Detect Public Access Granted to CodeBuild Projects"
   description     = "Detect CodeBuild project visibility updates to check for misconfigurations that could expose projects publicly, leading to unauthorized access or data leaks."
+  documentation   = file("./detections/docs/detect_public_access_granted_to_codebuild_projects.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_public_access_granted_to_codebuild_projects
@@ -50,19 +51,20 @@ query "detect_public_access_granted_to_codebuild_projects" {
   EOQ
 }
 
-detection "detect_codebuild_projects_with_iam_role_changes" {
-  title           = "Detect CodeBuild Projects with IAM Role Changes"
+detection "detect_codebuild_projects_with_iam_role_updates" {
+  title           = "Detect CodeBuild Projects with IAM Role Updates"
   description     = "Detect updates to the IAM role associated with CodeBuild projects to check for potential privilege escalations or unauthorized access."
+  documentation   = file("./detections/docs/detect_codebuild_projects_with_iam_role_updates.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.detect_codebuild_projects_with_iam_role_changes
+  query           = query.detect_codebuild_projects_with_iam_role_updates
 
   tags = merge(local.codebuild_common_tags, {
     mitre_attack_ids = "TA0004:T1078"
   })
 }
 
-query "detect_codebuild_projects_with_iam_role_changes" {
+query "detect_codebuild_projects_with_iam_role_updates" {
   sql = <<-EOQ
     select
       ${local.detect_public_access_granted_to_codebuild_projects_sql_columns}
@@ -78,19 +80,20 @@ query "detect_codebuild_projects_with_iam_role_changes" {
   EOQ
 }
 
-detection "detect_codebuild_projects_with_source_repository_changes" {
+detection "detect_codebuild_projects_with_source_repository_updates" {
   title           = "Detect CodeBuild Projects with Source Repository Changes"
   description     = "Detect updates to CodeBuild source repositories to check for changes that could redirect builds to unauthorized or malicious repositories, compromising code integrity and security."
+  documentation   = file("./detections/docs/detect_codebuild_projects_with_source_repository_updates.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_codebuild_projects_with_source_repository_changes
+  query           = query.detect_codebuild_projects_with_source_repository_updates
 
   tags = merge(local.codebuild_common_tags, {
     mitre_attack_ids = "TA0001:T1566"
   })
 }
 
-query "detect_codebuild_projects_with_source_repository_changes" {
+query "detect_codebuild_projects_with_source_repository_updates" {
   sql = <<-EOQ
     select
       ${local.detect_public_access_granted_to_codebuild_projects_sql_columns}
@@ -106,19 +109,20 @@ query "detect_codebuild_projects_with_source_repository_changes" {
   EOQ
 }
 
-detection "detect_codebuild_projects_with_environment_variable_changes" {
-  title           = "Detect CodeBuild Projects with Environment Variable Changes"
+detection "detect_codebuild_projects_with_environment_variable_updates" {
+  title           = "Detect CodeBuild Projects with Environment Variable Updates"
   description     = "Detect updates to CodeBuild environment variables to check for unauthorized changes to sensitive values like access tokens or API keys, which could lead to privilege escalation or data exfiltration."
+  documentation   = file("./detections/docs/detect_codebuild_projects_with_environment_variable_updates.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.detect_codebuild_projects_with_environment_variable_changes
+  query           = query.detect_codebuild_projects_with_environment_variable_updates
 
   tags = merge(local.codebuild_common_tags, {
     mitre_attack_ids = "TA0005:T1562.001"
   })
 }
 
-query "detect_codebuild_projects_with_environment_variable_changes" {
+query "detect_codebuild_projects_with_environment_variable_updates" {
   sql = <<-EOQ
     select
       ${local.detect_public_access_granted_to_codebuild_projects_sql_columns}

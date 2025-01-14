@@ -23,7 +23,7 @@ benchmark "mitre_attack_v161_ta0006_t1552_004" {
     detection.detect_iam_access_key_creations,
     detection.detect_iam_access_key_deletions,
     detection.detect_iam_users_with_console_access_enabled,
-    detection.detect_codebuild_projects_with_environment_variable_changes,
+    detection.detect_codebuild_projects_with_environment_variable_updates,
     detection.detect_ssm_parameters_with_encryption_disabled,
 
 

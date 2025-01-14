@@ -3,7 +3,7 @@ locals {
     service = "AWS/EventBridge"
   })
 
-  detect_disabled_eventbridge_rules_sql_columns  = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
+  detect_eventbridge_rules_disabled_sql_columns  = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
   detect_eventbridge_rule_deletions_sql_columns  = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
 }
 
@@ -13,7 +13,7 @@ benchmark "eventbridge_detections" {
   type        = "detection"
   children    = [
     detection.detect_eventbridge_rule_deletions,
-    detection.detect_disabled_eventbridge_rules
+    detection.detect_eventbridge_rules_disabled
   ]
 
   tags = merge(local.eventbridge_common_tags, {
@@ -21,12 +21,13 @@ benchmark "eventbridge_detections" {
   })
 }
 
-detection "detect_disabled_eventbridge_rules" {
-  title           = "Detect Disabled EventBridge Rules"
+detection "detect_eventbridge_rules_disabled" {
+  title           = "Detect EventBridge Rules Disabled"
   description     = "Detect when EventBridge rules are disabled. Disabling EventBridge rules can disrupt automated workflows, scheduled tasks, and alerting mechanisms, potentially preventing the detection or mitigation of malicious activities."
+  documentation   = file("./detections/docs/detect_eventbridge_rules_disabled.md")
   severity        = "low"
   display_columns = local.detection_display_columns
-  query           = query.detect_disabled_eventbridge_rules
+  query           = query.detect_eventbridge_rules_disabled
 
   tags = merge(local.eventbridge_common_tags, {
     mitre_attack_ids = "TA0005:T1562.001"
@@ -36,6 +37,7 @@ detection "detect_disabled_eventbridge_rules" {
 detection "detect_eventbridge_rule_deletions" {
   title           = "Detect EventBridge Rule Deletion"
   description     = "Detect when EventBridge rules are deleted. Deleting EventBridge rules can disrupt critical automation and monitoring workflows, potentially allowing malicious activities to go undetected or unmitigated."
+  documentation   = file("./detections/docs/detect_eventbridge_rule_deletions.md")
   severity        = "low"
   display_columns = local.detection_display_columns
   query           = query.detect_eventbridge_rule_deletions
@@ -45,10 +47,10 @@ detection "detect_eventbridge_rule_deletions" {
   })
 }
 
-query "detect_disabled_eventbridge_rules" {
+query "detect_eventbridge_rules_disabled" {
   sql = <<-EOQ
     select
-      ${local.detect_disabled_eventbridge_rules_sql_columns}
+      ${local.detect_eventbridge_rules_disabled_sql_columns}
     from
       aws_cloudtrail_log
     where
