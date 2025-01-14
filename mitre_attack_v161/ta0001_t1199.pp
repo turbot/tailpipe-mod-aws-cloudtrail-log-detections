@@ -11,7 +11,7 @@ benchmark "mitre_attack_v161_ta0001_t1199" {
   children = [
     detection.detect_ec2_ami_copied_from_external_accounts,
     detection.detect_ec2_ami_imported_from_external_accounts,
-    detection.detect_public_access_granted_to_api_gateways,
+    detection.detect_public_access_granted_to_api_gateway_rest_apis,
     detection.detect_public_access_granted_to_ebs_snapshots,
     detection.detect_public_access_granted_to_iam_roles,
     detection.detect_public_access_granted_to_iam_users,
