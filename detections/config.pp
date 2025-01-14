@@ -3,8 +3,8 @@ locals {
     service = "AWS/Config"
   })
 
-  detect_config_service_rule_deletions_sql_columns        = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.configRuleName')")
-  detect_configuration_recorder_stop_updates_sql_columns  = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.configurationRecorderName')")
+  detect_config_rule_deletions_sql_columns        = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.configRuleName')")
+  detect_config_configuration_recorders_with_recording_stopped_sql_columns  = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.configurationRecorderName')")
 }
 
 benchmark "config_detections" {
@@ -12,8 +12,8 @@ benchmark "config_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for Config events."
   type        = "detection"
   children    = [
-    detection.detect_config_service_rule_deletions,
-    detection.detect_configuration_recorder_stop_updates,
+    detection.detect_config_rule_deletions,
+    detection.detect_config_configuration_recorders_with_recording_stopped,
   ]
 
   tags = merge(local.config_common_tags, {
@@ -21,22 +21,23 @@ benchmark "config_detections" {
   })
 }
 
-detection "detect_config_service_rule_deletions" {
-  title           = "Detect Config Service Rules Deletions"
+detection "detect_config_rule_deletions" {
+  title           = "Detect Config Rule Deletions"
   description     = "Detect the deletions of Config service rules to check for changes that could disrupt compliance monitoring or remove critical guardrails."
+  documentation   = file("./detections/docs/detect_config_rule_deletions.md")
   severity        = "low"
   display_columns = local.detection_display_columns
-  query           = query.detect_config_service_rule_deletions
+  query           = query.detect_config_rule_deletions
 
   tags = merge(local.config_common_tags, {
     mitre_attack_ids = "T1562.001"
   })
 }
 
-query "detect_config_service_rule_deletions" {
+query "detect_config_rule_deletions" {
   sql = <<-EOQ
     select
-      ${local.detect_config_service_rule_deletions_sql_columns}
+      ${local.detect_config_rule_deletions_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -48,22 +49,23 @@ query "detect_config_service_rule_deletions" {
   EOQ
 }
 
-detection "detect_configuration_recorder_stop_updates" {
-  title           = "Detect Configuration Recorder Stop Updates"
+detection "detect_config_configuration_recorders_with_recording_stopped" {
+  title           = "Detect Config Configuration Recorders With Recording Stopped"
   description     = "Detect when configuration recorders are stopped to check for changes that could disrupt compliance monitoring and auditing, potentially obscuring unauthorized activity."
+  documentation   = file("./detections/docs/detect_config_configuration_recorders_with_recording_stopped.md")
   severity        = "low"
   display_columns = local.detection_display_columns
-  query           = query.detect_configuration_recorder_stop_updates
+  query           = query.detect_config_configuration_recorders_with_recording_stopped
 
   tags = merge(local.config_common_tags, {
     mitre_attack_ids = "TA0005:T1562"
   })
 }
 
-query "detect_configuration_recorder_stop_updates" {
+query "detect_config_configuration_recorders_with_recording_stopped" {
   sql = <<-EOQ
     select
-      ${local.detect_configuration_recorder_stop_updates_sql_columns}
+      ${local.detect_config_configuration_recorders_with_recording_stopped_sql_columns}
     from
       aws_cloudtrail_log
     where

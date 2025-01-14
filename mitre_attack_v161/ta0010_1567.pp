@@ -22,7 +22,6 @@ benchmark "mitre_attack_v161_ta0010_t1567_001" {
   children = [
     detection.detect_public_access_granted_to_codebuild_projects,
     detection.detect_public_access_granted_to_sqs_queues,
-    detection.detect_rds_db_manual_snapshot_creations,
     detection.detect_sqs_queues_without_encryption_at_rest,
     detection.detect_public_access_granted_to_ssm_documents,
     detection.detect_public_access_granted_to_sns_topics,
