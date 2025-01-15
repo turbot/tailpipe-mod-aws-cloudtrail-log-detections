@@ -35,6 +35,7 @@ benchmark "s3_detections" {
 detection "detect_s3_bucket_deletions" {
   title           = "Detect S3 Bucket Deletions"
   description     = "Detect when an S3 bucket is deleted. Deleting an S3 bucket can lead to data loss, disrupt services relying on stored data, and may indicate malicious activity aimed at destroying critical information or disrupting operations."
+  documentation   = file("./detections/docs/detect_s3_bucket_deletions.md")
   severity        = "low"
   display_columns = local.detection_display_columns
   query           = query.detect_s3_bucket_deletions
@@ -47,6 +48,7 @@ detection "detect_s3_bucket_deletions" {
 detection "detect_s3_bucket_policy_modifications" {
   title           = "Detect S3 Bucket Policy Modifications"
   description     = "Detect when an S3 bucket policy is modified. Changes to bucket policies can weaken security controls, potentially exposing data to unauthorized access or enabling data exfiltration."
+  documentation   = file("./detections/docs/detect_s3_bucket_policy_modifications.md")
   severity        = "low"
   display_columns = local.detection_display_columns
   query           = query.detect_s3_bucket_policy_modifications
@@ -59,6 +61,7 @@ detection "detect_s3_bucket_policy_modifications" {
 detection "detect_public_access_granted_to_s3_buckets" {
   title           = "Detect Public Access Granted to S3 Buckets"
   description     = "Detect when an S3 bucket policy is modified to allow public access. Granting public access can expose sensitive data to unauthorized users, increasing the risk of data breaches, data exfiltration, or malicious exploitation."
+  documentation   = file("./detections/docs/detect_public_access_granted_to_s3_buckets.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_public_access_granted_to_s3_buckets
