@@ -28,6 +28,7 @@ benchmark "waf_detections" {
 detection "detect_waf_acls_with_logging_disabled" {
   title           = "Detect WAF Web ACLs with Logging Disabled"
   description     = "Detect WAF Web ACLs with logging disabled to check for changes that could hinder monitoring and auditing, potentially obscuring malicious activity or misconfigurations."
+  documentation   = file("./detections/docs/detect_waf_acls_with_logging_disabled.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_waf_acls_with_logging_disabled
@@ -56,6 +57,7 @@ query "detect_waf_acls_with_logging_disabled" {
 detection "detect_waf_acl_disassociation_from_cloudfront_distributions" {
   title           = "Detect WAF Web ACL Disassociation from CloudFront Distributions"
   description     = "Detect when a WAF Web ACL is disassociated from CloudFront distributions, potentially exposing them to unauthorized access or attacks."
+  documentation   = file("./detections/docs/detect_waf_acl_disassociation_from_cloudfront_distributions.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_waf_acl_disassociation_from_cloudfront_distributions
@@ -84,6 +86,7 @@ query "detect_waf_acl_disassociation_from_cloudfront_distributions" {
 detection "detect_waf_acl_disassociation_from_alb" {
   title           = "Detect WAF Web ACL Disassociation from Application Load Balancers"
   description     = "Detect when a WAF Web ACL is disassociated from Application Load Balancers (ALBs), potentially exposing them to unauthorized access or attacks."
+  documentation   = file("./detections/docs/detect_waf_acl_disassociation_from_alb.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_waf_acl_disassociation_from_alb
@@ -112,6 +115,7 @@ query "detect_waf_acl_disassociation_from_alb" {
 detection "detect_public_access_granted_to_waf_rules" {
   title           = "Detect Public Access Granted to WAF Rules"
   description     = "Detect when a WAF rule is configured to allow unrestricted public access (0.0.0.0/0), potentially exposing protected resources to unauthorized access or attacks."
+  documentation   = file("./detections/docs/detect_public_access_granted_to_waf_rules.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_public_access_granted_to_waf_rules

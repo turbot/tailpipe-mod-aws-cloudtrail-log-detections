@@ -30,9 +30,9 @@ benchmark "ses_detections" {
 detection "detect_ses_unauthorized_email_collections" {
   title           = "Detect SES Unauthorized Email Collections"
   description     = "Detect unauthorized attempts to read, download, or collect emails using AWS Simple Email Service (SES). This activity may indicate data exfiltration or unauthorized access to sensitive email communications."
+  documentation   = file("./detections/docs/detect_ses_unauthorized_email_collections.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  documentation   = file("./detections/docs/detect_ses_unauthorized_email_collections.md")
   query           = query.detect_ses_unauthorized_email_collections
 
   tags = merge(local.ses_common_tags, {
@@ -63,6 +63,7 @@ query "detect_ses_unauthorized_email_collections" {
 detection "detect_ses_identity_policy_modifications_with_wildcard_permissions_or_external_access" {
   title           = "Detect SES Identity Policy Modifications with Wildcard Permissions or External Access"
   description     = "Detect changes to AWS SES identity policies that grant permissions to all users (wildcards) or external accounts. These changes can allow unauthorized email sending, enabling phishing, spam, or data exfiltration."
+  documentation   = file("./detections/docs/detect_ses_identity_policy_modifications_with_wildcard_permissions_or_external_access.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_ses_identity_policy_modifications_with_wildcard_permissions_or_external_access
@@ -100,6 +101,7 @@ query "detect_ses_identity_policy_modifications_with_wildcard_permissions_or_ext
 detection "detect_ses_sending_enabled" {
   title           = "Detect SES Sending Enabled"
   description     = "Detect when AWS SES email sending is enabled. Enabling email sending may allow resumption of email campaigns, potentially used for spam or phishing attacks."
+  documentation   = file("./detections/docs/detect_ses_sending_enabled.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.detect_ses_sending_enabled
@@ -128,6 +130,7 @@ query "detect_ses_sending_enabled" {
 detection "detect_ses_sending_rate_limit_increase" {
   title           = "Detect SES Sending Rate Limit Increase"
   description     = "Detect increases in AWS SES sending rate limits. Sudden increases may indicate preparation for bulk email campaigns, potentially for spam or phishing attacks."
+  documentation   = file("./detections/docs/detect_ses_sending_rate_limit_increase.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_ses_sending_rate_limit_increase
@@ -156,6 +159,7 @@ query "detect_ses_sending_rate_limit_increase" {
 detection "detect_ses_feedback_forwarding_disabled" {
   title           = "Detect SES Feedback Forwarding Disabled"
   description     = "Detect when AWS SES feedback forwarding is disabled. Disabling feedback forwarding may allow attackers to evade monitoring of bounce or complaint notifications, enabling undetected spam or phishing attacks."
+  documentation   = file("./detections/docs/detect_ses_feedback_forwarding_disabled.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.detect_ses_feedback_forwarding_disabled

@@ -26,10 +26,10 @@ benchmark "ssm_detections" {
 detection "detect_ssm_documents_with_unauthorized_input_captures" {
   title           = "Detect SSM with Unauthorized Input Captures"
   description     = "Detect unauthorized input capture, such as keyboard input logging in AWS Systems Manager."
+  documentation   = file("./detections/docs/detect_ssm_documents_with_unauthorized_input_captures.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  #documentation   = file("./detections/docs/detect_ssm_documents_with_unauthorized_input_captures.md")
-  query = query.detect_ssm_documents_with_unauthorized_input_captures
+  query           = query.detect_ssm_documents_with_unauthorized_input_captures
 
   tags = merge(local.ssm_common_tags, {
     mitre_attack_ids = "TA0009:T1056"
@@ -39,10 +39,10 @@ detection "detect_ssm_documents_with_unauthorized_input_captures" {
 detection "detect_ssm_documents_with_unauthorized_data_access_from_local_systems" {
   title           = "Detect SSM with Unauthorized Data Access from Local Systems"
   description     = "Detect attempts to use (SSM) to access local system data without authorization. This activity may indicate malicious attempts to collect sensitive information, such as configuration files, credentials, or logs, from compromised systems."
+  documentation   = file("./detections/docs/detect_ssm_documents_with_unauthorized_data_access_from_local_systems.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  #documentation   = file("./detections/docs/detect_ssm_documents_with_unauthorized_data_access_from_local_systems.md")
-  query = query.detect_ssm_documents_with_unauthorized_data_access_from_local_systems
+  query           = query.detect_ssm_documents_with_unauthorized_data_access_from_local_systems
 
   tags = merge(local.ssm_common_tags, {
     mitre_attack_ids = "TA0009:T1005"
@@ -84,6 +84,7 @@ query "detect_ssm_documents_with_unauthorized_input_captures" {
 detection "detect_public_access_granted_to_ssm_documents" {
   title           = "Detect Public Access Granted to SSM Documents"
   description     = "Detect when an AWS Systems Manager document is shared publicly. Publicly shared documents can expose sensitive configurations, scripts, or automation workflows to unauthorized access."
+  documentation   = file("./detections/docs/detect_public_access_granted_to_ssm_documents.md")
   severity        = "critical"
   display_columns = local.detection_display_columns
   query           = query.detect_public_access_granted_to_ssm_documents
