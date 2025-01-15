@@ -13,7 +13,7 @@ benchmark "sns_detections" {
   type        = "detection"
   children = [
     # TODO: Re-add detection once query has the proper checks
-    #detection.detect_public_access_granted_to_sns_topics,
+    # detection.detect_public_access_granted_to_sns_topics,
     detection.detect_sns_topics_with_encryption_at_rest_disabled,
   ]
 
@@ -25,9 +25,10 @@ benchmark "sns_detections" {
 detection "detect_public_access_granted_to_sns_topics" {
   title           = "Detect Public Access Granted to SNS Topics"
   description     = "Detect when a public policy is added to an SNS topic to check for potential unauthorized access, which could expose sensitive notifications to external entities."
+  documentation   = file("./detections/docs/detect_public_access_granted_to_sns_topics.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_sqs_queues_without_encryption_at_rest
+  query           = query.detect_public_access_granted_to_sns_topics
 
   tags = merge(local.sns_common_tags, {
     mitre_attack_ids = "TA0010:T1567"
@@ -56,6 +57,7 @@ query "detect_public_access_granted_to_sns_topics" {
 detection "detect_sns_topics_with_encryption_at_rest_disabled" {
   title           = "Detect SNS Topics with Encryption at Rest Disabled"
   description     = "Detect SNS topics with encryption at rest disabled to check for events where KMS keys are removed, potentially exposing sensitive log data to unauthorized access or tampering."
+  documentation   = file("./detections/docs/detect_sns_topics_with_encryption_at_rest_disabled.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.detect_sns_topics_with_encryption_at_rest_disabled
