@@ -17,13 +17,13 @@ benchmark "s3_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for S3 events."
   type        = "detection"
   children    = [
+    detection.detect_public_access_granted_to_s3_buckets,
     detection.detect_s3_bucket_deletions,
     detection.detect_s3_bucket_policy_modifications,
-    detection.detect_s3_tool_uploads,
     detection.detect_s3_data_archiving,
     detection.detect_s3_large_file_downloads,
-    detection.detect_public_access_granted_to_s3_buckets,
     detection.detect_s3_object_compressed_uploads,
+    detection.detect_s3_tool_uploads,
   ]
 
   tags = merge(local.s3_common_tags, {
@@ -76,7 +76,7 @@ detection "detect_s3_tool_uploads" {
   description     = "Detect the upload of tools or binaries to S3 that may be used for lateral movement or malicious activity. Transferring malicious tools between resources via S3 can indicate preparation for further exploitation, persistence, or escalation within the environment."
   severity        = "medium"
   display_columns = local.detection_display_columns
-  # documentation = file("./detections/docs/detect_s3_tool_uploads.md")
+  documentation = file("./detections/docs/detect_s3_tool_uploads.md")
   query           = query.detect_s3_tool_uploads
 
   tags = merge(local.s3_common_tags, {
@@ -89,7 +89,7 @@ detection "detect_s3_data_archiving" {
   description     = "Detect when data is archived in S3, which may indicate an attempt to store or package data for later exfiltration. Archiving large amounts of data can be part of a malicious workflow aimed at preparing data for transfer or long-term storage outside of standard security controls."
   severity        = "medium"
   display_columns = local.detection_display_columns
-  # documentation = file("./detections/docs/detect_s3_data_archiving.md")
+  documentation = file("./detections/docs/detect_s3_data_archiving.md")
   query           = query.detect_s3_data_archiving
 
   tags = merge(local.s3_common_tags, {
@@ -102,7 +102,7 @@ detection "detect_s3_large_file_downloads" {
   description     = "Detect unusually large data downloads from S3 buckets that may indicate potential data exfiltration. Large file downloads can be a sign of malicious activity, such as unauthorized data extraction by an external attacker or insider threat."
   severity        = "critical"
   display_columns = local.detection_display_columns
-  # documentation = file("./detections/docs/detect_s3_large_file_downloads.md")
+  documentation = file("./detections/docs/detect_s3_large_file_downloads.md")
   query           = query.detect_s3_large_file_downloads
 
   tags = merge(local.s3_common_tags, {
@@ -115,7 +115,7 @@ detection "detect_s3_object_compressed_uploads" {
   description     = "Detect when S3 objects are compressed before being uploaded or modified. Data compression may indicate preparation for data exfiltration, as attackers often compress data to facilitate faster transfer and minimize detection."
   severity        = "medium"
   display_columns = local.detection_display_columns
-  # documentation = file("./detections/docs/detect_s3_object_compressed_uploads.md")
+  documentation = file("./detections/docs/detect_s3_object_compressed_uploads.md")
   query           = query.detect_s3_object_compressed_uploads
 
   tags = merge(local.s3_common_tags, {
