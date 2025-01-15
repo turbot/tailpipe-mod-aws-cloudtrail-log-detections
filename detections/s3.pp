@@ -45,7 +45,7 @@ detection "detect_s3_bucket_deletions" {
 }
 
 detection "detect_s3_bucket_policy_modifications" {
-  title           = "Detect S3 Buckets Policy Modifications"
+  title           = "Detect S3 Bucket Policy Modifications"
   description     = "Detect when an S3 bucket policy is modified. Changes to bucket policies can weaken security controls, potentially exposing data to unauthorized access or enabling data exfiltration."
   severity        = "low"
   display_columns = local.detection_display_columns
@@ -173,7 +173,7 @@ query "detect_s3_bucket_policy_modifications" {
     from
       aws_cloudtrail_log
     where
-      event_name in ('PutBucketPolicy', 'PutBucketAcl', 'PutBucketCors', 'PutBucketLifecycle', 'PutBucketReplication', 'DeleteBucketPolicy', 'DeleteBucketCors', 'DeleteBucketLifecycle', 'DeleteBucketReplication')
+      event_name in ('PutBucketPolicy', 'DeleteBucketPolicy')
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;

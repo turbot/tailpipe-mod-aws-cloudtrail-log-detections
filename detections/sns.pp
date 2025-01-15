@@ -12,7 +12,8 @@ benchmark "sns_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for SNS events."
   type        = "detection"
   children = [
-    detection.detect_public_access_granted_to_sns_topics,
+    # TODO: Re-add detection once query has the proper checks
+    #detection.detect_public_access_granted_to_sns_topics,
     detection.detect_sns_topics_with_encryption_at_rest_disabled,
   ]
 
@@ -55,7 +56,7 @@ query "detect_public_access_granted_to_sns_topics" {
 detection "detect_sns_topics_with_encryption_at_rest_disabled" {
   title           = "Detect SNS Topics with Encryption at Rest Disabled"
   description     = "Detect SNS topics with encryption at rest disabled to check for events where KMS keys are removed, potentially exposing sensitive log data to unauthorized access or tampering."
-  severity        = "high"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.detect_sns_topics_with_encryption_at_rest_disabled
 

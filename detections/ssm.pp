@@ -5,8 +5,7 @@ locals {
 
   detect_ssm_documents_with_unauthorized_input_captures_sql_columns                 = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
   detect_ssm_documents_with_unauthorized_data_access_from_local_systems_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.documentName')")
-  detect_ssm_parameters_with_encryption_disabled_sql_columns              = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
-  detect_public_access_granted_to_ssm_documents_sql_columns               = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
+  detect_public_access_granted_to_ssm_documents_sql_columns                         = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
 }
 
 benchmark "ssm_detections" {
@@ -16,7 +15,6 @@ benchmark "ssm_detections" {
   children = [
     detection.detect_ssm_documents_with_unauthorized_input_captures,
     detection.detect_ssm_documents_with_unauthorized_data_access_from_local_systems,
-    detection.detect_ssm_parameters_with_encryption_disabled,
     detection.detect_public_access_granted_to_ssm_documents,
   ]
 
@@ -77,40 +75,6 @@ query "detect_ssm_documents_with_unauthorized_input_captures" {
       event_source = 'ssm.amazonaws.com'
       and event_name = 'StartSession'
       and json_extract_string(request_parameters, '$.documentName') = 'AWS-StartPortForwardingSession'
-      ${local.detection_sql_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}
-
-detection "detect_ssm_parameters_with_encryption_disabled" {
-  title           = "Detect SSM Parameters with Encryption Disabled"
-  description     = "Detect when AWS Systems Manager parameters are accessed with encryption disabled. Accessing parameters without encryption can expose sensitive information stored as plain text."
-  severity        = "high"
-  display_columns = local.detection_display_columns
-  query           = query.detect_ssm_parameters_with_encryption_disabled
-
-  tags = merge(local.ssm_common_tags, {
-    mitre_attack_ids = "TA0006:T1552"
-  })
-}
-
-query "detect_ssm_parameters_with_encryption_disabled" {
-  sql = <<-EOQ
-    select
-      ${local.detect_ssm_parameters_with_encryption_disabled_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      -- Include both creation/modification and retrieval scenarios
-      event_name in ('PutParameter', 'GetParameter')
-      and (
-        -- Check if parameter is stored as plaintext
-        (event_name = 'PutParameter' and json_extract_string(request_parameters, '$.type') = 'String')
-        or
-        -- Check if parameter is retrieved without decryption
-        (event_name = 'GetParameter' and json_extract_string(request_parameters, '$.withDecryption') = 'false')
-      )
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;

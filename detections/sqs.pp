@@ -14,7 +14,8 @@ benchmark "sqs_detections" {
   type        = "detection"
   children = [
     detection.detect_sqs_queues_without_encryption_at_rest,
-    detection.detect_public_access_granted_to_sqs_queues,
+    # TODO: Re-add detection once query has the proper checks
+    #detection.detect_public_access_granted_to_sqs_queues,
     detection.detect_sqs_queues_with_dlq_disabled,
   ]
 
@@ -26,7 +27,7 @@ benchmark "sqs_detections" {
 detection "detect_sqs_queues_without_encryption_at_rest" {
   title           = "Detect SQS Queues Created Without Encryption at Rest"
   description     = "Detect when AWS SQS queues are created or updated without encryption at rest enabled. Unencrypted queues may expose sensitive data to unauthorized access or data exfiltration."
-  severity        = "high"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.detect_sqs_queues_without_encryption_at_rest
 
@@ -44,7 +45,7 @@ query "detect_sqs_queues_without_encryption_at_rest" {
     where
       event_name in ('CreateQueue', 'SetQueueAttributes')
       -- Check for missing KMS key ID, which means no encryption at rest
-      and (json_extract_string(request_parameters, '$.attributes.KmsMasterKeyId') is null 
+      and (json_extract_string(request_parameters, '$.attributes.KmsMasterKeyId') is null
       or json_extract_string(request_parameters, '$.attributes.KmsMasterKeyId') = '')
       ${local.detection_sql_where_conditions}
     order by
@@ -89,7 +90,7 @@ query "detect_public_access_granted_to_sqs_queues" {
 detection "detect_sqs_queues_with_dlq_disabled" {
   title           = "Detect SQS Queues with Dead Letter Queue (DLQ) Configuration Disabled"
   description     = "Detect when an SQS queue is created or updated without a Dead Letter Queue (DLQ) configuration. DLQ configuration helps retain failed messages, and its absence can lead to message loss and missed error handling opportunities."
-  severity        = "medium"
+  severity        = "low"
   display_columns = local.detection_display_columns
   query           = query.detect_sqs_queues_with_dlq_disabled
 

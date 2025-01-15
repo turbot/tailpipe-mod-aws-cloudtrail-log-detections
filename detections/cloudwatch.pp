@@ -4,10 +4,8 @@ locals {
   })
 
   detect_cloudwatch_log_groups_created_without_encryption_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
-  detect_cloudwatch_alarms_threshold_updates_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.alarmName')")
   detect_cloudwatch_logs_retention_period_updates_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
   detect_cloudwatch_subscriptions_filter_updates_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
-  detect_cloudwatch_alarms_action_updates_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.alarmName')")
   detect_cloudwatch_log_groups_shared_via_cross_account_roles_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
   detect_cloudwatch_alarms_actions_via_cross_account_roles_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.alarmName')")
   detect_cloudwatch_subscription_filters_via_cross_account_roles_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
@@ -19,10 +17,8 @@ benchmark "cloudwatch_detections" {
   type        = "detection"
   children    = [
     detection.detect_cloudwatch_log_groups_created_without_encryption,
-    detection.detect_cloudwatch_alarms_threshold_updates,
     detection.detect_cloudwatch_logs_retention_period_updates,
     detection.detect_cloudwatch_subscriptions_filter_updates,
-    detection.detect_cloudwatch_alarms_action_updates,
     detection.detect_cloudwatch_log_groups_shared_via_cross_account_roles,
     detection.detect_cloudwatch_alarms_actions_via_cross_account_roles,
     detection.detect_cloudwatch_subscription_filters_via_cross_account_roles,
@@ -37,7 +33,7 @@ detection "detect_cloudwatch_log_groups_created_without_encryption" {
   title           = "Detect CloudWatch Log Groups Created Without Encryption"
   description     = "Detect events where CloudWatch log groups are created without KMS encryption enabled, potentially exposing sensitive log data to unauthorized access."
   documentation   = file("./detections/docs/detect_cloudwatch_log_groups_created_without_encryption.md")
-  severity        = "medium"
+  severity        = "low"
   display_columns = local.detection_display_columns
   query           = query.detect_cloudwatch_log_groups_created_without_encryption
 
@@ -62,40 +58,12 @@ query "detect_cloudwatch_log_groups_created_without_encryption" {
   EOQ
 }
 
-detection "detect_cloudwatch_alarms_threshold_updates" {
-  title           = "Detect CloudWatch Alarm Threshold Updates"
-  description     = "Detect events where thresholds for CloudWatch alarms are modified, potentially impacting the accuracy of monitoring alerts."
-  documentation   = file("./detections/docs/detect_cloudwatch_alarms_threshold_updates.md")
-  severity        = "medium"
-  display_columns = local.detection_display_columns
-  query           = query.detect_cloudwatch_alarms_threshold_updates
-
-  tags = merge(local.cloudwatch_common_tags, {
-    mitre_attack_ids = "T1562.003"
-  })
-}
-
-query "detect_cloudwatch_alarms_threshold_updates" {
-  sql = <<-EOQ
-    select
-      ${local.detect_cloudwatch_alarms_threshold_updates_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'monitoring.amazonaws.com'
-      and event_name = 'PutMetricAlarm'
-      and json_extract_string(request_parameters, '$.threshold') is not null
-      ${local.detection_sql_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}
-
+# TODO: Update detection name and description to match title and query
 detection "detect_cloudwatch_logs_retention_period_updates" {
-  title           = "Detect CloudWatch Log Retention Period Changes"
+  title           = "Detect CloudWatch Log Retention Periods Shorter Than 30 Days"
   description     = "Detect events where retention periods for CloudWatch logs are modified, potentially reducing the duration of stored log data."
   documentation   = file("./detections/docs/detect_cloudwatch_logs_retention_period_updates.md")
-  severity        = "medium"
+  severity        = "low"
   display_columns = local.detection_display_columns
   query           = query.detect_cloudwatch_logs_retention_period_updates
 
@@ -113,7 +81,7 @@ query "detect_cloudwatch_logs_retention_period_updates" {
     where
       event_source = 'logs.amazonaws.com'
       and event_name = 'PutRetentionPolicy'
-      and json_extract_string(request_parameters, '$.retentionInDays') is not null
+      and json_extract_string(request_parameters, '$.retentionInDays')::int < 30
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
@@ -124,7 +92,7 @@ detection "detect_cloudwatch_subscriptions_filter_updates" {
   title           = "Detect CloudWatch Subscription Filter Updates"
   description     = "Detect events where subscription filters for CloudWatch logs are modified, potentially redirecting logs to unauthorized destinations."
   documentation   = file("./detections/docs/detect_cloudwatch_subscriptions_filter_updates.md")
-  severity        = "high"
+  severity        = "low"
   display_columns = local.detection_display_columns
   query           = query.detect_cloudwatch_subscriptions_filter_updates
 
@@ -143,35 +111,6 @@ query "detect_cloudwatch_subscriptions_filter_updates" {
       event_source = 'logs.amazonaws.com'
       and event_name = 'PutSubscriptionFilter'
       and json_extract_string(request_parameters, '$.destinationArn') is not null
-      ${local.detection_sql_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}
-
-detection "detect_cloudwatch_alarms_action_updates" {
-  title           = "Detect CloudWatch Alarm Action Updates"
-  description     = "Detect events where actions for CloudWatch alarms are modified, potentially affecting the response to triggered alarms."
-  documentation   = file("./detections/docs/detect_cloudwatch_alarms_action_updates.md")
-  severity        = "medium"
-  display_columns = local.detection_display_columns
-  query           = query.detect_cloudwatch_alarms_action_updates
-
-  tags = merge(local.cloudwatch_common_tags, {
-    mitre_attack_ids = "T1562.003"
-  })
-}
-
-query "detect_cloudwatch_alarms_action_updates" {
-  sql = <<-EOQ
-    select
-      ${local.detect_cloudwatch_alarms_action_updates_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'monitoring.amazonaws.com'
-      and event_name = 'PutMetricAlarm'
-      and json_extract_string(request_parameters, '$.alarmActions') is not null
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
