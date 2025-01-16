@@ -127,7 +127,7 @@ detection "detect_vpc_route_table_deletions" {
 }
 
 detection "detect_vpc_route_tables_with_route_deletions" {
-  title           = "Detect VPC Route Table Route Deletions"
+  title           = "Detect VPC Route Tables with Route Deletions"
   description     = "Detect when routes are deleted from VPC route tables, which could disrupt network traffic, impair defenses, or facilitate unauthorized traffic manipulation."
   documentation   = file("./detections/docs/detect_vpc_route_tables_with_route_deletions.md")
   severity        = "high"
@@ -140,7 +140,7 @@ detection "detect_vpc_route_tables_with_route_deletions" {
 }
 
 detection "detect_vpc_route_tables_with_route_disassociations" {
-  title           = "Detect VPC Route Table Disassociations"
+  title           = "Detect VPC Route Tables with Route Disassociations"
   description     = "Detect when VPC route tables are disassociated from subnets, which could disrupt network routing or facilitate malicious traffic manipulation."
   documentation   = file("./detections/docs/detect_vpc_route_tables_with_route_disassociations.md")
   severity        = "high"
@@ -192,7 +192,7 @@ detection "detect_vpc_deletions" {
 }
 
 detection "detect_vpcs_with_classic_link_enabled" {
-  title           = "Detect VPC ClassicLink Enabled"
+  title           = "Detect VPCs with Classic Link Enabled"
   description     = "Detect when VPC ClassicLink is enabled, which could increase the attack surface by allowing connections to legacy EC2-Classic instances."
   documentation   = file("./detections/docs/detect_vpcs_with_classic_link_enabled.md")
   severity        = "medium"
@@ -537,20 +537,20 @@ query "detect_vpc_network_acls_with_deny_all_rule_deletions" {
   EOQ
 }
 
-detection "detect_public_access_granted_to_nacl" {
-  title           = "Detect VPC Public Access Granted in Network ACL Rules"
+detection "detect_public_access_granted_to_vpc_nacl_rules" {
+  title           = "Detect Public Access Granted to Network ACL Rules"
   description     = "Detect when Network ACL rules are created or modified to allow public access (0.0.0.0/0), potentially exposing resources to unauthorized access or disrupting security controls."
-  documentation   = file("./detections/docs/detect_public_access_granted_to_nacl.md")
+  documentation   = file("./detections/docs/detect_public_access_granted_to_vpc_nacl_rules.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_public_access_granted_to_nacl
+  query           = query.detect_public_access_granted_to_vpc_nacl_rules
 
   tags = merge(local.vpc_common_tags, {
     mitre_attack_ids = "TA0040:T1562.004"
   })
 }
 
-query "detect_public_access_granted_to_nacl" {
+query "detect_public_access_granted_to_vpc_nacl_rules" {
   sql = <<-EOQ
     select
       ${local.detect_vpc_network_acl_updates_sql_columns}
@@ -599,7 +599,7 @@ query "detect_vpc_traffic_mirroring_targets_with_internet_facing_nlb" {
 }
 
 detection "detect_vpcs_with_internet_gateway_detachments" {
-  title           = "Detect VPC with Internet Gateway Detachments"
+  title           = "Detect VPCs with Internet Gateway Detachments"
   description     = "Detect when an Internet Gateway is detached from a VPC, potentially disrupting security configurations or impairing network defenses, leading to isolation of critical resources."
   documentation   = file("./detections/docs/detect_vpcs_with_internet_gateway_detachments.md")
   severity        = "high"
