@@ -3,27 +3,27 @@ locals {
     service = "AWS/VPC"
   })
 
-  detect_vpc_creations_sql_columns                                   = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
-  detect_vpc_deletions_sql_columns                                   = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
-  detect_vpc_full_network_packet_capture_updates_sql_columns         = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(response_elements, '$.trafficMirrorTargetId')")
-  detect_vpc_network_acl_updates_sql_columns                         = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.networkAclId')")
-  detect_vpc_peering_connection_deletions_sql_columns                = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
-  detect_vpc_route_table_deletions_sql_columns                       = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
-  detect_vpc_route_table_replace_associations_sql_columns            = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
-  detect_vpc_route_table_route_deletions_sql_columns                 = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
-  detect_vpc_route_table_route_disassociations_sql_columns           = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
-  detect_vpc_route_table_updates_sql_columns                         = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
-  detect_vpc_security_group_ingress_egress_updates_sql_columns       = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
-  detect_vpc_security_group_ipv4_allow_all_sql_columns               = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
-  detect_vpc_security_group_ipv6_allow_all_sql_columns               = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
-  detect_vpc_with_classic_link_enabled_sql_columns                  = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
-  detect_vpc_flow_log_deletions_sql_columns                          = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.flowLogIds')")
-  detect_vpc_traffic_mirror_targets_with_internet_facing_nlb_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.trafficMirrorTargetId')")
-  detect_vpc_with_internet_gateway_detachments_sql_columns          = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
-  detect_vpc_network_acls_with_deny_all_rule_deletions_sql_columns   = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.networkAclId')")
-  detect_vpc_with_nacl_association_replacements_sql_columns         = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.associationId')")
-  detect_vpc_internet_gateways_added_to_public_route_tables_sql_columns  = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
-  detect_vpc_security_group_deletions_sql_columns                    = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
+  detect_vpc_creations_sql_columns                                          = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
+  detect_vpc_deletions_sql_columns                                          = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
+  detect_vpc_full_network_packet_capture_updates_sql_columns                = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(response_elements, '$.trafficMirrorTargetId')")
+  detect_vpc_network_acl_updates_sql_columns                                = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.networkAclId')")
+  detect_vpc_peering_connection_deletions_sql_columns                       = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
+  detect_vpc_route_table_deletions_sql_columns                              = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
+  detect_vpc_route_table_replace_associations_sql_columns                   = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
+  detect_vpc_route_tables_with_route_deletions_sql_columns                  = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
+  detect_vpc_route_tables_with_route_disassociations_sql_columns            = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
+  detect_vpc_route_table_updates_sql_columns                                = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
+  detect_vpc_security_group_ingress_egress_updates_sql_columns              = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
+  detect_vpc_security_group_ipv4_allow_all_sql_columns                      = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
+  detect_vpc_security_group_ipv6_allow_all_sql_columns                      = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
+  detect_vpcs_with_classic_link_enabled_sql_columns                         = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
+  detect_vpc_flow_log_deletions_sql_columns                                 = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.flowLogIds')")
+  detect_vpc_traffic_mirroring_targets_with_internet_facing_nlb_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.trafficMirrorTargetId')")
+  detect_vpcs_with_internet_gateway_detachments_sql_columns                 = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.vpcId')")
+  detect_vpc_network_acls_with_deny_all_rule_deletions_sql_columns          = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.networkAclId')")
+  detect_vpcs_with_nacl_association_replacements_sql_columns                = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.associationId')")
+  detect_vpc_internet_gateways_added_to_public_route_tables_sql_columns     = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.routeTableId')")
+  detect_vpc_security_group_deletions_sql_columns                           = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.groupId')")
 }
 
 benchmark "vpc_detections" {
@@ -32,7 +32,7 @@ benchmark "vpc_detections" {
   type        = "detection"
   children = [
     detection.detect_vpc_internet_gateways_added_to_public_route_tables,
-    detection.detect_vpc_traffic_mirror_targets_with_internet_facing_nlb,
+    detection.detect_vpc_traffic_mirroring_targets_with_internet_facing_nlb,
     detection.detect_vpc_creations,
     detection.detect_vpc_deletions,
     detection.detect_vpc_flow_log_deletions,
@@ -41,15 +41,15 @@ benchmark "vpc_detections" {
     detection.detect_vpc_peering_connection_deletions,
     detection.detect_vpc_route_table_deletions,
     detection.detect_vpc_route_table_replace_associations,
-    detection.detect_vpc_route_table_route_deletions,
-    detection.detect_vpc_route_table_route_disassociations,
+    detection.detect_vpc_route_tables_with_route_deletions,
+    detection.detect_vpc_route_tables_with_route_disassociations,
     detection.detect_vpc_security_group_deletions,
     detection.detect_vpc_security_group_ingress_egress_updates,
     detection.detect_vpc_security_group_ipv4_allow_all,
     detection.detect_vpc_security_group_ipv6_allow_all,
-    detection.detect_vpc_with_classic_link_enabled,
-    detection.detect_vpc_with_internet_gateway_detachments,
-    detection.detect_vpc_with_nacl_association_replacements,
+    detection.detect_vpcs_with_classic_link_enabled,
+    detection.detect_vpcs_with_internet_gateway_detachments,
+    detection.detect_vpcs_with_nacl_association_replacements,
   ]
 
   tags = merge(local.vpc_common_tags, {
@@ -114,7 +114,7 @@ query "detect_vpc_internet_gateways_added_to_public_route_tables" {
 }
 
 detection "detect_vpc_route_table_deletions" {
-  title           = "Detect VPC Route Tables Deletions"
+  title           = "Detect VPC Route Table Deletions"
   description     = "Detect route tables deletions to check for changes in network configurations."
   documentation   = file("./detections/docs/detect_vpc_route_table_deletions.md")
   severity        = "low"
@@ -126,26 +126,26 @@ detection "detect_vpc_route_table_deletions" {
   })
 }
 
-detection "detect_vpc_route_table_route_deletions" {
+detection "detect_vpc_route_tables_with_route_deletions" {
   title           = "Detect VPC Route Table Route Deletions"
   description     = "Detect when routes are deleted from VPC route tables, which could disrupt network traffic, impair defenses, or facilitate unauthorized traffic manipulation."
-  documentation   = file("./detections/docs/detect_vpc_route_table_route_deletions.md")
+  documentation   = file("./detections/docs/detect_vpc_route_tables_with_route_deletions.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_vpc_route_table_route_deletions
+  query           = query.detect_vpc_route_tables_with_route_deletions
 
   tags = merge(local.vpc_common_tags, {
     mitre_attack_ids = "TA0005:T1070, TA0040:T1565.003"
   })
 }
 
-detection "detect_vpc_route_table_route_disassociations" {
+detection "detect_vpc_route_tables_with_route_disassociations" {
   title           = "Detect VPC Route Table Disassociations"
   description     = "Detect when VPC route tables are disassociated from subnets, which could disrupt network routing or facilitate malicious traffic manipulation."
-  documentation   = file("./detections/docs/detect_vpc_route_table_route_disassociations.md")
+  documentation   = file("./detections/docs/detect_vpc_route_tables_with_route_disassociations.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_vpc_route_table_route_disassociations
+  query           = query.detect_vpc_route_tables_with_route_disassociations
 
   tags = merge(local.vpc_common_tags, {
     mitre_attack_ids = "TA0005:T1070, TA0040:T1565.003"
@@ -191,13 +191,13 @@ detection "detect_vpc_deletions" {
   })
 }
 
-detection "detect_vpc_with_classic_link_enabled" {
+detection "detect_vpcs_with_classic_link_enabled" {
   title           = "Detect VPC ClassicLink Enabled"
   description     = "Detect when VPC ClassicLink is enabled, which could increase the attack surface by allowing connections to legacy EC2-Classic instances."
-  documentation   = file("./detections/docs/detect_vpc_with_classic_link_enabled.md")
+  documentation   = file("./detections/docs/detect_vpcs_with_classic_link_enabled.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.detect_vpc_with_classic_link_enabled
+  query           = query.detect_vpcs_with_classic_link_enabled
 
   tags = merge(local.vpc_common_tags, {
     mitre_attack_ids = "TA0003:T1078, TA0005:T1562.001"
@@ -297,10 +297,10 @@ query "detect_vpc_route_table_deletions" {
   EOQ
 }
 
-query "detect_vpc_route_table_route_deletions" {
+query "detect_vpc_route_tables_with_route_deletions" {
   sql = <<-EOQ
     select
-      ${local.detect_vpc_route_table_route_deletions_sql_columns}
+      ${local.detect_vpc_route_tables_with_route_deletions_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -312,10 +312,10 @@ query "detect_vpc_route_table_route_deletions" {
   EOQ
 }
 
-query "detect_vpc_route_table_route_disassociations" {
+query "detect_vpc_route_tables_with_route_disassociations" {
   sql = <<-EOQ
     select
-      ${local.detect_vpc_route_table_route_disassociations_sql_columns}
+      ${local.detect_vpc_route_tables_with_route_disassociations_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -372,10 +372,10 @@ query "detect_vpc_deletions" {
   EOQ
 }
 
-query "detect_vpc_with_classic_link_enabled" {
+query "detect_vpcs_with_classic_link_enabled" {
   sql = <<-EOQ
     select
-      ${local.detect_vpc_with_classic_link_enabled_sql_columns}
+      ${local.detect_vpcs_with_classic_link_enabled_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -480,23 +480,23 @@ query "detect_vpc_network_acl_updates" {
   EOQ
 }
 
-detection "detect_vpc_with_nacl_association_replacements" {
+detection "detect_vpcs_with_nacl_association_replacements" {
   title           = "Detect VPC with Network ACL Association Replacements"
   description     = "Detect when a Network ACL association is replaced, potentially redirecting traffic through a different ACL with weaker security rules, leading to unauthorized access."
-  documentation   = file("./detections/docs/detect_vpc_with_nacl_association_replacements.md")
+  documentation   = file("./detections/docs/detect_vpcs_with_nacl_association_replacements.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.detect_vpc_with_nacl_association_replacements
+  query           = query.detect_vpcs_with_nacl_association_replacements
 
   tags = merge(local.vpc_common_tags, {
     mitre_attack_ids = "TA0040:T1562.004"
   })
 }
 
-query "detect_vpc_with_nacl_association_replacements" {
+query "detect_vpcs_with_nacl_association_replacements" {
   sql = <<-EOQ
     select
-      ${local.detect_vpc_with_nacl_association_replacements_sql_columns}
+      ${local.detect_vpcs_with_nacl_association_replacements_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -566,23 +566,23 @@ query "detect_public_access_granted_to_nacl" {
   EOQ
 }
 
-detection "detect_vpc_traffic_mirror_targets_with_internet_facing_nlb" {
+detection "detect_vpc_traffic_mirroring_targets_with_internet_facing_nlb" {
   title           = "Detect VPC Traffic Mirroring Targets with Internet-Facing Network Load Balancer"
   description     = "Detect when a Traffic Mirroring target is created with an internet-facing Network Load Balancer, potentially exposing sensitive traffic to unauthorized access."
-  documentation   = file("./detections/docs/detect_vpc_traffic_mirror_targets_with_internet_facing_nlb.md")
+  documentation   = file("./detections/docs/detect_vpc_traffic_mirroring_targets_with_internet_facing_nlb.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_vpc_traffic_mirror_targets_with_internet_facing_nlb
+  query           = query.detect_vpc_traffic_mirroring_targets_with_internet_facing_nlb
 
   tags = merge(local.vpc_common_tags, {
     mitre_attack_ids = "TA0010:T1020"
   })
 }
 
-query "detect_vpc_traffic_mirror_targets_with_internet_facing_nlb" {
+query "detect_vpc_traffic_mirroring_targets_with_internet_facing_nlb" {
   sql = <<-EOQ
     select
-      ${local.detect_vpc_traffic_mirror_targets_with_internet_facing_nlb_sql_columns}
+      ${local.detect_vpc_traffic_mirroring_targets_with_internet_facing_nlb_sql_columns}
     from
       aws_cloudtrail_log
     where
@@ -598,23 +598,23 @@ query "detect_vpc_traffic_mirror_targets_with_internet_facing_nlb" {
   EOQ
 }
 
-detection "detect_vpc_with_internet_gateway_detachments" {
+detection "detect_vpcs_with_internet_gateway_detachments" {
   title           = "Detect VPC with Internet Gateway Detachments"
   description     = "Detect when an Internet Gateway is detached from a VPC, potentially disrupting security configurations or impairing network defenses, leading to isolation of critical resources."
-  documentation   = file("./detections/docs/detect_vpc_with_internet_gateway_detachments.md")
+  documentation   = file("./detections/docs/detect_vpcs_with_internet_gateway_detachments.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_vpc_with_internet_gateway_detachments
+  query           = query.detect_vpcs_with_internet_gateway_detachments
 
   tags = merge(local.vpc_common_tags, {
     mitre_attack_ids = "TA0040:T1562.004" # Disable or Modify Firewall
   })
 }
 
-query "detect_vpc_with_internet_gateway_detachments" {
+query "detect_vpcs_with_internet_gateway_detachments" {
   sql = <<-EOQ
     select
-      ${local.detect_vpc_with_internet_gateway_detachments_sql_columns}
+      ${local.detect_vpcs_with_internet_gateway_detachments_sql_columns}
     from
       aws_cloudtrail_log
     where

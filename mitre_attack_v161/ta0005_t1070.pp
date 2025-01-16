@@ -19,8 +19,8 @@ benchmark "mitre_attack_v161_ta0005_t1070" {
     detection.detect_vpc_peering_connection_deletions,
     detection.detect_vpc_route_table_deletions,
     detection.detect_vpc_route_table_replace_associations,
-    detection.detect_vpc_route_table_route_deletions,
-    detection.detect_vpc_route_table_route_disassociations,
+    detection.detect_vpc_route_tables_with_route_deletions,
+    detection.detect_vpc_route_tables_with_route_disassociations,
     detection.detect_vpc_security_group_ipv4_allow_all,
     detection.detect_vpc_security_group_ipv6_allow_all,
   ]

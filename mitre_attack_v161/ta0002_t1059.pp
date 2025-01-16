@@ -9,14 +9,14 @@ benchmark "mitre_attack_v161_ta0002_t1059" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0002_t1059.md")
   children = [
-    benchmark.mitre_attack_v161_ta0002_t1059_t1059_009,
+    benchmark.mitre_attack_v161_ta0002_t1059_009,
   ]
 
   tags = local.mitre_attack_v161_ta0002_t1059_common_tags
 }
 
 
-benchmark "mitre_attack_v161_ta0002_t1059_t1059_009" {
+benchmark "mitre_attack_v161_ta0002_t1059_009" {
   title         = "T1059.009 Cloud API"
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0002_t1059_009.md")

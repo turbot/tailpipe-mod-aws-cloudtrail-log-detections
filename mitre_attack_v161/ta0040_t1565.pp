@@ -24,8 +24,8 @@ benchmark "mitre_attack_v161_ta0040_t1565_003" {
     detection.detect_vpc_peering_connection_deletions,
     detection.detect_vpc_route_table_deletions,
     detection.detect_vpc_route_table_replace_associations,
-    detection.detect_vpc_route_table_route_deletions,
-    detection.detect_vpc_route_table_route_disassociations,
+    detection.detect_vpc_route_tables_with_route_deletions,
+    detection.detect_vpc_route_tables_with_route_disassociations,
   ]
 
   tags = local.mitre_attack_v161_ta0040_t1565_common_tags
