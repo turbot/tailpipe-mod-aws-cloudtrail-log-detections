@@ -9,7 +9,7 @@ benchmark "mitre_attack_v161_ta0040_t1561_002" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0040_t1561_002.md")
   children = [
-    detection.detect_ebs_volume_detachments,
+    detection.ebs_volume_detached,
   ]
 
   tags = local.mitre_attack_v161_ta0040_t1561_002_common_tags

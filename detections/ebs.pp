@@ -2,22 +2,17 @@ locals {
   ebs_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
     service = "AWS/EBS"
   })
-
-  detect_regions_with_default_ebs_encryption_disabled_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "recipient_account_id")
-  detect_ebs_volume_detachments_sql_columns                       = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
-  detect_public_access_granted_to_ebs_snapshots_sql_columns       = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.snapshotId')")
-  detect_ebs_snapshots_with_encryption_disabled_sql_columns       = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.snapshotId')")
 }
 
 benchmark "ebs_detections" {
   title       = "EBS Detections"
-  description = "This benchmark contains recommendations when scanning CloudTrail logs for EBS events"
+  description = "This benchmark contains recommendations when scanning CloudTrail logs for EBS events."
   type        = "detection"
   children = [
-    detection.detect_ebs_snapshots_with_encryption_disabled,
-    detection.detect_ebs_volume_detachments,
-    detection.detect_public_access_granted_to_ebs_snapshots,
-    detection.detect_regions_with_default_ebs_encryption_disabled,
+    detection.ebs_encryption_by_default_disabled,
+    detection.ebs_snapshot_created_with_encryption_disabled,
+    detection.ebs_snapshot_shared_publicly,
+    detection.ebs_volume_detached,
   ]
 
   tags = merge(local.ebs_common_tags, {
@@ -25,23 +20,23 @@ benchmark "ebs_detections" {
   })
 }
 
-detection "detect_regions_with_default_ebs_encryption_disabled" {
-  title           = "Detect Regions with Default EBS Encryption Disabled"
-  description     = "Detect regions with default EBS encryption disabled to check for potential misconfigurations that could leave data at rest unencrypted, increasing the risk of unauthorized access or data breaches."
-  documentation   = file("./detections/docs/detect_regions_with_default_ebs_encryption_disabled.md")
+detection "ebs_encryption_by_default_disabled" {
+  title           = "EBS Encryption by Default Disabled"
+  description     = "Detect when EBS encryption by default was disabled in a region to check for potential misconfigurations that could leave data at rest unencrypted, increasing the risk of unauthorized access or data breaches."
+  documentation   = file("./detections/docs/ebs_encryption_by_default_disabled.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.detect_regions_with_default_ebs_encryption_disabled
+  query           = query.ebs_encryption_by_default_disabled
 
   tags = merge(local.ebs_common_tags, {
     mitre_attack_ids = "TA0003:T1486,TA0040:T1565"
   })
 }
 
-query "detect_regions_with_default_ebs_encryption_disabled" {
+query "ebs_encryption_by_default_disabled" {
   sql = <<-EOQ
     select
-      ${local.detect_regions_with_default_ebs_encryption_disabled_sql_columns}
+      ${local.detection_sql_resource_column_empty}
     from
       aws_cloudtrail_log
     where
@@ -53,23 +48,23 @@ query "detect_regions_with_default_ebs_encryption_disabled" {
   EOQ
 }
 
-detection "detect_ebs_volume_detachments" {
-  title           = "Detect EBS Volume Detachments"
-  description     = "Detect attempts to detach EBS volumes to check for potential risks of unauthorized modification, corruption, or data loss."
-  documentation   = file("./detections/docs/detect_ebs_volume_detachments.md")
+detection "ebs_volume_detached" {
+  title           = "EBS Volume Detached"
+  description     = "Detect when an EBS volume was detached from an EC2 instance to check for potential risks of unauthorized modification, corruption, or data loss."
+  documentation   = file("./detections/docs/ebs_volume_detached.md")
   severity        = "critical"
   display_columns = local.detection_display_columns
-  query = query.detect_ebs_volume_detachments
+  query = query.ebs_volume_detached
 
   tags = merge(local.ebs_common_tags, {
     mitre_attack_ids = "TA0040:T1561.002"
   })
 }
 
-query "detect_ebs_volume_detachments" {
+query "ebs_volume_detached" {
   sql = <<-EOQ
     select
-      ${local.detect_ebs_volume_detachments_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_name}
     from
       aws_cloudtrail_log
     where
@@ -81,60 +76,61 @@ query "detect_ebs_volume_detachments" {
   EOQ
 }
 
-detection "detect_public_access_granted_to_ebs_snapshots" {
-  title           = "Detect Public Access Granted to EBS Snapshots"
-  description     = "Detect when an EBS snapshot is shared publicly, potentially exposing sensitive data to unauthorized users."
-  documentation   = file("./detections/docs/detect_public_access_granted_to_ebs_snapshots.md")
+detection "ebs_snapshot_shared_publicly" {
+  title           = "EBS Snapshot Shared Publicly"
+  description     = "Detect when an EBS snapshot was shared publicly, potentially exposing sensitive data to unauthorized users."
+  documentation   = file("./detections/docs/ebs_snapshot_shared_publicly.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_public_access_granted_to_ebs_snapshots
+  query           = query.ebs_snapshot_shared_publicly
 
   tags = merge(local.ebs_common_tags, {
     mitre_attack_ids = "TA0001:T1531" # Initial Access and Resource Hijacking
   })
 }
 
-query "detect_public_access_granted_to_ebs_snapshots" {
+# TODO: This query should search through 'createVolumePermissions' -> 'add' for {"group": "all"}
+query "ebs_snapshot_shared_publicly" {
   sql = <<-EOQ
     select
-      ${local.detect_public_access_granted_to_ebs_snapshots_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_snapshot_id}
     from
       aws_cloudtrail_log
     where
       event_source = 'ec2.amazonaws.com'
       and event_name = 'ModifySnapshotAttribute'
-      and json_extract_string(request_parameters, '$.attribute') = 'createVolumePermission'
-      and json_extract_string(request_parameters, '$.createVolumePermission.add') like '%all%'
+      and (request_parameters ->> 'attribute') = 'createVolumePermission'
+      and (request_parameters -> 'createVolumePermission' ->> 'add') like '%all%'
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
   EOQ
 }
 
-detection "detect_ebs_snapshots_with_encryption_disabled" {
-  title           = "Detect EBS Snapshots Created with Encryption Disabled"
-  description     = "Detect when EBS snapshots are created with encryption disabled, which could lead to data exposure and non-compliance with security policies."
-  documentation   = file("./detections/docs/detect_ebs_snapshots_with_encryption_disabled.md")
+detection "ebs_snapshot_created_with_encryption_disabled" {
+  title           = "EBS Snapshot Created with Encryption Disabled"
+  description     = "Detect when an EBS snapshot was created with encryption disabled, which could lead to data exposure and non-compliance with security policies."
+  documentation   = file("./detections/docs/ebs_snapshot_created_with_encryption_disabled.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_ebs_snapshots_with_encryption_disabled
+  query           = query.ebs_snapshot_created_with_encryption_disabled
 
   tags = merge(local.ebs_common_tags, {
     mitre_attack_ids = "TA0001:T1531" # Initial Access
   })
 }
 
-query "detect_ebs_snapshots_with_encryption_disabled" {
+# TODO: Test this query
+query "ebs_snapshot_created_with_encryption_disabled" {
   sql = <<-EOQ
     select
-      ${local.detect_ebs_snapshots_with_encryption_disabled_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_snapshot_id}
     from
       aws_cloudtrail_log
     where
       event_source = 'ec2.amazonaws.com'
       and event_name = 'CreateSnapshot'
-      and (json_extract_string(response_elements, '$.encrypted') = 'false'
-      or json_extract_string(response_elements, '$.encrypted') is null)
+      and (response_elements -> 'encrypted') = false
       ${local.detection_sql_where_conditions}
     order by
       tp_timestamp desc;
