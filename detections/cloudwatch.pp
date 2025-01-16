@@ -3,11 +3,11 @@ locals {
     service = "AWS/CloudWatch"
   })
 
-  detect_cloudwatch_log_groups_created_without_encryption_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
-  detect_cloudwatch_logs_retention_period_updates_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
-  detect_cloudwatch_subscriptions_filter_updates_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
-  detect_cloudwatch_log_groups_shared_via_cross_account_roles_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
-  detect_cloudwatch_alarms_actions_via_cross_account_roles_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.alarmName')")
+  detect_cloudwatch_log_groups_created_without_encryption_sql_columns        = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
+  detect_cloudwatch_logs_retention_period_updates_sql_columns                = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
+  detect_cloudwatch_subscriptions_filter_updates_sql_columns                 = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
+  detect_cloudwatch_log_groups_shared_via_cross_account_roles_sql_columns    = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
+  detect_cloudwatch_alarms_actions_via_cross_account_roles_sql_columns       = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.alarmName')")
   detect_cloudwatch_subscription_filters_via_cross_account_roles_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
 }
 
@@ -15,7 +15,7 @@ benchmark "cloudwatch_detections" {
   title       = "CloudWatch Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs for CloudWatch events."
   type        = "detection"
-  children    = [
+  children = [
     detection.detect_cloudwatch_log_groups_created_without_encryption,
     detection.detect_cloudwatch_logs_retention_period_updates,
     detection.detect_cloudwatch_subscriptions_filter_updates,
@@ -25,7 +25,7 @@ benchmark "cloudwatch_detections" {
   ]
 
   tags = merge(local.cloudwatch_common_tags, {
-    type    = "Benchmark"
+    type = "Benchmark"
   })
 }
 
