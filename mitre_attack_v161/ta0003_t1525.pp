@@ -4,7 +4,6 @@ locals {
   })
 }
 
-
 benchmark "mitre_attack_v161_ta0003_t1525" {
   title = "T1525 Malicious Image"
   type = "detection"
