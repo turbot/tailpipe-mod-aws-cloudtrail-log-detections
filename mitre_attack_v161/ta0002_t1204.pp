@@ -17,7 +17,7 @@ benchmark "mitre_attack_v161_ta0002_t1204" {
 
 
 benchmark "mitre_attack_v161_ta0002_t1204_003" {
-  title = "T1204.003 Malicious Image"
+  title = "T1204.003 User Execution: Malicious Image"
   type = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0002_t1204_003.md")
   children = [
@@ -27,5 +27,7 @@ benchmark "mitre_attack_v161_ta0002_t1204_003" {
     detection.detect_ec2_ami_store_image_tasks_from_external_accounts,
   ]
 
-  tags = local.mitre_attack_v161_ta0002_t1204_common_tags
+  tags = merge(local.mitre_attack_v161_ta0002_common_tags, {
+    mitre_technique_id = "T1204.003"
+  })
 }

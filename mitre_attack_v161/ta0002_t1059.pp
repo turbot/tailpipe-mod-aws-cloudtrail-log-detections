@@ -17,7 +17,7 @@ benchmark "mitre_attack_v161_ta0002_t1059" {
 
 
 benchmark "mitre_attack_v161_ta0002_t1059_009" {
-  title         = "T1059.009 Cloud API"
+  title         = "T1059.009 Command and Scripting Interpreter: Cloud API"
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0002_t1059_009.md")
   children = [
@@ -27,5 +27,7 @@ benchmark "mitre_attack_v161_ta0002_t1059_009" {
     detection.detect_cloudtrail_trails_with_logging_stopped,
   ]
 
-  tags = local.mitre_attack_v161_ta0002_t1059_common_tags
+  tags = merge(local.mitre_attack_v161_ta0002_common_tags, {
+    mitre_technique_id = "T1059.009"
+  })
 }
