@@ -24,7 +24,7 @@ benchmark "mitre_attack_v161_ta0003_t1098_001" {
   children = [
     detection.detect_iam_user_creations,
     detection.detect_iam_users_with_console_access_enabled,
-    detection.detect_rds_db_instance_master_password_updates,
+    detection.rds_db_instance_master_password_update,
   ]
 
   tags = local.mitre_attack_v161_ta0003_t1098_common_tags

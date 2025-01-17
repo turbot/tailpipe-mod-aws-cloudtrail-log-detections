@@ -5,8 +5,8 @@ locals {
 }
 
 benchmark "mitre_attack_v161_ta0001_t1199" {
-  title         = "T1199 Trusted Relationship"
-  type          = "detection"
+  title = "T1199 Trusted Relationship"
+  type  = "detection"
   # documentation = file("./mitre_attack_v161/docs/ta0001_t1199.md")
   children = [
     detection.detect_ec2_ami_copied_from_external_accounts,
@@ -16,7 +16,7 @@ benchmark "mitre_attack_v161_ta0001_t1199" {
     detection.detect_public_access_granted_to_iam_roles,
     detection.detect_public_access_granted_to_iam_users,
     detection.detect_public_access_granted_to_lambda_functions,
-    detection.detect_public_access_granted_to_rds_db_instances,
+    detection.rds_db_instance_shared_publicly,
   ]
 
   tags = local.mitre_attack_v161_ta0001_t1199_common_tags

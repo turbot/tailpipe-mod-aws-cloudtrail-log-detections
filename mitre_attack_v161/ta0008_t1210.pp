@@ -9,8 +9,8 @@ benchmark "mitre_attack_v161_ta0008_t1210" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0008_t1210.md")
   children = [
-    detection.detect_rds_db_instances_with_iam_authentication_disabled,
-    detection.detect_public_access_granted_to_rds_db_instances,
+    detection.rds_db_instance_iam_authentication_disabled,
+    detection.rds_db_instance_shared_publicly,
   ]
 
   tags = local.mitre_attack_v161_ta0008_t1210_common_tags
