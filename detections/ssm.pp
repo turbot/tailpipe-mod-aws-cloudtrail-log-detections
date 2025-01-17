@@ -4,7 +4,7 @@ locals {
   })
 
   ssm_document_with_unauthorized_data_access_from_local_system_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.documentName')")
-  ssm_document_public_access_granted_sql_columns                         = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
+  ssm_document_shared_publicly_sql_columns                         = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
 }
 
 benchmark "ssm_detections" {
@@ -14,7 +14,7 @@ benchmark "ssm_detections" {
   children = [
     detection.ssm_document_with_unauthorized_input_capture,
     detection.ssm_document_with_unauthorized_data_access_from_local_system,
-    detection.ssm_document_public_access_granted,
+    detection.ssm_document_shared_publicly,
   ]
 
   tags = merge(local.ssm_common_tags, {
@@ -80,20 +80,20 @@ query "ssm_document_with_unauthorized_input_capture" {
   EOQ
 }
 
-detection "ssm_document_public_access_granted" {
-  title           = "SSM Document Public Access Granted"
+detection "ssm_document_shared_publicly" {
+  title           = "SSM Document Shared Publicly"
   description     = "Detect when an AWS Systems Manager document was shared publicly to check for potential risks of exposing sensitive configurations, scripts, or automation workflows to unauthorized access."
-  documentation   = file("./detections/docs/ssm_document_public_access_granted.md")
+  documentation   = file("./detections/docs/ssm_document_shared_publicly.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.ssm_document_public_access_granted
+  query           = query.ssm_document_shared_publicly
 
   tags = merge(local.ssm_common_tags, {
     mitre_attack_ids = "TA0010:T1567"
   })
 }
 
-query "ssm_document_public_access_granted" {
+query "ssm_document_shared_publicly" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_name}

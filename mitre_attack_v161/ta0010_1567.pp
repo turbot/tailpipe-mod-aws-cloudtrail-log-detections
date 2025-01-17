@@ -22,8 +22,8 @@ benchmark "mitre_attack_v161_ta0010_t1567_001" {
   children = [
     detection.detect_public_access_granted_to_codebuild_projects,
     detection.detect_public_access_granted_to_sqs_queues,
-    detection.detect_sqs_queue_creations_with_encryption_at_rest_disabled,
-    detection.ssm_document_public_access_granted,
+    detection.sqs_queue_created_with_encryption_at_rest_disabled,
+    detection.ssm_document_shared_publicly,
     detection.detect_public_access_granted_to_sns_topics,
   ]
 

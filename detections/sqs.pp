@@ -2,10 +2,6 @@ locals {
   sqs_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
     service = "AWS/SQS"
   })
-
-  detect_sqs_queue_creations_with_encryption_at_rest_disabled_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.queueUrl')")
-  detect_public_access_granted_to_sqs_queues_sql_columns                  = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.queueUrl')")
-  detect_sqs_queues_with_dlq_disabled_sql_columns                         = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.queueUrl')")
 }
 
 benchmark "sqs_detections" {
@@ -13,7 +9,7 @@ benchmark "sqs_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for SQS events."
   type        = "detection"
   children = [
-    detection.detect_sqs_queue_creations_with_encryption_at_rest_disabled,
+    detection.sqs_queue_created_with_encryption_at_rest_disabled,
     # TODO: Re-add detection once query has the proper checks
     #detection.detect_public_access_granted_to_sqs_queues,
     detection.detect_sqs_queues_with_dlq_disabled,
@@ -24,23 +20,23 @@ benchmark "sqs_detections" {
   })
 }
 
-detection "detect_sqs_queue_creations_with_encryption_at_rest_disabled" {
-  title           = "Detect SQS Queues Created Without Encryption at Rest"
-  description     = "Detect when AWS SQS queues are created or updated without encryption at rest enabled. Unencrypted queues may expose sensitive data to unauthorized access or data exfiltration."
-  documentation   = file("./detections/docs/detect_sqs_queue_creations_with_encryption_at_rest_disabled.md")
+detection "sqs_queue_created_with_encryption_at_rest_disabled" {
+  title           = "SQS Queues Created with Encryption at Rest Disabled"
+  description     = "Detect when an AWS SQS queue was created or updated without encryption at rest enabled to check for potential risks of unauthorized access or data exfiltration due to unencrypted data."
+  documentation   = file("./detections/docs/sqs_queue_created_with_encryption_at_rest_disabled.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.detect_sqs_queue_creations_with_encryption_at_rest_disabled
+  query           = query.sqs_queue_created_with_encryption_at_rest_disabled
 
   tags = merge(local.sqs_common_tags, {
     mitre_attack_ids = "TA0010:T1567.002"
   })
 }
 
-query "detect_sqs_queue_creations_with_encryption_at_rest_disabled" {
+query "sqs_queue_created_with_encryption_at_rest_disabled" {
   sql = <<-EOQ
     select
-      ${local.detect_sqs_queue_creations_with_encryption_at_rest_disabled_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_queue_url}
     from
       aws_cloudtrail_log
     where
@@ -69,7 +65,7 @@ detection "detect_public_access_granted_to_sqs_queues" {
 query "detect_public_access_granted_to_sqs_queues" {
   sql = <<-EOQ
     select
-      ${local.detect_public_access_granted_to_sqs_queues_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_queue_url}
     from
       aws_cloudtrail_log
     where
@@ -104,7 +100,7 @@ detection "detect_sqs_queues_with_dlq_disabled" {
 query "detect_sqs_queues_with_dlq_disabled" {
   sql = <<-EOQ
     select
-      ${local.detect_sqs_queues_with_dlq_disabled_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_queue_url}
     from
       aws_cloudtrail_log
     where
