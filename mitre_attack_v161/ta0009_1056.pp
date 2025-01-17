@@ -9,7 +9,7 @@ benchmark "mitre_attack_v161_ta0009_t1056" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0009_t1056.md")
   children = [
-    detection.detect_ssm_documents_with_unauthorized_input_captures
+    detection.ssm_document_with_unauthorized_input_capture
   ]
 
   tags = local.mitre_attack_v161_ta0009_t1056_common_tags

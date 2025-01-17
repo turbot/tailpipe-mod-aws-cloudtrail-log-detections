@@ -31,7 +31,7 @@ benchmark "mitre_attack_v161_ta0005_t1562_001" {
     detection.detect_config_rule_deletions,
     detection.detect_config_configuration_recorders_with_recording_stopped,
     detection.detect_eventbridge_rules_disabled,
-    detection.detect_guardduty_detector_deletions,
+    detection.guardduty_detector_deleted,
     detection.detect_vpcs_with_classic_link_enabled,
     detection.waf_web_acl_disassociated_from_cloudfront_distribution,
     detection.waf_web_acl_disassociated_from_alb,
