@@ -2,8 +2,6 @@ locals {
   cloudwatch_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
     service = "AWS/CloudWatch"
   })
-
-  detect_cloudwatch_log_groups_created_without_encryption_sql_columns        = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
   detect_cloudwatch_logs_retention_period_updates_sql_columns                = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
   detect_cloudwatch_subscriptions_filter_updates_sql_columns                 = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
   detect_cloudwatch_log_groups_shared_via_cross_account_roles_sql_columns    = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.logGroupName')")
@@ -16,7 +14,7 @@ benchmark "cloudwatch_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for CloudWatch events."
   type        = "detection"
   children = [
-    detection.detect_cloudwatch_log_groups_created_without_encryption,
+    detection.cloudwatch_log_group_created_with_encryption_disabled,
     detection.detect_cloudwatch_logs_retention_period_updates,
     detection.detect_cloudwatch_subscriptions_filter_updates,
     detection.detect_cloudwatch_log_groups_shared_via_cross_account_roles,
@@ -29,29 +27,29 @@ benchmark "cloudwatch_detections" {
   })
 }
 
-detection "detect_cloudwatch_log_groups_created_without_encryption" {
-  title           = "Detect CloudWatch Log Groups Created Without Encryption"
-  description     = "Detect events where CloudWatch log groups are created without KMS encryption enabled, potentially exposing sensitive log data to unauthorized access."
-  documentation   = file("./detections/docs/detect_cloudwatch_log_groups_created_without_encryption.md")
+detection "cloudwatch_log_group_created_with_encryption_disabled" {
+  title           = "CloudWatch Log Group Created With Encryption Disabled"
+  description     = "Detect when an CloudWatch log group was created with encryption disabled, which could lead to data exposure and non-compliance with security policies."
+  documentation   = file("./detections/docs/cloudwatch_log_group_created_with_encryption_disabled.md")
   severity        = "low"
   display_columns = local.detection_display_columns
-  query           = query.detect_cloudwatch_log_groups_created_without_encryption
+  query           = query.cloudwatch_log_group_created_with_encryption_disabled
 
   tags = merge(local.cloudwatch_common_tags, {
     mitre_attack_ids = "T1537"
   })
 }
 
-query "detect_cloudwatch_log_groups_created_without_encryption" {
+query "cloudwatch_log_group_created_with_encryption_disabled" {
   sql = <<-EOQ
     select
-      ${local.detect_cloudwatch_log_groups_created_without_encryption_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_log_group_name}
     from
       aws_cloudtrail_log
     where
       event_source = 'logs.amazonaws.com'
       and event_name = 'CreateLogGroup'
-      and json_extract_string(request_parameters, '$.kmsKeyId') is null
+      and (request_parameters ->> 'kmsKeyId') is null
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
