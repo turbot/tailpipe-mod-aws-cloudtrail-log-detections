@@ -3,45 +3,44 @@ locals {
     service = "AWS/EFS"
   })
 
-  detect_efs_file_systems_with_backup_policy_disabled_sql_columns  = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "coalesce(json_extract_string(request_parameters, '$.fileSystemId'), json_extract_string(request_parameters, '$.mountTargetId'))")
 }
 
 benchmark "efs_detections" {
   title       = "EFS Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs for EFS events"
   type        = "detection"
-  children    = [
-    detection.detect_efs_file_systems_with_backup_policy_disabled,
+  children = [
+    detection.efs_file_systems_backup_policy_disabled,
   ]
 
   tags = merge(local.efs_common_tags, {
-    type    = "Benchmark"
+    type = "Benchmark"
   })
 }
 
-detection "detect_efs_file_systems_with_backup_policy_disabled" {
-  title           = "Detect EFS File Systems with Backup Policy Disabled"
-  description     = "Identify events where backup policies are disabled for EFS file systems, potentially leaving data unprotected."
-  documentation   = file("./detections/docs/detect_efs_file_systems_with_backup_policy_disabled.md")
-  severity        = "high"
+detection "efs_file_systems_backup_policy_disabled" {
+  title           = "EFS File Systems Backup Policy Disabled"
+  description     = "Detect when EFS file systems backup policies were disabled to check for potential risks of data loss, unavailability, or non-compliance with backup and disaster recovery requirements."
+  # documentation   = file("./detections/docs/detect_efs_file_systems_with_backup_policy_disabled.md")
+  severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.detect_efs_file_systems_with_backup_policy_disabled
+  query           = query.efs_file_systems_backup_policy_disabled
 
   tags = merge(local.efs_common_tags, {
     mitre_attack_ids = "TA0040:T1562.001"
   })
 }
 
-query "detect_efs_file_systems_with_backup_policy_disabled" {
+query "efs_file_systems_backup_policy_disabled" {
   sql = <<-EOQ
     select
-      ${local.detect_efs_file_systems_with_backup_policy_disabled_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_file_system_id_or_mount_target_id}
     from
       aws_cloudtrail_log
     where
       event_source = 'elasticfilesystem.amazonaws.com'
       and event_name = 'PutBackupPolicy'
-      and json_extract_string(request_parameters, '$.BackupPolicyStatus') = 'DISABLED'
+      and (request_parameters ->> 'BackupPolicyStatus') = 'DISABLED'
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;

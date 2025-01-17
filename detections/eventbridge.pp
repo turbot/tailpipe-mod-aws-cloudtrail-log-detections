@@ -3,54 +3,52 @@ locals {
     service = "AWS/EventBridge"
   })
 
-  detect_eventbridge_rules_disabled_sql_columns  = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
-  detect_eventbridge_rule_deletions_sql_columns  = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
 }
 
 benchmark "eventbridge_detections" {
   title       = "EventBridge Detections"
   description = "This benchmark contains recommendations when scanning CloudTrail logs for EventBridge events."
   type        = "detection"
-  children    = [
-    detection.detect_eventbridge_rule_deletions,
-    detection.detect_eventbridge_rules_disabled
+  children = [
+    detection.eventbridge_rules_deleted,
+    detection.eventbridge_rules_disabled
   ]
 
   tags = merge(local.eventbridge_common_tags, {
-    type    = "Benchmark"
+    type = "Benchmark"
   })
 }
 
-detection "detect_eventbridge_rules_disabled" {
-  title           = "Detect EventBridge Rules Disabled"
-  description     = "Detect when EventBridge rules are disabled. Disabling EventBridge rules can disrupt automated workflows, scheduled tasks, and alerting mechanisms, potentially preventing the detection or mitigation of malicious activities."
-  documentation   = file("./detections/docs/detect_eventbridge_rules_disabled.md")
-  severity        = "low"
+detection "eventbridge_rules_disabled" {
+  title           = "EventBridge Rules Disabled"
+  description     = "Detect when EventBridge rules were disabled to check for disruptions to automated workflows, scheduled tasks, and alerting mechanisms, which could prevent detection or mitigation of malicious activities."
+  # documentation   = file("./detections/docs/detect_eventbridge_rules_disabled.md")
+  severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.detect_eventbridge_rules_disabled
+  query           = query.eventbridge_rules_disabled
 
   tags = merge(local.eventbridge_common_tags, {
     mitre_attack_ids = "TA0005:T1562.001"
   })
 }
 
-detection "detect_eventbridge_rule_deletions" {
-  title           = "Detect EventBridge Rule Deletion"
-  description     = "Detect when EventBridge rules are deleted. Deleting EventBridge rules can disrupt critical automation and monitoring workflows, potentially allowing malicious activities to go undetected or unmitigated."
-  documentation   = file("./detections/docs/detect_eventbridge_rule_deletions.md")
-  severity        = "low"
+detection "eventbridge_rules_deleted" {
+  title           = "EventBridge Rules Deleted"
+  description     = "Detect when EventBridge rules were deleted to check for disruptions to critical automation and monitoring workflows, potentially allowing malicious activities to go undetected or unmitigated."
+  # documentation   = file("./detections/docs/detect_eventbridge_rule_deletions.md")
+  severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.detect_eventbridge_rule_deletions
+  query           = query.eventbridge_rules_deleted
 
   tags = merge(local.eventbridge_common_tags, {
     mitre_attack_ids = "TA0040:T1485"
   })
 }
 
-query "detect_eventbridge_rules_disabled" {
+query "eventbridge_rules_disabled" {
   sql = <<-EOQ
     select
-      ${local.detect_eventbridge_rules_disabled_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_eventbridge_rule_name}
     from
       aws_cloudtrail_log
     where
@@ -62,10 +60,10 @@ query "detect_eventbridge_rules_disabled" {
   EOQ
 }
 
-query "detect_eventbridge_rule_deletions" {
+query "eventbridge_rules_deleted" {
   sql = <<-EOQ
     select
-      ${local.detect_eventbridge_rule_deletions_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_eventbridge_rule_name}
     from
       aws_cloudtrail_log
     where
