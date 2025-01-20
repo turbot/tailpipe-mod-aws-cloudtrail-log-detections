@@ -21,10 +21,10 @@ benchmark "mitre_attack_v161_ta0010_t1567_001" {
   documentation = file("./mitre_attack_v161/docs/ta0010_t1567_001.md")
   children = [
     detection.detect_public_access_granted_to_codebuild_projects,
-    detection.detect_public_access_granted_to_sqs_queues,
+    detection.sqs_queue_public_access_granted,
     detection.sqs_queue_created_with_encryption_at_rest_disabled,
     detection.ssm_document_shared_publicly,
-    detection.detect_public_access_granted_to_sns_topics,
+    detection.sns_topic_public_access_granted,
   ]
 
   tags = merge(local.mitre_attack_v161_ta0010_t1567_common_tags, {

@@ -9,7 +9,6 @@ benchmark "mitre_attack_v161_ta0002_t1651" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0002_t1651.md")
   children = [
-    detection.ssm_document_with_unauthorized_data_access_from_local_system,
     detection.ssm_document_with_unauthorized_input_capture,
   ]
 

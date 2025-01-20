@@ -35,7 +35,7 @@ benchmark "mitre_attack_v161_ta0005_t1562_001" {
     detection.detect_vpcs_with_classic_link_enabled,
     detection.waf_web_acl_disassociated_from_cloudfront_distribution,
     detection.waf_web_acl_disassociated_from_alb,
-    detection.detect_sns_topics_with_encryption_at_rest_disabled,
+    detection.sns_topic_encryption_at_rest_disabled,
     detection.detect_vpc_creations,
   ]
 
