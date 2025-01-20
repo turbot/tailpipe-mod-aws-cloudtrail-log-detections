@@ -42,7 +42,6 @@ query "ssm_document_with_unauthorized_input_capture" {
       and event_name = 'StartSession'
       and (request_parameters ->> 'documentName') = 'AWS-StartPortForwardingSession'
       and error_code in ('AccessDeniedException', 'NotAuthorized')
-      ${local.detection_sql_where_conditions}
     order by
       event_time desc;
   EOQ

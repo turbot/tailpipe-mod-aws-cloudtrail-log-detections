@@ -9,7 +9,6 @@ benchmark "ses_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for SES events."
   type        = "detection"
   children = [
-    detection.ses_identity_policy_modified_with_wildcard_or_external_access,
     detection.ses_email_sending_enabled,
     detection.ses_feedback_forwarding_disabled,
   ]
@@ -17,44 +16,6 @@ benchmark "ses_detections" {
   tags = merge(local.ses_common_tags, {
     type = "Benchmark"
   })
-}
-
-detection "ses_identity_policy_modified_with_wildcard_or_external_access" {
-  title           = "SES Identity Policy Modified With Wildcard or External Access"
-  description     = "Detect when an AWS SES identity policy was modified to include wildcard permissions or grant access to external accounts, potentially allowing unauthorized email sending and enabling phishing, spam, or data exfiltration."
-  documentation   = file("./detections/docs/ses_identity_policy_modified_with_wildcard_or_external_access.md")
-  severity        = "high"
-  display_columns = local.detection_display_columns
-  query           = query.ses_identity_policy_modified_with_wildcard_or_external_access
-
-  tags = merge(local.ses_common_tags, {
-    mitre_attack_ids = "TA0006:T1556"
-  })
-}
-
-query "ses_identity_policy_modified_with_wildcard_or_external_access" {
-  sql = <<-EOQ
-    select
-      ${local.detection_sql_resource_column_request_parameters_name}
-    from
-      aws_cloudtrail_log
-    where
-      event_name = 'PutIdentityPolicy'
-      and (
-        -- Detect wildcard principal
-        (request_parameters ->> 'policy') like '%"AWS":"*"%' 
-
-        -- Detect risky actions such as SendEmail or SendRawEmail
-        or (request_parameters ->> 'policy') like '%"Action":"SES:SendEmail"%'
-        or (request_parameters ->> 'policy') like '%"Action":"SES:SendRawEmail"%'
-
-        -- Detect wildcard resource access
-        or (request_parameters ->> 'policy') like '%"Resource":"*"%' 
-      )
-      ${local.detection_sql_where_conditions}
-    order by
-      event_time desc;
-  EOQ
 }
 
 detection "ses_email_sending_enabled" {

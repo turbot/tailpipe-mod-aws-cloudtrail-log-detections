@@ -98,7 +98,7 @@ query "sqs_queue_public_access_granted" {
         (request_parameters -> 'attributes' ->> 'Policy') like '%"Principal":"*"%' 
 
         -- Detect AWS wildcard principals granting cross-account access
-        or (request_parameters -> 'attributes' ->> 'Policy') like '%"Principal":{"AWS":"*"}%'
+        or (request_parameters -> 'attributes' ->> 'Policy') like '%"Principal":"AWS": "*"'
       )
       ${local.detection_sql_where_conditions}
     order by
