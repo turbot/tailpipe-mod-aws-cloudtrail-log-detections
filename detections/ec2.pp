@@ -2,15 +2,6 @@ locals {
   ec2_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
     service = "AWS/EC2"
   })
-
-  ec2_instance_user_data_modified_with_ssh_key_addition_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'userData'")
-  ec2_instance_updates_sql_columns                                  = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'instanceId'")
-  ec2_ami_launch_permission_updated_sql_columns                     = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'imageId'")
-  ec2_ami_copied_from_external_account_sql_columns                  = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'sourceImageId'")
-  ec2_ami_imported_from_external_account_sql_columns                = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'imageId'")
-  ec2_ami_restore_image_task_from_external_account_sql_columns      = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'sourceImageId'")
-  ec2_ami_store_image_task_from_external_account_sql_columns        = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'sourceImageId'")
-  ec2_instance_source_dest_check_disabled_sql_columns               = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'instanceId'")
 }
 
 benchmark "ec2_detections" {
@@ -48,7 +39,7 @@ detection "ec2_instance_source_dest_check_disabled" {
 query "ec2_instance_source_dest_check_disabled" {
   sql = <<-EOQ
     select
-      ${local.ec2_instance_source_dest_check_disabled_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_instance_id}
     from
       aws_cloudtrail_log
     where
@@ -78,7 +69,7 @@ detection "ec2_instance_user_data_modified_with_ssh_key_addition" {
 query "ec2_instance_user_data_modified_with_ssh_key_addition" {
   sql = <<-EOQ
     select
-      ${local.ec2_instance_user_data_modified_with_ssh_key_addition_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_user_data}
     from
       aws_cloudtrail_log
     where
@@ -109,7 +100,7 @@ detection "ec2_ami_launch_permission_updated" {
 query "ec2_ami_launch_permission_updated" {
   sql = <<-EOQ
     select
-      ${local.ec2_ami_launch_permission_updated_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_image_id}
     from
       aws_cloudtrail_log
     where
@@ -138,7 +129,7 @@ detection "ec2_ami_copied_from_external_account" {
 query "ec2_ami_copied_from_external_account" {
   sql = <<-EOQ
     select
-      ${local.ec2_ami_copied_from_external_account_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_source_image_id}
     from
       aws_cloudtrail_log
     where
@@ -167,7 +158,7 @@ detection "ec2_ami_restore_image_task_from_external_account" {
 query "ec2_ami_restore_image_task_from_external_account" {
   sql = <<-EOQ
     select
-      ${local.ec2_ami_restore_image_task_from_external_account_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_source_image_id}
     from
       aws_cloudtrail_log
     where
@@ -196,7 +187,7 @@ detection "ec2_ami_store_image_task_from_external_account" {
 query "ec2_ami_store_image_task_from_external_account" {
   sql = <<-EOQ
     select
-      ${local.ec2_ami_store_image_task_from_external_account_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_source_image_id}
     from
       aws_cloudtrail_log
     where
@@ -225,7 +216,7 @@ detection "ec2_ami_imported_from_external_account" {
 query "ec2_ami_imported_from_external_account" {
   sql = <<-EOQ
     select
-      ${local.ec2_ami_imported_from_external_account_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_image_id}
     from
       aws_cloudtrail_log
     where

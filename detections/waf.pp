@@ -2,10 +2,6 @@ locals {
   waf_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
     service = "AWS/WAF"
   })
-
-  waf_web_acl_logging_disabled_sql_columns                                 = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.resourceArn')")
-  waf_web_acl_disassociated_from_cloudfront_distribution_sql_columns       = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.resourceArn')")
-  waf_web_acl_disassociated_from_elb_application_load_balancer_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.resourceArn')")
 }
 
 benchmark "waf_detections" {
@@ -39,7 +35,7 @@ detection "waf_web_acl_logging_disabled" {
 query "waf_web_acl_logging_disabled" {
   sql = <<-EOQ
     select
-      ${local.waf_web_acl_logging_disabled_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_resource_arn}
     from
       aws_cloudtrail_log
     where
@@ -68,7 +64,7 @@ detection "waf_web_acl_disassociated_from_cloudfront_distribution" {
 query "waf_web_acl_disassociated_from_cloudfront_distribution" {
   sql = <<-EOQ
     select
-      ${local.waf_web_acl_disassociated_from_cloudfront_distribution_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_resource_arn}
     from
       aws_cloudtrail_log
     where
@@ -97,7 +93,7 @@ detection "waf_web_acl_disassociated_from_elb_application_load_balancer" {
 query "waf_web_acl_disassociated_from_elb_application_load_balancer" {
   sql = <<-EOQ
     select
-      ${local.waf_web_acl_disassociated_from_elb_application_load_balancer_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_resource_arn}
     from
       aws_cloudtrail_log
     where

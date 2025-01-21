@@ -2,13 +2,6 @@ locals {
   rds_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
     service = "AWS/RDS"
   })
-
-  rds_db_instance_master_password_updated_sql_columns       = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.dBInstanceIdentifier')")
-  rds_db_instance_restored_from_public_snapshot_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.dBInstanceIdentifier')")
-  rds_db_instance_iam_authentication_disabled_sql_columns   = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.name')")
-  rds_db_cluster_deletion_protection_disabled_sql_columns   = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.dBClusterIdentifier')")
-  rds_db_instance_deletion_protection_disabled_sql_columns  = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.dBInstanceIdentifier')")
-  rds_db_instance_assigned_public_ip_address_sql_columns    = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.dBInstanceIdentifier')")
 }
 
 benchmark "rds_detections" {
@@ -45,7 +38,7 @@ detection "rds_db_instance_assigned_public_ip_address" {
 query "rds_db_instance_assigned_public_ip_address" {
   sql = <<-EOQ
     select
-      ${local.rds_db_instance_assigned_public_ip_address_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_db_instance_identifier}
     from
       aws_cloudtrail_log
     where
@@ -74,7 +67,7 @@ detection "rds_db_instance_master_password_updated" {
 query "rds_db_instance_master_password_updated" {
   sql = <<-EOQ
     select
-      ${local.rds_db_instance_master_password_updated_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_db_instance_identifier}
     from
       aws_cloudtrail_log
     where
@@ -103,7 +96,7 @@ detection "rds_db_instance_restored_from_public_snapshot" {
 query "rds_db_instance_restored_from_public_snapshot" {
   sql = <<-EOQ
     select
-      ${local.rds_db_instance_restored_from_public_snapshot_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_db_instance_identifier}
     from
       aws_cloudtrail_log
     where
@@ -132,7 +125,7 @@ detection "rds_db_cluster_deletion_protection_disabled" {
 query "rds_db_cluster_deletion_protection_disabled" {
   sql = <<-EOQ
     select
-      ${local.rds_db_cluster_deletion_protection_disabled_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_db_instance_identifier}
     from
       aws_cloudtrail_log
     where
@@ -161,7 +154,7 @@ detection "rds_db_instance_iam_authentication_disabled" {
 query "rds_db_instance_iam_authentication_disabled" {
   sql = <<-EOQ
     select
-      ${local.rds_db_instance_iam_authentication_disabled_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_name}
     from
       aws_cloudtrail_log
     where
@@ -190,7 +183,7 @@ detection "rds_db_instance_deletion_protection_disabled" {
 query "rds_db_instance_deletion_protection_disabled" {
   sql = <<-EOQ
     select
-      ${local.rds_db_instance_deletion_protection_disabled_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_db_instance_identifier}
     from
       aws_cloudtrail_log
     where
@@ -202,5 +195,3 @@ query "rds_db_instance_deletion_protection_disabled" {
       event_time desc;
   EOQ
 }
-
-
