@@ -13,7 +13,7 @@ benchmark "mitre_attack_v161_ta0001_t1190" {
     detection.detect_public_access_granted_to_lambda_functions,
     detection.rds_db_instance_assigned_public_ip_address,
     detection.detect_vpc_security_group_ingress_egress_updates,
-    detection.detect_public_access_granted_to_s3_buckets
+    detection.s3_bucket_public_access_granted
   ]
 
   tags = local.mitre_attack_v161_ta0001_t1190_common_tags

@@ -9,7 +9,7 @@ benchmark "mitre_attack_v161_ta0040_t1485" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0040_t1485.md")
   children = [
-    detection.detect_s3_bucket_deletions,
+    detection.s3_bucket_deleted,
     detection.detect_eventbridge_rule_deletions,
     detection.guardduty_detector_deleted,
     detection.rds_db_cluster_deletion_protection_disabled,
