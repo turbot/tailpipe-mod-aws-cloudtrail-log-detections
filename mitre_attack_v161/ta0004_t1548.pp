@@ -21,7 +21,7 @@ benchmark "mitre_attack_v161_ta0004_t1548_005" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0004_t1548_005.md")
   children = [
-    detection.lambda_function_public_access_granted,
+    detection.lambda_function_granted_public_access,
     detection.s3_bucket_public_access_granted,
   ]
 

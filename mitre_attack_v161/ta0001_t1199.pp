@@ -13,7 +13,7 @@ benchmark "mitre_attack_v161_ta0001_t1199" {
     detection.ec2_ami_imported_from_external_account,
     detection.detect_public_access_granted_to_api_gateway_rest_apis,
     detection.ebs_snapshot_shared_publicly,
-    detection.lambda_function_public_access_granted,
+    detection.lambda_function_granted_public_access,
     detection.rds_db_instance_assigned_public_ip_address,
   ]
 

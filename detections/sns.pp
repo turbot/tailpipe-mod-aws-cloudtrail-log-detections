@@ -9,7 +9,7 @@ benchmark "sns_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for SNS events."
   type        = "detection"
   children = [
-    detection.sns_topic_public_access_granted,
+    detection.sns_topic_granted_public_access,
     detection.sns_topic_encryption_at_rest_disabled,
   ]
 
@@ -18,13 +18,13 @@ benchmark "sns_detections" {
   })
 }
 
-detection "sns_topic_public_access_granted" {
-  title           = "SNS Topic Public Access Granted"
+detection "sns_topic_granted_public_access" {
+  title           = "SNS Topic Granted Public Access"
   description     = "Detect when public access was granted to an SNS topic, potentially allowing unauthorized access and exposing sensitive notifications to external entities."
-  documentation   = file("./detections/docs/sns_topic_public_access_granted.md")
+  documentation   = file("./detections/docs/sns_topic_granted_public_access.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.sns_topic_public_access_granted
+  query           = query.sns_topic_granted_public_access
 
   tags = merge(local.sns_common_tags, {
     mitre_attack_ids = "TA0010:T1567"
@@ -32,7 +32,7 @@ detection "sns_topic_public_access_granted" {
 }
 
 // Need to refactor the query to iterate the policy statements from the logs and check any of the statement have public access(Same as SQS Queue public access granted).
-query "sns_topic_public_access_granted" {
+query "sns_topic_granted_public_access" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_queue_url}

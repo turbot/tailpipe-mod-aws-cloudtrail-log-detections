@@ -9,7 +9,7 @@ benchmark "mitre_attack_v161_ta0002_t1648" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0002_t1648.md")
   children = [
-    detection.lambda_function_public_access_granted,
+    detection.lambda_function_granted_public_access,
     detection.lambda_function_code_updated_without_publish,
     detection.lambda_function_environment_variable_updated_with_encryption_at_rest_disabled,
     detection.lambda_function_created_with_function_code_encryption_at_rest_disabled,

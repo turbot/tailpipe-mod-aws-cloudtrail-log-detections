@@ -9,42 +9,12 @@ benchmark "ssm_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for SSM events."
   type        = "detection"
   children = [
-    detection.ssm_document_with_unauthorized_input_capture,
     detection.ssm_document_shared_publicly,
   ]
 
   tags = merge(local.ssm_common_tags, {
     type = "Benchmark"
   })
-}
-
-detection "ssm_document_with_unauthorized_input_capture" {
-  title           = "SSM Document with Unauthorized Input Capture"
-  description     = "Detect when an AWS Systems Manager document was created or updated with unauthorized input capture, such as keyboard input logging, to check for potential risks of data exfiltration or credential theft."
-  documentation   = file("./detections/docs/ssm_document_with_unauthorized_input_capture.md")
-  severity        = "high"
-  display_columns = local.detection_display_columns
-  query           = query.ssm_document_with_unauthorized_input_capture
-
-  tags = merge(local.ssm_common_tags, {
-    mitre_attack_ids = "TA0009:T1056"
-  })
-}
-
-query "ssm_document_with_unauthorized_input_capture" {
-  sql = <<-EOQ
-    select
-      ${local.detection_sql_resource_column_request_parameters_document_name}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'ssm.amazonaws.com'
-      and event_name = 'StartSession'
-      and (request_parameters ->> 'documentName') = 'AWS-StartPortForwardingSession'
-      and error_code in ('AccessDeniedException', 'NotAuthorized')
-    order by
-      event_time desc;
-  EOQ
 }
 
 detection "ssm_document_shared_publicly" {

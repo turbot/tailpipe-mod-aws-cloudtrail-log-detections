@@ -40,7 +40,7 @@ query "ses_email_sending_enabled" {
     where
       event_name = 'UpdateAccountSendingEnabled'
       -- Check specifically for enabling email sending
-      and (request_parameters ->> 'enabled')::bool = true
+      and (request_parameters -> 'enabled') = true
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
@@ -69,7 +69,7 @@ query "ses_feedback_forwarding_disabled" {
     where
       event_name = 'SetIdentityFeedbackForwardingEnabled'
       -- Check specifically for disabling feedback forwarding
-      and (request_parameters ->> 'forwardingEnabled')::bool = false
+      and (request_parameters -> 'forwardingEnabled') = false
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;

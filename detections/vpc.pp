@@ -10,7 +10,6 @@ benchmark "vpc_detections" {
   type        = "detection"
   children = [
     detection.vpc_internet_gateway_added_to_public_route_table,
-    detection.vpc_traffic_mirroring_target_created_with_internet_facing_nlb,
     detection.vpc_created,
     detection.vpc_deleted,
     detection.vpc_flow_log_deleted,
@@ -484,35 +483,6 @@ query "vpc_nacl_rule_updated_with_allow_public_access" {
       and (request_parameters ->> 'cidrBlock') = '0.0.0.0/0'
       ${local.detection_sql_where_conditions}
     order by 
-      event_time desc;
-  EOQ
-}
-
-detection "vpc_traffic_mirroring_target_created_with_internet_facing_nlb" {
-  title           = "VPC Traffic Mirroring Target Created With Internet-Facing Network Load Balancer"
-  description     = "Detect when a VPC Traffic Mirroring target was created with an internet-facing Network Load Balancer, potentially exposing sensitive mirrored traffic to unauthorized access or interception."
-  documentation   = file("./detections/docs/vpc_traffic_mirroring_target_created_with_internet_facing_nlb.md")
-  severity        = "high"
-  display_columns = local.detection_display_columns
-  query           = query.vpc_traffic_mirroring_target_created_with_internet_facing_nlb
-
-  tags = merge(local.vpc_common_tags, {
-    mitre_attack_ids = "TA0010:T1020"
-  })
-}
-
-query "vpc_traffic_mirroring_target_created_with_internet_facing_nlb" {
-  sql = <<-EOQ
-    select
-      ${local.detection_sql_resource_column_request_parameters_traffic_mirror_target_id}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'ec2.amazonaws.com'
-      and event_name = 'CreateTrafficMirrorTarget'
-      and (request_parameters -> 'CreateTrafficMirrorTargetRequest' ->> 'NetworkLoadBalancerArn') is not null
-      ${local.detection_sql_where_conditions}
-    order by
       event_time desc;
   EOQ
 }

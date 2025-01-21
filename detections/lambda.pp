@@ -9,7 +9,7 @@ benchmark "lambda_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for Lambda events."
   type        = "detection"
   children    = [
-    detection.lambda_function_public_access_granted,
+    detection.lambda_function_granted_public_access,
     detection.lambda_function_code_updated_without_publish,
     detection.lambda_function_environment_variable_updated_with_encryption_at_rest_disabled,
     detection.lambda_function_created_with_function_code_encryption_at_rest_disabled,
@@ -20,20 +20,20 @@ benchmark "lambda_detections" {
   })
 }
 
-detection "lambda_function_public_access_granted" {
-  title           = "Lambda Function Public Access Granted"
-  description     = "Detect when a public access was granted to a Lambda function, potentially exposing it to unauthorized users who could invoke the function and exploit sensitive operations."
-  documentation   = file("./detections/docs/lambda_function_public_access_granted.md")
+detection "lambda_function_granted_public_access" {
+  title           = "Lambda Function Granted Public Access"
+  description     = "Detect when public access was granted to a Lambda function, potentially exposing it to unauthorized users who could invoke the function and exploit sensitive operations."
+  documentation   = file("./detections/docs/lambda_function_granted_public_access.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.lambda_function_public_access_granted
+  query           = query.lambda_function_granted_public_access
 
   tags = merge(local.lambda_common_tags, {
     mitre_attack_ids = "TA0001:T1190"
   })
 }
 
-query "lambda_function_public_access_granted" {
+query "lambda_function_granted_public_access" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_function_name}
@@ -70,8 +70,8 @@ query "lambda_function_code_updated_without_publish" {
       aws_cloudtrail_log
     where
       event_source = 'lambda.amazonaws.com'
-      and event_name like 'UpdateFunctionCode&'
-      and (request_parameters ->> 'publish')::bool = false
+      and event_name like 'UpdateFunctionCode%'
+      and (request_parameters -> 'publish') = false
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;

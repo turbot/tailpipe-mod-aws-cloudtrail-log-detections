@@ -10,7 +10,7 @@ benchmark "sqs_detections" {
   type        = "detection"
   children = [
     detection.sqs_queue_created_with_encryption_at_rest_disabled,
-    detection.sqs_queue_public_access_granted,
+    detection.sqs_queue_granted_public_access,
     detection.sqs_queue_dlq_disabled,
   ]
 
@@ -48,13 +48,13 @@ query "sqs_queue_created_with_encryption_at_rest_disabled" {
   EOQ
 }
 
-detection "sqs_queue_public_access_granted" {
-  title           = "SQS Queue Public Access Granted"
-  description     = "Detect when an SQS queue policy was modified to grant public access, which may expose sensitive data or allow unauthorized actions like message injection or tampering."
-  documentation   = file("./detections/docs/sqs_queue_public_access_granted.md")
+detection "sqs_queue_granted_public_access" {
+  title           = "SQS Queue Granted Public Access"
+  description     = "Detect when an SQS queue policy is modified to grant public access, potentially exposing sensitive data or allowing unauthorized actions like message injection or tampering."
+  documentation   = file("./detections/docs/sqs_queue_granted_public_access.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.sqs_queue_public_access_granted
+  query           = query.sqs_queue_granted_public_access
 
   tags = merge(local.sqs_common_tags, {
     mitre_attack_ids = "TA0010:T1567.002"
@@ -84,7 +84,7 @@ detection "sqs_queue_public_access_granted" {
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 */
-query "sqs_queue_public_access_granted" {
+query "sqs_queue_granted_public_access" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_queue_url}
