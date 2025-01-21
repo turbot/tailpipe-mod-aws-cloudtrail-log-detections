@@ -1,6 +1,6 @@
 ## Overview
 
-Detect instances where email sending is enabled for an Amazon Simple Email Service (SES) identity. Enabling sending for identities such as domains or email addresses introduces the potential risk of phishing attacks if unauthorized users gain access to SES. Monitoring this setting helps ensure that only trusted identities are used for outbound emails, preventing abuse of your email infrastructure.
+Detect when an Amazon Simple Email Service (SES) identity was enabled for email sending. Enabling email sending for identities, such as domains or email addresses, introduces potential risks of phishing attacks if unauthorized users gain access to SES. Monitoring this setting ensures that only trusted identities are used for outbound emails, protecting your email infrastructure from abuse.
 
 **References**:
 - [Verifying Identities in Amazon SES](https://docs.aws.amazon.com/ses/latest/dg/creating-identities.html)

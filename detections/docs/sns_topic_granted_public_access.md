@@ -1,6 +1,6 @@
 ## Overview
 
-Detect Amazon SNS topics configured to allow public access. Publicly accessible SNS topics expose sensitive messaging workflows to unauthorized access, increasing the risk of message interception, data breaches, and resource abuse. Restricting access to trusted entities ensures secure messaging and aligns with best practices.
+Detect when an Amazon SNS topic was granted public access. Publicly accessible SNS topics expose sensitive messaging workflows to unauthorized access, increasing the risk of message interception, data breaches, and resource abuse. Restricting access to trusted entities ensures secure messaging and aligns with best practices.
 
 **References**:
 - [Amazon SNS Access Control](https://docs.aws.amazon.com/sns/latest/dg/sns-access-policy-use-cases.html)

@@ -1,6 +1,6 @@
 ## Overview
 
-Detect instances where AWS Key Management Service (KMS) keys are deleted. Deleting a KMS key renders all associated encrypted data inaccessible, leading to data loss, application downtime, and workflow disruptions. Monitoring key deletions ensures data availability, protects sensitive information, and maintains operational continuity.
+Detect when an AWS Key Management Service (KMS) key was scheduled for deletion. Scheduling key deletion can render all associated encrypted data inaccessible, leading to data loss, application downtime, and workflow disruptions. Monitoring key deletion schedules ensures data availability, protects sensitive information, and maintains operational continuity.
 
 **References**:
 - [AWS Key Management Service (KMS) Keys](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html)

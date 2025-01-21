@@ -1,6 +1,6 @@
 ## Overview
 
-Detect updates to ingress or egress rules in security groups within a Virtual Private Cloud (VPC) in an AWS account. Changes to security group rules can impact network security, potentially exposing resources to unauthorized access or disrupting legitimate communication. Monitoring these updates helps ensure the security and availability of your resources.
+Detect when a Virtual Private Cloud (VPC) security group ingress or egress rule was updated. Changes to security group rules can impact network security, potentially exposing resources to unauthorized access or disrupting legitimate communication. Monitoring these updates helps ensure the security and availability of your resources.
 
 **References**:
 - [Security Groups for Your VPC](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html)

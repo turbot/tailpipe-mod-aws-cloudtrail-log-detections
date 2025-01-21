@@ -1,6 +1,6 @@
 ## Overview
 
-Detect Virtual Private Clouds (VPCs) where an internet gateway has been detached. Internet gateways are essential for enabling internet connectivity for VPC resources, and their detachment can disrupt operations or indicate potential misconfigurations or malicious activity. Monitoring these events ensures resource availability and security.
+Detect when a Virtual Private Cloud (VPC) internet gateway was detached. Internet gateways are essential for enabling internet connectivity for VPC resources, and their detachment can disrupt operations or indicate potential misconfigurations or malicious activity. Monitoring these events ensures resource availability and security.
 
 **References**:
 - [Internet Gateways](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html)

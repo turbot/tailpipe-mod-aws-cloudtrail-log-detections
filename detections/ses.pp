@@ -10,7 +10,7 @@ benchmark "ses_detections" {
   type        = "detection"
   children = [
     detection.ses_email_sending_enabled,
-    detection.ses_feedback_forwarding_disabled,
+    detection.ses_identity_feedback_forwarding_disabled,
   ]
 
   tags = merge(local.ses_common_tags, {
@@ -47,20 +47,20 @@ query "ses_email_sending_enabled" {
   EOQ
 }
 
-detection "ses_feedback_forwarding_disabled" {
-  title           = "SES Feedback Forwarding Disabled"
-  description     = "Detect when AWS SES feedback forwarding was disabled, which may allow attackers to evade monitoring of bounce or complaint notifications, enabling undetected spam or phishing attacks."
-  documentation   = file("./detections/docs/ses_feedback_forwarding_disabled.md")
+detection "ses_identity_feedback_forwarding_disabled" {
+  title           = "SES Identity Feedback Forwarding Disabled"
+  description     = "Detect when AWS SES feedback forwarding is disabled for an identity, which may allow attackers to evade monitoring of bounce or complaint notifications, enabling undetected spam or phishing attacks."
+  documentation   = file("./detections/docs/ses_identity_feedback_forwarding_disabled.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.ses_feedback_forwarding_disabled
+  query           = query.ses_identity_feedback_forwarding_disabled
 
   tags = merge(local.ses_common_tags, {
     mitre_attack_ids = "TA0005:T1070"
   })
 }
 
-query "ses_feedback_forwarding_disabled" {
+query "ses_identity_feedback_forwarding_disabled" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_name}

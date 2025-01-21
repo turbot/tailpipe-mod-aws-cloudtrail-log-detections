@@ -1,6 +1,6 @@
 ## Overview
 
-Detect instances where an internet gateway is added to a public route table within a Virtual Private Cloud (VPC). Improper configurations can expose resources to the internet, increasing the risk of unauthorized access, data breaches, or malicious activity. Monitoring these changes ensures secure and intentional network designs.
+Detect when a Virtual Private Cloud (VPC) internet gateway was added to a public route table. Improper configurations can expose resources to the internet, increasing the risk of unauthorized access, data breaches, or malicious activity. Monitoring these changes ensures secure and intentional network designs.
 
 **References**:
 - [Internet Gateways](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html)

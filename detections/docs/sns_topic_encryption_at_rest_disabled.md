@@ -1,6 +1,6 @@
 ## Overview
 
-Detect Amazon SNS topics that do not have encryption at rest enabled. Topics without encryption store messages in plaintext, increasing the risk of unauthorized access to sensitive data. Enabling encryption ensures secure message storage and aligns with data protection best practices.
+Detect when an Amazon SNS topic had encryption at rest disabled. Topics without encryption store messages in plaintext, increasing the risk of unauthorized access to sensitive data. Enabling encryption ensures secure message storage and aligns with data protection best practices.
 
 **References**:
 - [Amazon SNS Encryption at Rest](https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html)

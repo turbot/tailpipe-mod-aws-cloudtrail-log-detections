@@ -1,6 +1,6 @@
 ## Overview
 
-Detect instances where public access is granted to AWS Systems Manager (SSM) documents. Publicly accessible SSM documents can expose sensitive configurations, scripts, or automation tasks to unauthorized users. Identifying such configurations ensures that access controls align with the principle of least privilege and prevent misuse or unauthorized changes.
+Detect when an AWS Systems Manager (SSM) document was shared publicly. Publicly accessible SSM documents can expose sensitive configurations, scripts, or automation tasks to unauthorized users. Ensuring documents are private or shared only with trusted entities helps protect sensitive information and maintain secure access controls.
 
 **References**:
 - [AWS Systems Manager Documents](https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-ssm-docs.html)
