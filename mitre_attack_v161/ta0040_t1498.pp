@@ -9,7 +9,7 @@ benchmark "mitre_attack_v161_ta0040_t1498" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0040_t1498.md")
   children = [
-    detection.detect_vpc_security_group_ingress_egress_updates
+    detection.vpc_security_group_ingress_egress_rule_updated
   ]
 
   tags = local.mitre_attack_v161_ta0040_t1498_common_tags

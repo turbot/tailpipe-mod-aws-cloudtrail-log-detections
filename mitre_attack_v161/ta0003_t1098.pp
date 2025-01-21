@@ -46,9 +46,9 @@ benchmark "mitre_attack_v161_ta0003_t1098_004" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0003_t1098_004.md")
   children = [
-    detection.detect_vpc_security_group_ipv4_allow_all,
-    detection.detect_vpc_security_group_ipv6_allow_all,
-    detection.detect_vpc_security_group_ingress_egress_updates,
+    detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv4,
+    detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv6,
+    detection.vpc_security_group_ingress_egress_rule_updated,
   ]
 
   tags = local.mitre_attack_v161_ta0003_t1098_common_tags
