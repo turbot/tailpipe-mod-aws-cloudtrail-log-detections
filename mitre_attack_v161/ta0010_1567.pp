@@ -20,7 +20,7 @@ benchmark "mitre_attack_v161_ta0010_t1567_001" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0010_t1567_001.md")
   children = [
-    detection.codebuild_projects_public_access_granted,
+    detection.codebuild_project_granted_public_access,
     detection.detect_public_access_granted_to_sqs_queues,
     detection.detect_sqs_queue_creations_with_encryption_at_rest_disabled,
     detection.detect_public_access_granted_to_ssm_documents,

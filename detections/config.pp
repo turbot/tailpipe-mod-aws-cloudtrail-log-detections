@@ -10,8 +10,8 @@ benchmark "config_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for Config events."
   type        = "detection"
   children = [
-    detection.config_rules_deleted,
-    detection.config_configuration_recorders_recording_stopped,
+    detection.config_rule_deleted,
+    detection.config_configuration_recorder_stopped_recording,
   ]
 
   tags = merge(local.config_common_tags, {
@@ -19,20 +19,20 @@ benchmark "config_detections" {
   })
 }
 
-detection "config_rules_deleted" {
-  title       = "Config Rules Deleted"
-  description = "Detect when Config rules were deleted to check for changes that could disrupt compliance monitoring or remove critical guardrails, potentially allowing unauthorized configuration changes."
+detection "config_rule_deleted" {
+  title       = "Config Rule Deleted"
+  description = "Detect when a Config rule was deleted to check for unauthorized changes that could reduce visibility into configuration changes, potentially hindering compliance monitoring and threat detection efforts."
   # documentation   = file("./detections/docs/detect_config_rule_deletions.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.config_rules_deleted
+  query           = query.config_rule_deleted
 
   tags = merge(local.config_common_tags, {
     mitre_attack_ids = "T1562.001"
   })
 }
 
-query "config_rules_deleted" {
+query "config_rule_deleted" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_config_rule_name}
@@ -47,20 +47,20 @@ query "config_rules_deleted" {
   EOQ
 }
 
-detection "config_configuration_recorders_recording_stopped" {
-  title           = "Config Configuration Recorders Recording Stopped"
-  description     = "Detect when Config configuration recorders were stopped to check for changes that could disrupt compliance monitoring and auditing, potentially obscuring unauthorized activity."
+detection "config_configuration_recorder_stopped_recording" {
+  title       = "Config Configuration Recorder Stopped Recording"
+  description = "Detect when a Config configuration recorder stopped recording to check for unauthorized changes that could reduce visibility into configuration changes, potentially hindering compliance monitoring and threat detection efforts."
   # documentation   = file("./detections/docs/detect_config_configuration_recorders_with_recording_stopped.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.config_configuration_recorders_recording_stopped
+  query           = query.config_configuration_recorder_stopped_recording
 
   tags = merge(local.config_common_tags, {
     mitre_attack_ids = "TA0005:T1562"
   })
 }
 
-query "config_configuration_recorders_recording_stopped" {
+query "config_configuration_recorder_stopped_recording" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_config_record_name}

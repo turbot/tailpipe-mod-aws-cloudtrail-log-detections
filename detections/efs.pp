@@ -10,7 +10,7 @@ benchmark "efs_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for EFS events"
   type        = "detection"
   children = [
-    detection.efs_file_systems_backup_policy_disabled,
+    detection.efs_file_system_backup_policy_disabled,
   ]
 
   tags = merge(local.efs_common_tags, {
@@ -18,20 +18,20 @@ benchmark "efs_detections" {
   })
 }
 
-detection "efs_file_systems_backup_policy_disabled" {
-  title           = "EFS File Systems Backup Policy Disabled"
-  description     = "Detect when EFS file systems backup policies were disabled to check for potential risks of data loss, unavailability, or non-compliance with backup and disaster recovery requirements."
+detection "efs_file_system_backup_policy_disabled" {
+  title       = "EFS File System Backup Policy Disabled"
+  description = "Detect when an EFS file system's backup policy was disabled to check for unauthorized changes that could reduce visibility into critical data protection and recovery capabilities, potentially hindering threat detection and compliance efforts."
   # documentation   = file("./detections/docs/detect_efs_file_systems_with_backup_policy_disabled.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.efs_file_systems_backup_policy_disabled
+  query           = query.efs_file_system_backup_policy_disabled
 
   tags = merge(local.efs_common_tags, {
     mitre_attack_ids = "TA0040:T1562.001"
   })
 }
 
-query "efs_file_systems_backup_policy_disabled" {
+query "efs_file_system_backup_policy_disabled" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_file_system_id_or_mount_target_id}

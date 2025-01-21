@@ -24,7 +24,7 @@ benchmark "mitre_attack_v161_ta0002_t1059_009" {
     detection.detect_vpc_security_group_deletions,
     detection.detect_vpc_deletions,
     detection.detect_vpc_flow_log_deletions,
-    detection.cloudtrail_trails_logging_stopped,
+    detection.cloudtrail_trail_logging_stopped,
   ]
 
   tags = merge(local.mitre_attack_v161_ta0002_common_tags, {

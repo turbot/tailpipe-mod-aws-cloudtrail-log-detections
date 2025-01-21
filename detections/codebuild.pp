@@ -10,10 +10,10 @@ benchmark "codebuild_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for CodeBuild events."
   type        = "detection"
   children = [
-    detection.codebuild_projects_environment_variable_updated,
-    detection.codebuild_projects_iam_role_updated,
-    detection.codebuild_projects_source_repository_updated,
-    detection.codebuild_projects_public_access_granted,
+    detection.codebuild_project_environment_variable_updated,
+    detection.codebuild_project_iam_role_updated,
+    detection.codebuild_project_source_repository_updated,
+    detection.codebuild_project_granted_public_access,
   ]
 
   tags = merge(local.codebuild_common_tags, {
@@ -21,20 +21,20 @@ benchmark "codebuild_detections" {
   })
 }
 
-detection "codebuild_projects_public_access_granted" {
-  title           = "CodeBuild Projects Public Access Granted"
-  description     = "Detect when CodeBuild projects were made publicly accessible to check for misconfigurations that could expose projects to unauthorized access or data leaks."
+detection "codebuild_project_granted_public_access" {
+  title       = "CodeBuild Project Granted Public Access"
+  description = "Detect when a CodeBuild project was created with public access to check for risks of exposing build configurations, which could lead to unauthorized access and data breaches."
   # documentation   = file("./detections/docs/detect_public_access_granted_to_codebuild_projects.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.codebuild_projects_public_access_granted
+  query           = query.codebuild_project_granted_public_access
 
   tags = merge(local.codebuild_common_tags, {
     mitre_attack_ids = "TA0010:T1567"
   })
 }
 
-query "codebuild_projects_public_access_granted" {
+query "codebuild_project_granted_public_access" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_codebuild_project_arn}
@@ -50,20 +50,20 @@ query "codebuild_projects_public_access_granted" {
   EOQ
 }
 
-detection "codebuild_projects_iam_role_updated" {
-  title           = "CodeBuild Projects IAM Role Updated"
-  description     = "Detect when IAM roles associated with CodeBuild projects were updated to check for potential privilege escalations or unauthorized access."
+detection "codebuild_project_iam_role_updated" {
+  title       = "CodeBuild Project IAM Role Updated"
+  description = "Detect when an IAM role associated with CodeBuild projects was updated to check for unauthorized changes that could grant excessive permissions, potentially leading to privilege escalation or unauthorized access."
   # documentation   = file("./detections/docs/detect_codebuild_projects_with_iam_role_updates.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.codebuild_projects_iam_role_updated
+  query           = query.codebuild_project_iam_role_updated
 
   tags = merge(local.codebuild_common_tags, {
     mitre_attack_ids = "TA0004:T1078"
   })
 }
 
-query "codebuild_projects_iam_role_updated" {
+query "codebuild_project_iam_role_updated" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_codebuild_project_arn}
@@ -79,20 +79,20 @@ query "codebuild_projects_iam_role_updated" {
   EOQ
 }
 
-detection "codebuild_projects_source_repository_updated" {
-  title           = "CodeBuild Projects Source Repository Updated"
-  description     = "Detect when source repositories associated with CodeBuild projects were updated to check for changes that could redirect builds to unauthorized or malicious repositories, compromising code integrity and security."
+detection "codebuild_project_source_repository_updated" {
+  title       = "CodeBuild Project Source Repository Updated"
+  description = "Detect when a source repository associated with CodeBuild projects was updated to check for unauthorized changes that could expose sensitive source code or credentials, potentially leading to data breaches or unauthorized access."
   # documentation   = file("./detections/docs/detect_codebuild_projects_with_source_repository_updates.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.codebuild_projects_source_repository_updated
+  query           = query.codebuild_project_source_repository_updated
 
   tags = merge(local.codebuild_common_tags, {
     mitre_attack_ids = "TA0001:T1566"
   })
 }
 
-query "codebuild_projects_source_repository_updated" {
+query "codebuild_project_source_repository_updated" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_codebuild_project_arn}
@@ -108,20 +108,20 @@ query "codebuild_projects_source_repository_updated" {
   EOQ
 }
 
-detection "codebuild_projects_environment_variable_updated" {
-  title           = "CodeBuild Projects Environment Variable Updated"
-  description     = "Detect when environment variables associated with CodeBuild projects were updated to check for unauthorized changes to sensitive values such as access tokens or API keys, potentially leading to privilege escalation or data exfiltration."
+detection "codebuild_project_environment_variable_updated" {
+  title       = "CodeBuild Project Environment Variable Updated"
+  description = "Detect when a CodeBuild project's environment variables were updated to check for unauthorized changes that could expose sensitive information, potentially leading to data breaches or unauthorized access."
   # documentation   = file("./detections/docs/detect_codebuild_projects_with_environment_variable_updates.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.codebuild_projects_environment_variable_updated
+  query           = query.codebuild_project_environment_variable_updated
 
   tags = merge(local.codebuild_common_tags, {
     mitre_attack_ids = "TA0005:T1562.001"
   })
 }
 
-query "codebuild_projects_environment_variable_updated" {
+query "codebuild_project_environment_variable_updated" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_codebuild_project_arn}

@@ -10,7 +10,7 @@ benchmark "apigateway_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for API Gateway events."
   type        = "detection"
   children = [
-    detection.apigateway_rest_apis_public_access_granted
+    detection.apigateway_rest_api_granted_public_access
   ]
 
   tags = merge(local.apigateway_common_tags, {
@@ -18,20 +18,20 @@ benchmark "apigateway_detections" {
   })
 }
 
-detection "apigateway_rest_apis_public_access_granted" {
-  title           = "API Gateway Rest APIs Public Access Granted"
+detection "apigateway_rest_api_granted_public_access" {
+  title           = "API Gateway Rest API Granted Public Access"
   description     = "Detect when an API Gateway Rest API was created with public access to check for risks of exposing internal services, which could lead to unauthorized access and data breaches."
   documentation   = file("./detections/docs/detect_public_access_granted_to_api_gateway_rest_apis.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.apigateway_rest_apis_public_access_granted
+  query           = query.apigateway_rest_api_granted_public_access
 
   tags = merge(local.apigateway_common_tags, {
     mitre_attack_ids = "TA0001:T1190"
   })
 }
 
-query "apigateway_rest_apis_public_access_granted" {
+query "apigateway_rest_api_granted_public_access" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_rest_api_name}

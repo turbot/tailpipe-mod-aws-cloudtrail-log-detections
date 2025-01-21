@@ -23,7 +23,7 @@ benchmark "mitre_attack_v161_ta0006_t1552_004" {
     detection.detect_iam_access_key_creations,
     detection.detect_iam_access_key_deletions,
     detection.detect_iam_users_with_console_access_enabled,
-    detection.codebuild_projects_environment_variable_updated,
+    detection.codebuild_project_environment_variable_updated,
   ]
 
   tags = merge(local.mitre_attack_v161_ta0006_t1552_common_tags, {

@@ -10,11 +10,11 @@ benchmark "cloudfront_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for CloudFront events."
   type        = "detection"
   children = [
-    detection.cloudfront_distributions_default_certificates_disabled,
-    detection.cloudfront_distributions_failover_criteria_modified,
-    detection.cloudfront_distributions_geo_restriction_disabled,
-    detection.cloudfront_distributions_logging_disabled,
-    detection.cloudfront_distribution_origins_public_access_granted,
+    detection.cloudfront_distribution_default_certificate_disabled,
+    detection.cloudfront_distribution_failover_criteria_modified,
+    detection.cloudfront_distribution_geo_restriction_disabled,
+    detection.cloudfront_distribution_logging_disabled,
+    detection.cloudfront_distribution_origin_granted_public_access,
   ]
 
   tags = merge(local.cloudfront_common_tags, {
@@ -22,49 +22,51 @@ benchmark "cloudfront_detections" {
   })
 }
 
-detection "cloudfront_distributions_default_certificates_disabled" {
-  title           = "CloudFront Distributions Default Certificates Disabled"
-  description     = "Detect when a CloudFront distribution's default certificate was disabled to check for misconfigurations that could lead to insecure connections or unauthorized access, compromising data integrity and security."
+detection "cloudfront_distribution_default_certificate_disabled" {
+  title       = "CloudFront Distribution Default Certificate Disabled"
+  description = "Detect when a CloudFront distribution's default certificate was disabled to check for misconfigurations that could lead to insecure connections or unauthorized access, compromising data integrity and security."
   # documentation   = file("./detections/docs/detect_cloudfront_distributions_with_default_certificates_disabled.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.cloudfront_distributions_default_certificates_disabled
+  query           = query.cloudfront_distribution_default_certificate_disabled
 
   tags = merge(local.cloudfront_common_tags, {
     mitre_attack_ids = "TA0005:T1562.004"
   })
 }
-query "cloudfront_distributions_default_certificates_disabled" {
+
+query "cloudfront_distribution_default_certificate_disabled" {
   sql = <<-EOQ
     select
-      ${local.detection_sql_resource_column_request_parameters_cloudfront_name}
+      ${local.detection_sql_resource_column_request_parameters_name}
     from
       aws_cloudtrail_log
     where
       event_source = 'cloudfront.amazonaws.com'
       and event_name in ('UpdateDistribution', 'CreateDistribution')
-      and (request_parameters -> 'viewer_certificate' ->> 'cloudfront_default_certificate') != 'true'
+      and (request_parameters -> 'viewer_certificate' -> 'cloudfront_default_certificate') = false
     order by
       event_time desc;
   EOQ
 }
 
-detection "cloudfront_distributions_geo_restriction_disabled" {
-  title           = "CloudFront Distributions Geo-restriction Disabled"
-  description     = "Detect CloudFront distributions with geo-restriction disabled to check for misconfigurations that could allow access from restricted geographic locations, potentially exposing resources to unauthorized or malicious activity."
+detection "cloudfront_distribution_geo_restriction_disabled" {
+  title       = "CloudFront Distribution Geo-restriction Disabled"
+  description = "Detect when a CloudFront distribution had geo-restriction disabled to check for misconfigurations that could allow access from restricted geographic locations, potentially exposing resources to unauthorized or malicious activity."
   # documentation   = file("./detections/docs/detect_cloudfront_distributions_with_geo_restriction_disabled.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.cloudfront_distributions_geo_restriction_disabled
+  query           = query.cloudfront_distribution_geo_restriction_disabled
 
   tags = merge(local.cloudfront_common_tags, {
     mitre_attack_ids = "TA0005:T1562.004"
   })
 }
-query "cloudfront_distributions_geo_restriction_disabled" {
+
+query "cloudfront_distribution_geo_restriction_disabled" {
   sql = <<-EOQ
     select
-      ${local.detection_sql_resource_column_request_parameters_cloudfront_name}
+      ${local.detection_sql_resource_column_request_parameters_name}
     from
       aws_cloudtrail_log
     where
@@ -76,23 +78,23 @@ query "cloudfront_distributions_geo_restriction_disabled" {
   EOQ
 }
 
-detection "cloudfront_distribution_origins_public_access_granted" {
-  title           = "CloudFront Distribution Origins Public Access Granted"
-  description     = "Detect when a CloudFront distribution origin was granted public access to check for risks of data exfiltration or unauthorized access."
+detection "cloudfront_distribution_origin_granted_public_access" {
+  title       = "CloudFront Distribution Origin Public Access Granted"
+  description = "Detect when a CloudFront distribution origin was granted public access to check for risks of data exfiltration or unauthorized access."
   # documentation   = file("./detections/docs/detect_public_access_granted_to_cloudfront_distribution_origins.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.cloudfront_distribution_origins_public_access_granted
+  query           = query.cloudfront_distribution_origin_granted_public_access
 
   tags = merge(local.cloudfront_common_tags, {
     mitre_attack_ids = "TA0010:T1071"
   })
 }
 
-query "cloudfront_distribution_origins_public_access_granted" {
+query "cloudfront_distribution_origin_granted_public_access" {
   sql = <<-EOQ
     select
-      ${local.detection_sql_resource_column_request_parameters_cloudfront_name}
+      ${local.detection_sql_resource_column_request_parameters_name}
     from
       aws_cloudtrail_log,
       unnest(request_parameters -> 'origins' -> 'items') as items
@@ -105,23 +107,23 @@ query "cloudfront_distribution_origins_public_access_granted" {
   EOQ
 }
 
-detection "cloudfront_distributions_logging_disabled" {
-  title           = "CloudFront Distributions Logging Disabled"
-  description     = "Detect when a CloudFront distribution's logging was disabled to check for changes that could hinder monitoring and auditing, potentially obscuring malicious activity or misconfigurations."
+detection "cloudfront_distribution_logging_disabled" {
+  title       = "CloudFront Distribution Logging Disabled"
+  description = "Detect when a CloudFront distribution's logging was disabled to check for changes that could hinder monitoring and auditing, potentially obscuring malicious activity or misconfigurations."
   # documentation   = file("./detections/docs/detect_cloudfront_distributions_with_logging_disabled.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.cloudfront_distributions_logging_disabled
+  query           = query.cloudfront_distribution_logging_disabled
 
   tags = merge(local.cloudfront_common_tags, {
     mitre_attack_ids = "TA0005:T1562.002"
   })
 }
 
-query "cloudfront_distributions_logging_disabled" {
+query "cloudfront_distribution_logging_disabled" {
   sql = <<-EOQ
     select
-      ${local.detection_sql_resource_column_request_parameters_cloudfront_name}
+      ${local.detection_sql_resource_column_request_parameters_name}
     from
       aws_cloudtrail_log
     where
@@ -133,23 +135,23 @@ query "cloudfront_distributions_logging_disabled" {
   EOQ
 }
 
-detection "cloudfront_distributions_failover_criteria_modified" {
-  title           = "CloudFront Distributions Failover Criteria Modified"
-  description     = "Detect modifications to CloudFront distribution failover criteria to check for changes that could enable unintended data redirection or exfiltration, compromising data confidentiality and availability."
+detection "cloudfront_distribution_failover_criteria_modified" {
+  title       = "CloudFront Distribution Failover Criteria Modified"
+  description = "Detect when a CloudFront distribution's failover criteria was modified to check for changes that could impact the availability of resources, potentially leading to service disruptions or downtime."
   # documentation   = file("./detections/docs/detect_cloudfront_distributions_with_failover_criteria_modified.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.cloudfront_distributions_failover_criteria_modified
+  query           = query.cloudfront_distribution_failover_criteria_modified
 
   tags = merge(local.cloudfront_common_tags, {
     mitre_attack_ids = "TA0010:T1048"
   })
 }
 
-query "cloudfront_distributions_failover_criteria_modified" {
+query "cloudfront_distribution_failover_criteria_modified" {
   sql = <<-EOQ
     select
-      ${local.detection_sql_resource_column_request_parameters_cloudfront_name}
+      ${local.detection_sql_resource_column_request_parameters_name}
     from
       aws_cloudtrail_log
     where

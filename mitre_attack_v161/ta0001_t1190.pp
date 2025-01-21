@@ -9,7 +9,7 @@ benchmark "mitre_attack_v161_ta0001_t1190" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0001_t1190.md")
   children = [
-    detection.apigateway_rest_apis_public_access_granted,
+    detection.apigateway_rest_api_granted_public_access,
     detection.detect_public_access_granted_to_lambda_functions,
     detection.detect_public_access_granted_to_rds_db_instances,
     detection.detect_public_access_granted_to_waf_rules,
