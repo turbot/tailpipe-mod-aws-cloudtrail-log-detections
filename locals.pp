@@ -27,8 +27,10 @@ locals {
   # Local internal variables to build the SQL select clause for common
   # dimensions. Do not edit directly.
   detection_sql_resource_column_empty = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "''")
+  detection_sql_resource_column_region = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "aws_region")
   detection_sql_resource_column_request_parameters_name = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'name'")
   detection_sql_resource_column_request_parameters_snapshot_id = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'snapshotId'")
+  detection_sql_resource_column_response_elements_snapshot_id = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "response_elements ->> 'snapshotId'")
 
   // Keep same order as SQL statement for easier readability
   detection_display_columns = [
