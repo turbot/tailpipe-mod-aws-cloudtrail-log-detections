@@ -21,9 +21,6 @@ benchmark "mitre_attack_v161_ta0004_t1548_005" {
   type = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0004_t1548_005.md")
   children = [
-    detection.detect_public_access_granted_to_iam_groups,
-    detection.detect_public_access_granted_to_iam_roles,
-    detection.detect_public_access_granted_to_iam_users,
     detection.detect_public_access_granted_to_lambda_functions,
     detection.detect_public_access_granted_to_s3_buckets,
   ]

@@ -20,9 +20,9 @@ benchmark "mitre_attack_v161_ta0006_t1552_004" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0006_t1552_004.md")
   children = [
-    detection.detect_iam_access_key_creations,
-    detection.detect_iam_access_key_deletions,
-    detection.detect_iam_users_with_console_access_enabled,
+    detection.iam_access_key_created,
+    detection.iam_access_key_deleted,
+    detection.iam_user_console_access_enabled,
     detection.detect_codebuild_projects_with_environment_variable_updates,
   ]
 

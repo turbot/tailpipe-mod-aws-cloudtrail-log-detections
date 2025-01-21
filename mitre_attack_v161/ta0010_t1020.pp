@@ -9,7 +9,7 @@ benchmark "mitre_attack_v161_ta0010_t1020" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0010_t1020.md")
   children = [
-    detection.rds_db_instance_public_restore,
+    detection.rds_db_instance_restored_from_public_snapshot,
     detection.detect_public_access_granted_to_vpc_nacl_rules,
   ]
 

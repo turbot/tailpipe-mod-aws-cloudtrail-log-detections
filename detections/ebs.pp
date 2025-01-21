@@ -120,7 +120,6 @@ detection "ebs_snapshot_created_with_encryption_disabled" {
   })
 }
 
-# TODO: Test this query
 query "ebs_snapshot_created_with_encryption_disabled" {
   sql = <<-EOQ
     select

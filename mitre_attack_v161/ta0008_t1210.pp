@@ -10,7 +10,7 @@ benchmark "mitre_attack_v161_ta0008_t1210" {
   documentation = file("./mitre_attack_v161/docs/ta0008_t1210.md")
   children = [
     detection.rds_db_instance_iam_authentication_disabled,
-    detection.rds_db_instance_shared_publicly,
+    detection.rds_db_instance_assigned_public_ip_address,
   ]
 
   tags = local.mitre_attack_v161_ta0008_t1210_common_tags

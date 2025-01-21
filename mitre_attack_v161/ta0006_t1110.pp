@@ -9,7 +9,7 @@ benchmark "mitre_attack_v161_ta0006_t1110" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0006_t1110.md")
   children = [
-    detection.detect_iam_users_with_password_change
+    detection.iam_user_password_changed
   ]
 
   tags = local.mitre_attack_v161_ta0006_t1110_common_tags

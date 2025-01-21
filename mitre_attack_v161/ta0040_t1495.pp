@@ -9,8 +9,8 @@ benchmark "mitre_attack_v161_ta0040_t1495" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0040_t1495.md")
   children = [
-    detection.detect_ec2_instances_with_source_dest_check_disabled,
-    detection.detect_ec2_amis_with_launch_permission_changes,
+    detection.ec2_instance_source_dest_check_disabled,
+    detection.ec2_ami_launch_permission_updated,
   ]
 
   tags = local.mitre_attack_v161_ta0040_t1495_common_tags

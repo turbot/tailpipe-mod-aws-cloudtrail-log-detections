@@ -11,8 +11,7 @@ benchmark "mitre_attack_v161_ta0001_t1190" {
   children = [
     detection.detect_public_access_granted_to_api_gateway_rest_apis,
     detection.detect_public_access_granted_to_lambda_functions,
-    detection.rds_db_instance_shared_publicly,
-    detection.waf_rule_configured_for_unrestricted_ip_access,
+    detection.rds_db_instance_assigned_public_ip_address,
     detection.detect_vpc_security_group_ingress_egress_updates,
     detection.detect_public_access_granted_to_s3_buckets
   ]
