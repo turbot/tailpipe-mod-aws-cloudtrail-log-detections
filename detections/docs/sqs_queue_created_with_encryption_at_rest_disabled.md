@@ -1,6 +1,6 @@
 ## Overview
 
-Detect Amazon SQS queues that do not have encryption at rest enabled. SQS queues without encryption store data in plaintext, increasing the risk of unauthorized access and compromising sensitive messages. Enabling encryption ensures secure message storage and aligns with best practices for data protection.
+Detect when an Amazon SQS queue was created without encryption at rest enabled. SQS queues without encryption store data in plaintext, increasing the risk of unauthorized access and compromising sensitive messages. Enabling encryption ensures secure message storage and aligns with best practices for data protection.
 
 **References**:
 - [Encryption at Rest for Amazon SQS](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html)

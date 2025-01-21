@@ -1,6 +1,6 @@
 ## Overview
 
-Detect Amazon CloudWatch log groups created without encryption enabled. Unencrypted logs are more vulnerable to unauthorized access, exposing sensitive information such as application secrets or personally identifiable information (PII). Enabling encryption ensures secure log storage and compliance with industry standards.
+Detect when a CloudWatch log group was created without encryption enabled. Unencrypted logs increase the risk of unauthorized access to sensitive information, such as application secrets or personally identifiable information (PII). Enabling encryption ensures secure log storage and compliance with industry standards.
 
 **References**:
 - [Encrypt log data in CloudWatch Logs using AWS Key Management Service](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/encrypt-log-data-kms.html)

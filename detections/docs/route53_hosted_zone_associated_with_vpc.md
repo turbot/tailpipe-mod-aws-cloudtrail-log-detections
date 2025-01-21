@@ -1,6 +1,6 @@
 ## Overview
 
-Detect Amazon Route 53 hosted zones associated with Amazon Virtual Private Clouds (VPCs). Improper or unauthorized associations can expose internal DNS records, disrupt DNS resolution, or increase the attack surface. Monitoring these associations ensures private DNS functionality is securely configured and aligns with access control requirements.
+Detect when an Amazon Route 53 hosted zone was associated with an Amazon Virtual Private Cloud (VPC). Unauthorized or improper associations can expose internal DNS records, disrupt DNS resolution, or increase the attack surface. Monitoring these associations ensures private DNS functionality is securely configured and adheres to access control requirements.
 
 **References**:
 - [Associating Amazon VPCs with Private Hosted Zones](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zone-private-associate-vpcs.html)

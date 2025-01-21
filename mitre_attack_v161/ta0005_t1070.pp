@@ -12,7 +12,7 @@ benchmark "mitre_attack_v161_ta0005_t1070" {
     detection.detect_codebuild_projects_with_environment_variable_updates,
     detection.kms_key_scheduled_deletion,
     detection.s3_bucket_public_access_granted,
-    detection.ses_feedback_forwarding_disabled,
+    detection.ses_identity_feedback_forwarding_disabled,
     detection.sqs_queue_dlq_disabled,
     detection.vpc_deleted,
     detection.vpc_flow_log_deleted,

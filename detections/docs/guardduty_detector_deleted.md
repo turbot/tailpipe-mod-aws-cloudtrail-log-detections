@@ -1,6 +1,6 @@
 ## Overview
 
-Detect instances where Amazon GuardDuty detectors are deleted. Deleting a detector disables threat detection and alerting capabilities, leaving AWS accounts vulnerable to security threats such as unauthorized activity or malicious behavior. Monitoring detector deletions ensures continuous protection and maintains a robust security posture.
+Detect when an Amazon GuardDuty detector was deleted. Deleting a detector disables threat detection and alerting, increasing the risk of undetected unauthorized activity or malicious behavior. Monitoring detector deletions ensures continuous protection and helps maintain a strong security posture.
 
 **References**:
 - [Amazon GuardDuty Detectors](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_detectors.html)

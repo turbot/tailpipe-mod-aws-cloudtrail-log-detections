@@ -1,6 +1,6 @@
 ## Overview
 
-Detect AWS Lambda functions configured to allow public access. Publicly accessible functions expose workloads to unauthorized invocations, increasing the risk of malicious exploitation, data breaches, or resource abuse. Restricting access to trusted users, roles, and services ensures security and cost efficiency.
+Detect when an AWS Lambda function was granted public access. Publicly accessible functions expose workloads to unauthorized invocations, increasing the risk of malicious exploitation, data breaches, or resource abuse. Restricting access to trusted users, roles, and services ensures security and cost efficiency.
 
 **References**:
 - [Lambda Permissions Model](https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html)
