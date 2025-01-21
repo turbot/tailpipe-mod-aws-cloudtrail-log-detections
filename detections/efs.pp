@@ -19,9 +19,9 @@ benchmark "efs_detections" {
 }
 
 detection "efs_file_system_backup_policy_disabled" {
-  title       = "EFS File System Backup Policy Disabled"
-  description = "Detect when an EFS file system's backup policy was disabled to check for unauthorized changes that could reduce visibility into critical data protection and recovery capabilities, potentially hindering threat detection and compliance efforts."
-  # documentation   = file("./detections/docs/detect_efs_file_systems_with_backup_policy_disabled.md")
+  title           = "EFS File System Backup Policy Disabled"
+  description     = "Detect when an EFS file system's backup policy was disabled to check for unauthorized changes that could reduce visibility into critical data protection and recovery capabilities, potentially hindering threat detection and compliance efforts."
+  documentation   = file("./detections/docs/efs_file_system_backup_policy_disabled.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.efs_file_system_backup_policy_disabled

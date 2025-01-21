@@ -20,9 +20,9 @@ benchmark "eventbridge_detections" {
 }
 
 detection "eventbridge_rule_disabled" {
-  title       = "EventBridge Rule Disabled"
-  description = "Detect when a EventBridge rule was disabled to check for disruptions to critical automation and monitoring workflows, potentially allowing malicious activities to go undetected or unmitigated."
-  # documentation   = file("./detections/docs/detect_eventbridge_rule_disabled.md")
+  title           = "EventBridge Rule Disabled"
+  description     = "Detect when a EventBridge rule was disabled to check for disruptions to critical automation and monitoring workflows, potentially allowing malicious activities to go undetected or unmitigated."
+  documentation   = file("./detections/docs/eventbridge_rule_disabled.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.eventbridge_rule_disabled
@@ -33,9 +33,9 @@ detection "eventbridge_rule_disabled" {
 }
 
 detection "eventbridge_rule_deleted" {
-  title       = "EventBridge Rule Deleted"
-  description = "Detect when a EventBridge rule was deleted to check for unauthorized changes that could reduce visibility into critical automation and monitoring workflows, potentially hindering threat detection and compliance efforts."
-  # documentation   = file("./detections/docs/detect_eventbridge_rule_deletions.md")
+  title           = "EventBridge Rule Deleted"
+  description     = "Detect when a EventBridge rule was deleted to check for unauthorized changes that could reduce visibility into critical automation and monitoring workflows, potentially hindering threat detection and compliance efforts."
+  documentation   = file("./detections/docs/eventbridge_rule_deleted.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.eventbridge_rule_deleted

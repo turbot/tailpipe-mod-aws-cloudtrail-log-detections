@@ -21,7 +21,7 @@ benchmark "apigateway_detections" {
 detection "apigateway_rest_api_granted_public_access" {
   title           = "API Gateway Rest API Granted Public Access"
   description     = "Detect when an API Gateway Rest API was created with public access to check for risks of exposing internal services, which could lead to unauthorized access and data breaches."
-  documentation   = file("./detections/docs/detect_public_access_granted_to_api_gateway_rest_apis.md")
+  documentation   = file("./detections/docs/apigateway_rest_api_granted_public_access.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.apigateway_rest_api_granted_public_access

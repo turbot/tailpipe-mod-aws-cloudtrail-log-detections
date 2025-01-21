@@ -30,7 +30,7 @@ benchmark "mitre_attack_v161_ta0005_t1562_001" {
     detection.cloudtrail_trail_s3_logging_disabled,
     detection.codebuild_project_source_repository_updated,
     detection.config_rule_deleted,
-    detection.config_configuration_recorder_stopped_recording,
+    detection.config_configuration_recorder_stopped,
     detection.eventbridge_rule_disabled,
     detection.detect_guardduty_detector_deletions,
     detection.detect_vpcs_with_classic_link_enabled,

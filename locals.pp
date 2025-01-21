@@ -30,13 +30,10 @@ locals {
   detection_sql_resource_column_request_parameters_name                              = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'name'")
   detection_sql_resource_column_request_parameters_snapshot_id                       = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'snapshotId'")
   detection_sql_resource_column_request_parameters_rest_api_name                     = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters -> 'createRestApiInput' ->> 'name'")
-  detection_sql_resource_column_request_parameters_name                              = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'name'")
-  detection_sql_resource_column_request_parameters_name                              = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'name'")
   detection_sql_resource_column_request_parameters_codebuild_project_arn             = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'projectArn'")
   detection_sql_resource_column_request_parameters_config_rule_name                  = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'configRuleName'")
   detection_sql_resource_column_request_parameters_config_record_name                = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'configurationRecorderName'")
   detection_sql_resource_column_request_parameters_file_system_id_or_mount_target_id = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "coalesce(request_parameters ->> 'fileSystemId', request_parameters ->> 'mountTargetId')")
-  detection_sql_resource_column_request_parameters_name                              = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'name'")
   // Keep same order as SQL statement for easier readability
   detection_display_columns = [
     "timestamp",

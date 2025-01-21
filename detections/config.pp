@@ -11,7 +11,7 @@ benchmark "config_detections" {
   type        = "detection"
   children = [
     detection.config_rule_deleted,
-    detection.config_configuration_recorder_stopped_recording,
+    detection.config_configuration_recorder_stopped,
   ]
 
   tags = merge(local.config_common_tags, {
@@ -20,9 +20,9 @@ benchmark "config_detections" {
 }
 
 detection "config_rule_deleted" {
-  title       = "Config Rule Deleted"
-  description = "Detect when a Config rule was deleted to check for unauthorized changes that could reduce visibility into configuration changes, potentially hindering compliance monitoring and threat detection efforts."
-  # documentation   = file("./detections/docs/detect_config_rule_deletions.md")
+  title           = "Config Rule Deleted"
+  description     = "Detect when a Config rule was deleted to check for unauthorized changes that could reduce visibility into configuration changes, potentially hindering compliance monitoring and threat detection efforts."
+  documentation   = file("./detections/docs/config_rule_deleted.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.config_rule_deleted
@@ -47,20 +47,20 @@ query "config_rule_deleted" {
   EOQ
 }
 
-detection "config_configuration_recorder_stopped_recording" {
-  title       = "Config Configuration Recorder Stopped Recording"
-  description = "Detect when a Config configuration recorder stopped recording to check for unauthorized changes that could reduce visibility into configuration changes, potentially hindering compliance monitoring and threat detection efforts."
-  # documentation   = file("./detections/docs/detect_config_configuration_recorders_with_recording_stopped.md")
+detection "config_configuration_recorder_stopped" {
+  title           = "Config Configuration Recorder Stopped"
+  description     = "Detect when a Config configuration recorder was stopped to check for unauthorized changes that could reduce visibility into configuration changes, potentially hindering compliance monitoring and threat detection efforts."
+  documentation   = file("./detections/docs/config_configuration_recorder_stopped.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.config_configuration_recorder_stopped_recording
+  query           = query.config_configuration_recorder_stopped
 
   tags = merge(local.config_common_tags, {
     mitre_attack_ids = "TA0005:T1562"
   })
 }
 
-query "config_configuration_recorder_stopped_recording" {
+query "config_configuration_recorder_stopped" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_config_record_name}
