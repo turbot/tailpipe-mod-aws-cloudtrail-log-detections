@@ -3,7 +3,6 @@ benchmark "cloudtrail_log_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs."
   type        = "detection"
   children = [
-    benchmark.apigateway_detections,
     benchmark.cloudfront_detections,
     benchmark.cloudtrail_detections,
     benchmark.cloudwatch_detections,
