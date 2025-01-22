@@ -4,4 +4,4 @@ Detect when a Virtual Private Cloud (VPC) security group was configured with IPv
 
 **References**:
 - [Security Groups for Your VPC](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html)
-- [AWS CLI Command: describe-security-groups](https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-security-groups.html)
+- [AWS CLI Command: describe-security-groups](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/describe-security-groups.html)

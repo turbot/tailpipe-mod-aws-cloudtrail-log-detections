@@ -4,4 +4,4 @@ Detect when an Amazon GuardDuty detector was deleted. Deleting a detector disabl
 
 **References**:
 - [Amazon GuardDuty Detectors](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_detectors.html)
-- [AWS CLI Command: delete-detector](https://docs.aws.amazon.com/cli/latest/reference/guardduty/delete-detector.html)
+- [AWS CLI Command: delete-detector](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/guardduty/delete-detector.html)

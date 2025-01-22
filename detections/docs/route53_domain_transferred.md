@@ -5,4 +5,4 @@ Detect when a Route 53 domain was transferred to another registrar or AWS accoun
 **References**:
 - [Transfer a Domain to Another AWS Account](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-transfer.html)
 - [Transfer a Domain to Another Registrar](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-transfer-to-route-53.html)
-- [AWS CLI Command: transfer-domain](https://docs.aws.amazon.com/cli/latest/reference/route53domains/transfer-domain.html)
+- [AWS CLI Command: transfer-domain](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/route53domains/transfer-domain.html)

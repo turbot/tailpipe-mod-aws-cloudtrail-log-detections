@@ -4,4 +4,4 @@ Detect when a Virtual Private Cloud (VPC) security group was deleted. Security g
 
 **References**:
 - [Security Groups for Your VPC](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html)
-- [AWS CLI Command: delete-security-group](https://docs.aws.amazon.com/cli/latest/reference/ec2/delete-security-group.html)
+- [AWS CLI Command: delete-security-group](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/delete-security-group.html)

@@ -5,4 +5,4 @@ Detect when an AWS Systems Manager (SSM) document was shared publicly. Publicly 
 **References**:
 - [AWS Systems Manager Documents](https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-ssm-docs.html)
 - [Best Practices for AWS Systems Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/best-practices.html)
-- [AWS CLI Command: modify-document-permission](https://docs.aws.amazon.com/cli/latest/reference/ssm/modify-document-permission.html)
+- [AWS CLI Command: modify-document-permission](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ssm/modify-document-permission.html)

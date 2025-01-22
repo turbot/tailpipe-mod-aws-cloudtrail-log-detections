@@ -4,4 +4,4 @@ Detect when a VPC flow log was deleted in an AWS account. Deleting flow logs red
 
 **References**:
 - [VPC Flow Logs](https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html)
-- [AWS CLI Command: delete-flow-logs](https://docs.aws.amazon.com/cli/latest/reference/ec2/delete-flow-logs.html)
+- [AWS CLI Command: delete-flow-logs](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/delete-flow-logs.html)

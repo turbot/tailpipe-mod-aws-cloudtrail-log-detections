@@ -5,4 +5,4 @@ Detect when an Amazon Simple Email Service (SES) identity had feedback forwardin
 **References**:
 - [Monitoring Using Amazon SES Notifications](https://docs.aws.amazon.com/ses/latest/dg/monitor-sending-activity.html)
 - [Best Practices for Amazon SES](https://docs.aws.amazon.com/ses/latest/dg/best-practices.html)
-- [AWS CLI Command: update-receipt-rule](https://docs.aws.amazon.com/cli/latest/reference/ses/update-receipt-rule.html)
+- [AWS CLI Command: update-receipt-rule](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ses/update-receipt-rule.html)

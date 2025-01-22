@@ -4,5 +4,5 @@ Detect when an AWS Lambda function code was updated without publishing a new ver
 
 **References**:
 - [Managing AWS Lambda Function Versions](https://docs.aws.amazon.com/lambda/latest/dg/configuration-versions.html)
-- [AWS CLI Command: update-function-code](https://docs.aws.amazon.com/cli/latest/reference/lambda/update-function-code.html)
-- [AWS CLI Command: publish-version](https://docs.aws.amazon.com/cli/latest/reference/lambda/publish-version.html)
+- [AWS CLI Command: update-function-code](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/update-function-code.html)
+- [AWS CLI Command: publish-version](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/publish-version.html)

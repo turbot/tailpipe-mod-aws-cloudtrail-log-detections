@@ -4,5 +4,5 @@ Detect when an AWS Key Management Service (KMS) key was scheduled for deletion. 
 
 **References**:
 - [AWS Key Management Service (KMS) Keys](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html)
-- [AWS CLI Command: schedule-key-deletion](https://docs.aws.amazon.com/cli/latest/reference/kms/schedule-key-deletion.html)
-- [AWS CLI Command: cancel-key-deletion](https://docs.aws.amazon.com/cli/latest/reference/kms/cancel-key-deletion.html)
+- [AWS CLI Command: schedule-key-deletion](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/kms/schedule-key-deletion.html)
+- [AWS CLI Command: cancel-key-deletion](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/kms/cancel-key-deletion.html)

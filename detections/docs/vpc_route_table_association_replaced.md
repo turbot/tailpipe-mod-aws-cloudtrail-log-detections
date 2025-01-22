@@ -4,4 +4,4 @@ Detect when a Virtual Private Cloud (VPC) route table association was replaced. 
 
 **References**:
 - [Route Tables](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html)
-- [AWS CLI Command: replace-route-table-association](https://docs.aws.amazon.com/cli/latest/reference/ec2/replace-route-table-association.html)
+- [AWS CLI Command: replace-route-table-association](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/replace-route-table-association.html)

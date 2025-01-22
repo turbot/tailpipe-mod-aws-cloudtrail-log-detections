@@ -4,4 +4,4 @@ Detect when a Virtual Private Cloud (VPC) peering connection was deleted. Deleti
 
 **References**:
 - [VPC Peering](https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html)
-- [AWS CLI Command: delete-vpc-peering-connection](https://docs.aws.amazon.com/cli/latest/reference/ec2/delete-vpc-peering-connection.html)
+- [AWS CLI Command: delete-vpc-peering-connection](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/delete-vpc-peering-connection.html)

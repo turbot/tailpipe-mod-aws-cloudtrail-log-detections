@@ -4,4 +4,4 @@ Detect when a Virtual Private Cloud (VPC) route table route was disassociated. D
 
 **References**:
 - [Route Tables](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html)
-- [AWS CLI Command: disassociate-route-table](https://docs.aws.amazon.com/cli/latest/reference/ec2/disassociate-route-table.html)
+- [AWS CLI Command: disassociate-route-table](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/disassociate-route-table.html)

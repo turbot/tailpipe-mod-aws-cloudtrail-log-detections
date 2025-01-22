@@ -4,4 +4,4 @@ Detect when a Virtual Private Cloud (VPC) was created in an AWS account. Unautho
 
 **References**:
 - [What is Amazon VPC?](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html)
-- [AWS CLI Command: create-vpc](https://docs.aws.amazon.com/cli/latest/reference/ec2/create-vpc.html)
+- [AWS CLI Command: create-vpc](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/create-vpc.html)

@@ -4,5 +4,5 @@ Detect when a Virtual Private Cloud (VPC) security group rule was modified to al
 
 **References**:
 - [Working with Security Groups](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html)
-- [AWS CLI Command: authorize-security-group-ingress](https://docs.aws.amazon.com/cli/latest/reference/ec2/authorize-security-group-ingress.html)
-- [AWS CLI Command: authorize-security-group-egress](https://docs.aws.amazon.com/cli/latest/reference/ec2/authorize-security-group-egress.html)
+- [AWS CLI Command: authorize-security-group-ingress](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/authorize-security-group-ingress.html)
+- [AWS CLI Command: authorize-security-group-egress](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/authorize-security-group-egress.html)

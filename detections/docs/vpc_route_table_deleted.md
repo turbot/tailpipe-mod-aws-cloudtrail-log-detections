@@ -4,4 +4,4 @@ Detect when a Virtual Private Cloud (VPC) route table was deleted. Removing a ro
 
 **References**:
 - [Route Tables](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html)
-- [AWS CLI Command: delete-route-table](https://docs.aws.amazon.com/cli/latest/reference/ec2/delete-route-table.html)
+- [AWS CLI Command: delete-route-table](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/delete-route-table.html)

@@ -4,5 +4,5 @@ Detect when an Amazon SNS topic had encryption at rest disabled. Topics without 
 
 **References**:
 - [Amazon SNS Encryption at Rest](https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html)
-- [AWS CLI Command: create-topic](https://docs.aws.amazon.com/cli/latest/reference/sns/create-topic.html)
-- [AWS CLI Command: set-topic-attributes](https://docs.aws.amazon.com/cli/latest/reference/sns/set-topic-attributes.html)
+- [AWS CLI Command: create-topic](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/sns/create-topic.html)
+- [AWS CLI Command: set-topic-attributes](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/sns/set-topic-attributes.html)

@@ -5,4 +5,4 @@ Detect when an AWS Lambda function was granted public access. Publicly accessibl
 **References**:
 - [Lambda Permissions Model](https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html)
 - [Best Practices for Securing Lambda Functions](https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html)
-- [AWS CLI Command: add-permission](https://docs.aws.amazon.com/cli/latest/reference/lambda/add-permission.html)
+- [AWS CLI Command: add-permission](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/add-permission.html)

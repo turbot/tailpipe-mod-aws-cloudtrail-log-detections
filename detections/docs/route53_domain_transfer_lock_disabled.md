@@ -4,5 +4,5 @@ Detect when a Route 53 domain had its transfer lock disabled. Disabling the tran
 
 **References**:
 - [Enabling Domain Transfer Lock](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-lock.html)
-- [AWS CLI Command: enable-domain-transfer-lock](https://docs.aws.amazon.com/cli/latest/reference/route53domains/enable-domain-transfer-lock.html)
-- [AWS CLI Command: disable-domain-transfer-lock](https://docs.aws.amazon.com/cli/latest/reference/route53domains/disable-domain-transfer-lock.html)
+- [AWS CLI Command: enable-domain-transfer-lock](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/route53domains/enable-domain-transfer-lock.html)
+- [AWS CLI Command: disable-domain-transfer-lock](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/route53domains/disable-domain-transfer-lock.html)

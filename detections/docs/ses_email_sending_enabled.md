@@ -5,4 +5,4 @@ Detect when an Amazon Simple Email Service (SES) identity was enabled for email 
 **References**:
 - [Verifying Identities in Amazon SES](https://docs.aws.amazon.com/ses/latest/dg/creating-identities.html)
 - [Best Practices for Amazon SES](https://docs.aws.amazon.com/ses/latest/dg/best-practices.html)
-- [AWS CLI Command: verify-domain-identity](https://docs.aws.amazon.com/cli/latest/reference/ses/verify-domain-identity.html)
+- [AWS CLI Command: verify-domain-identity](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ses/verify-domain-identity.html)

@@ -4,4 +4,4 @@ Detect when a Virtual Private Cloud (VPC) internet gateway was detached. Interne
 
 **References**:
 - [Internet Gateways](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html)
-- [AWS CLI Command: detach-internet-gateway](https://docs.aws.amazon.com/cli/latest/reference/ec2/detach-internet-gateway.html)
+- [AWS CLI Command: detach-internet-gateway](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/detach-internet-gateway.html)

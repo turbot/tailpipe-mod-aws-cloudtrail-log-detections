@@ -4,4 +4,4 @@ Detect when an AWS Lambda function was created with function code encryption at 
 
 **References**:
 - [Encrypting Lambda Function Code](https://docs.aws.amazon.com/lambda/latest/dg/security-encryption.html)
-- [AWS CLI Command: update-function-code](https://docs.aws.amazon.com/cli/latest/reference/lambda/update-function-code.html)
+- [AWS CLI Command: update-function-code](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/update-function-code.html)

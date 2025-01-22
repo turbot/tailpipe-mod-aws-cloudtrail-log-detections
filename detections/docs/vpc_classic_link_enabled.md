@@ -4,4 +4,4 @@ Detect when a Virtual Private Cloud (VPC) had the ClassicLink feature enabled. C
 
 **References**:
 - [ClassicLink](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html)
-- [AWS CLI Command: enable-vpc-classic-link](https://docs.aws.amazon.com/cli/latest/reference/ec2/enable-vpc-classic-link.html)
+- [AWS CLI Command: enable-vpc-classic-link](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/enable-vpc-classic-link.html)

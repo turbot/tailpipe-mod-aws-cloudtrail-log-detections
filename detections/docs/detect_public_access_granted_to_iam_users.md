@@ -5,4 +5,4 @@ Detect IAM users that have been granted public access. Allowing unauthorized use
 **References**:
 - [IAM Users](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users.html)
 - [IAM Best Practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html)
-- [AWS CLI Command: attach-user-policy](https://docs.aws.amazon.com/cli/latest/reference/iam/attach-user-policy.html)
+- [AWS CLI Command: attach-user-policy](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/iam/attach-user-policy.html)

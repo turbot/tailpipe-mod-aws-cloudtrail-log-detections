@@ -5,4 +5,4 @@ Detect when an AWS Lambda function environment variable was updated with encrypt
 **References**:
 - [Lambda Function Environment Variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html)
 - [Encrypting Environment Variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption)
-- [AWS CLI Command: update-function-configuration](https://docs.aws.amazon.com/cli/latest/reference/lambda/update-function-configuration.html)
+- [AWS CLI Command: update-function-configuration](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/update-function-configuration.html)
