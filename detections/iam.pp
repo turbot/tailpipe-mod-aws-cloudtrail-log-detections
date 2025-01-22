@@ -233,6 +233,7 @@ detection "iam_root_user_console_login" {
 
   tags = merge(local.iam_common_tags, {
     mitre_attack_ids = "TA0004:T1078"
+    recommended      = "true"
   })
 }
 

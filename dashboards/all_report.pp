@@ -163,6 +163,10 @@ query "source_ip_input" {
     order by
       source_ip;
   EOQ
+
+  tags = {
+    folder = "Internal"
+  }
 }
 
 query "aws_region_input" {
@@ -181,5 +185,8 @@ query "aws_region_input" {
     order by
       aws_region;
   EOQ
-}
 
+  tags = {
+    folder = "Internal"
+  }
+}
