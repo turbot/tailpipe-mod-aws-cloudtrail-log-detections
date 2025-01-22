@@ -11,7 +11,6 @@ benchmark "mitre_attack_v161_ta0001_t1199" {
   children = [
     detection.ec2_ami_copied_from_external_account,
     detection.ec2_ami_imported_from_external_account,
-    detection.apigateway_rest_api_granted_public_access,
     detection.ebs_snapshot_shared_publicly,
     detection.lambda_function_granted_public_access,
     detection.rds_db_instance_assigned_public_ip_address,

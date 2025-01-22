@@ -40,7 +40,7 @@ query "config_rule_deleted" {
       aws_cloudtrail_log
     where
       event_source = 'config.amazonaws.com'
-      and event_name in ('DeleteConfigRule', 'DeleteOrganizationConfigRule', 'DeleteConfigurationAggregator', 'DeleteConformancePack', 'DeleteOrganizationConformancePack', 'DeleteRemediationConfiguration', 'DeleteRetentionConfiguration')
+      and event_name = 'DeleteConfigRule'
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
