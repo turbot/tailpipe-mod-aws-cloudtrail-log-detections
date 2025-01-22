@@ -205,6 +205,7 @@ detection "vpc_security_group_ingress_egress_rule_updated" {
     mitre_attack_ids = "TA0001:T1190,TA0005:T1562"
   })
 }
+
 detection "vpc_network_acl_updated" {
   title           = "VPC Network ACL Updated"
   description     = "Detect when a VPC Network ACL was updated to check for unauthorized changes in network configurations, which could allow or restrict traffic unexpectedly and impact security posture."
@@ -392,34 +393,52 @@ query "vpc_flow_log_deleted" {
   EOQ
 }
 
-// Need to refactor the query to iterate the ipPermissions over items (request_parameters -> 'ipPermissions' -> 'items') for better manipulation
 query "vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv4" {
   sql = <<-EOQ
+    with permissions as (
+      select 
+        *,
+        (item -> 'unnest') as ip_permission
+      from
+        aws_cloudtrail_log,
+        unnest(from_json((request_parameters ->> 'ipPermissions' -> 'items'), '["JSON"]')) as item
+      where
+        event_source = 'ec2.amazonaws.com'
+        and event_name in ('AuthorizeSecurityGroupIngress', 'AuthorizeSecurityGroupEgress')
+    )
     select
       ${local.detection_sql_resource_column_request_parameters_network_security_group_id}
     from
-      aws_cloudtrail_log
+      permissions,
+      unnest(from_json((ip_permission -> 'ipRanges' -> 'items'), '["JSON"]')) as item
     where
-      event_source = 'ec2.amazonaws.com'
-      and event_name in ('AuthorizeSecurityGroupIngress', 'AuthorizeSecurityGroupEgress')
-      and (request_parameters ->> 'ipPermissions') like '%0.0.0.0/0%'
+      (item -> 'unnest' ->> 'cidrIp') = '0.0.0.0/0'
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
   EOQ
 }
 
-// Need to refactor the query to iterate the ipPermissions over items (request_parameters -> 'ipPermissions' -> 'items') for better manipulation
 query "vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv6" {
   sql = <<-EOQ
+   with permissions as (
+      select 
+        *,
+        (item -> 'unnest') as ip_permission
+      from
+        aws_cloudtrail_log,
+        unnest(from_json((request_parameters ->> 'ipPermissions' -> 'items'), '["JSON"]')) as item
+      where
+        event_source = 'ec2.amazonaws.com'
+        and event_name in ('AuthorizeSecurityGroupIngress', 'AuthorizeSecurityGroupEgress')
+    )
     select
       ${local.detection_sql_resource_column_request_parameters_network_security_group_id}
     from
-      aws_cloudtrail_log
+      permissions,
+      unnest(from_json((ip_permission -> 'ipRanges' -> 'items'), '["JSON"]')) as item
     where
-      event_source = 'ec2.amazonaws.com'
-      and event_name in ('AuthorizeSecurityGroupIngress', 'AuthorizeSecurityGroupEgress')
-      and (request_parameters ->> 'ipPermissions') like '%::/0%'
+      (item -> 'unnest' ->> 'cidrIp') = '::/0'
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;

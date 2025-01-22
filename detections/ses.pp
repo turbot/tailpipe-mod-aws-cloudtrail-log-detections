@@ -38,7 +38,8 @@ query "ses_email_sending_enabled" {
     from
       aws_cloudtrail_log
     where
-      event_name = 'UpdateAccountSendingEnabled'
+      event_source = 'ses.amazonaws.com'
+      and event_name = 'UpdateAccountSendingEnabled'
       -- Check specifically for enabling email sending
       and (request_parameters -> 'enabled') = true
       ${local.detection_sql_where_conditions}
@@ -67,7 +68,8 @@ query "ses_identity_feedback_forwarding_disabled" {
     from
       aws_cloudtrail_log
     where
-      event_name = 'SetIdentityFeedbackForwardingEnabled'
+      event_source = 'ses.amazonaws.com'
+      and event_name = 'SetIdentityFeedbackForwardingEnabled'
       -- Check specifically for disabling feedback forwarding
       and (request_parameters -> 'forwardingEnabled') = false
       ${local.detection_sql_where_conditions}

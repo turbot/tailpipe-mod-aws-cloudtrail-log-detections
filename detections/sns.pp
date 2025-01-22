@@ -31,19 +31,27 @@ detection "sns_topic_granted_public_access" {
   })
 }
 
-// Need to refactor the query to iterate the policy statements from the logs and check any of the statement have public access(Same as SQS Queue public access granted).
 query "sns_topic_granted_public_access" {
   sql = <<-EOQ
     select
-      ${local.detection_sql_resource_column_request_parameters_queue_url}
+      ${local.detection_sql_resource_column_request_parameters_topic_arn},
+      (item -> 'unnest') as statement
     from
-      aws_cloudtrail_log
+      aws_cloudtrail_log,
+      unnest(
+        case
+            when json_valid(request_parameters ->> 'attributeValue') then
+                from_json((request_parameters ->> 'attributeValue' -> 'Statement'), '["JSON"]')
+            else
+                null
+        end
+    ) as item
     where
       event_source = 'sns.amazonaws.com'
       and event_name = 'SetTopicAttributes'
       and (request_parameters ->> 'attributeName') = 'Policy'
-      and (request_parameters ->> 'attributeValue') like '%"Effect": "Allow"%'
-      and (request_parameters ->> 'attributeValue') like '%"AWS": "*"%'
+      and (statement ->> 'Effect') = 'Allow'
+      and (json_contains((statement -> 'Principal'), '{"AWS":"*"}'))
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
@@ -66,7 +74,7 @@ detection "sns_topic_encryption_at_rest_disabled" {
 query "sns_topic_encryption_at_rest_disabled" {
   sql = <<-EOQ
     select
-      ${local.detection_sql_resource_column_request_parameters_queue_url}
+      ${local.detection_sql_resource_column_request_parameters_topic_arn}
     from
       aws_cloudtrail_log
     where
