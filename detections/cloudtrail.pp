@@ -25,9 +25,9 @@ benchmark "cloudtrail_detections" {
 }
 
 detection "cloudtrail_trail_logging_stopped" {
-  title       = "CloudTrail Trail Logging Stopped"
-  description = "detect when a CloudTrail trail's logging was stopped to check for unauthorized changes that could reduce visibility into critical AWS activity, potentially hindering threat detection and compliance efforts."
-  # documentation   = file("./detections/docs/detect_cloudtrail_trails_with_logging_stopped.md")
+  title           = "CloudTrail Trail Logging Stopped"
+  description     = "detect when a CloudTrail trail's logging was stopped to check for unauthorized changes that could reduce visibility into critical AWS activity, potentially hindering threat detection and compliance efforts."
+  documentation   = file("./detections/docs/cloudtrail_trail_logging_stopped.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.cloudtrail_trail_logging_stopped
@@ -54,9 +54,9 @@ query "cloudtrail_trail_logging_stopped" {
 }
 
 detection "cloudtrail_trail_s3_logging_disabled" {
-  title       = " CloudTrail Trail S3 Logging Disabled"
-  description = "Detect when a CloudTrail trail was created without S3 logging to check for potential misconfigurations or unauthorized changes that could expose log data to unauthorized access or tampering."
-  # documentation   = file("./detections/docs/detect_cloudtrail_trails_with_s3_logging_disabled.md")
+  title           = " CloudTrail Trail S3 Logging Disabled"
+  description     = "Detect when a CloudTrail trail was created without S3 logging to check for potential misconfigurations or unauthorized changes that could expose log data to unauthorized access or tampering."
+  documentation   = file("./detections/docs/cloudtrail_trail_s3_logging_disabled.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.cloudtrail_trail_s3_logging_disabled
@@ -83,9 +83,9 @@ query "cloudtrail_trail_s3_logging_disabled" {
 }
 
 detection "cloudtrail_trail_lambda_logging_disabled" {
-  title       = "CloudTrail Trail Lambda Logging Disabled"
-  description = "Detect when a CloudTrail trail was created without Lambda logging to check for potential misconfigurations or unauthorized changes that could expose log data to unauthorized access or tampering."
-  # documentation   = file("./detections/docs/detect_cloudtrail_trails_with_lambda_logging_disabled.md")
+  title           = "CloudTrail Trail Lambda Logging Disabled"
+  description     = "Detect when a CloudTrail trail was created without Lambda logging to check for potential misconfigurations or unauthorized changes that could expose log data to unauthorized access or tampering."
+  documentation   = file("./detections/docs/cloudtrail_trail_lambda_logging_disabled.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.cloudtrail_trail_lambda_logging_disabled
@@ -112,9 +112,9 @@ query "cloudtrail_trail_lambda_logging_disabled" {
 }
 
 detection "cloudtrail_trail_encryption_disabled" {
-  title       = "CloudTrail Trail Encryption Disabled"
-  description = "Detect when a CloudTrail trail was created without encryption to check for potential misconfigurations or unauthorized changes that could expose log data to unauthorized access or tampering."
-  # documentation   = file("./detections/docs/detect_cloudtrail_trails_with_encryption_disabled.md")
+  title           = "CloudTrail Trail Encryption Disabled"
+  description     = "Detect when a CloudTrail trail was created without encryption to check for potential misconfigurations or unauthorized changes that could expose log data to unauthorized access or tampering."
+  documentation   = file("./detections/docs/cloudtrail_trail_encryption_disabled.md")
   severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.cloudtrail_trail_encryption_disabled
@@ -142,9 +142,9 @@ query "cloudtrail_trail_encryption_disabled" {
 }
 
 detection "cloudtrail_trail_kms_key_updated" {
-  title       = "CloudTrail Trail KMS Key Updated"
-  description = "Detect when a CloudTrail trail was updated with a new KMS key to check for changes that could expose log data to unauthorized access or tampering, potentially compromising log integrity and security."
-  # documentation   = file("./detections/docs/detect_cloudtrail_trails_with_kms_key_updated.md")
+  title           = "CloudTrail Trail KMS Key Updated"
+  description     = "Detect when a CloudTrail trail was updated with a new KMS key to check for changes that could expose log data to unauthorized access or tampering, potentially compromising log integrity and security."
+  documentation   = file("./detections/docs/cloudtrail_trail_kms_key_updated.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.cloudtrail_trail_kms_key_updated
@@ -172,9 +172,9 @@ query "cloudtrail_trail_kms_key_updated" {
 }
 
 detection "cloudtrail_trail_s3_logging_bucket_modified" {
-  title       = "CloudTrail Trail S3 Logging Bucket Modified"
-  description = "Detect when a CloudTrail trail was updated with a new S3 logging bucket to check for changes that could expose log data to unauthorized access or tampering, potentially compromising log integrity and security."
-  # documentation   = file("./detections/docs/detect_cloudtrail_trails_with_s3_logging_bucket_modified.md")
+  title           = "CloudTrail Trail S3 Logging Bucket Modified"
+  description     = "Detect when a CloudTrail trail was updated with a new S3 logging bucket to check for changes that could expose log data to unauthorized access or tampering, potentially compromising log integrity and security."
+  documentation   = file("./detections/docs/cloudtrail_trail_s3_logging_bucket_modified.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.cloudtrail_trail_s3_logging_bucket_modified
@@ -202,9 +202,9 @@ query "cloudtrail_trail_s3_logging_bucket_modified" {
 }
 
 detection "cloudtrail_trail_global_service_logging_disabled" {
-  title       = "CloudTrail Trail Global Service Logging Disabled"
-  description = "Detect when a CloudTrail trail was created without global service logging to check for potential misconfigurations or unauthorized changes that could expose log data to unauthorized access or tampering."
-  # documentation   = file("./detections/docs/detect_cloudtrail_trails_with_global_service_logging_disabled.md")
+  title           = "CloudTrail Trail Global Service Logging Disabled"
+  description     = "Detect when a CloudTrail trail was created without global service logging to check for potential misconfigurations or unauthorized changes that could expose log data to unauthorized access or tampering."
+  documentation   = file("./detections/docs/cloudtrail_trail_global_service_logging_disabled.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.cloudtrail_trail_global_service_logging_disabled
