@@ -66,13 +66,13 @@ detection "codebuild_project_iam_role_updated" {
 query "codebuild_project_iam_role_updated" {
   sql = <<-EOQ
     select
-      ${local.detection_sql_resource_column_request_parameters_codebuild_project_arn}
+      ${local.detection_sql_resource_column_request_parameters_name}
     from
       aws_cloudtrail_log
     where
       event_source = 'codebuild.amazonaws.com'
       and event_name = 'UpdateProject'
-      and (request_parameters ->> 'roleArn') is not null
+      and (request_parameters ->> 'serviceRole') is not null
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
@@ -95,7 +95,7 @@ detection "codebuild_project_source_repository_updated" {
 query "codebuild_project_source_repository_updated" {
   sql = <<-EOQ
     select
-      ${local.detection_sql_resource_column_request_parameters_codebuild_project_arn}
+      ${local.detection_sql_resource_column_request_parameters_name}
     from
       aws_cloudtrail_log
     where
@@ -124,7 +124,7 @@ detection "codebuild_project_environment_variable_updated" {
 query "codebuild_project_environment_variable_updated" {
   sql = <<-EOQ
     select
-      ${local.detection_sql_resource_column_request_parameters_codebuild_project_arn}
+      ${local.detection_sql_resource_column_request_parameters_name}
     from
       aws_cloudtrail_log
     where
