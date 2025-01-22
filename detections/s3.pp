@@ -78,7 +78,7 @@ query "s3_bucket_policy_modified" {
 }
 
 detection "s3_bucket_granted_public_access" {
-  title           = "S3 Bucket Public Access Granted"
+  title           = "S3 Bucket Granted Public Access"
   description     = "Detect when public access was granted to an S3 bucket by modifying its policy. Granting public access can expose sensitive data to unauthorized users, increasing the risk of data breaches, data exfiltration, or malicious exploitation."
   documentation   = file("./detections/docs/s3_bucket_granted_public_access.md")
   severity        = "high"
