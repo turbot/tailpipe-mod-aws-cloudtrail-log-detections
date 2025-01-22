@@ -9,7 +9,7 @@ benchmark "s3_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for S3 events."
   type        = "detection"
   children = [
-    detection.s3_bucket_public_access_granted,
+    detection.s3_bucket_granted_public_access,
     detection.s3_bucket_deleted,
     detection.s3_bucket_policy_modified,
     detection.s3_data_archived,
@@ -77,20 +77,20 @@ query "s3_bucket_policy_modified" {
   EOQ
 }
 
-detection "s3_bucket_public_access_granted" {
+detection "s3_bucket_granted_public_access" {
   title           = "S3 Bucket Public Access Granted"
   description     = "Detect when public access was granted to an S3 bucket by modifying its policy. Granting public access can expose sensitive data to unauthorized users, increasing the risk of data breaches, data exfiltration, or malicious exploitation."
-  documentation   = file("./detections/docs/s3_bucket_public_access_granted.md")
+  documentation   = file("./detections/docs/s3_bucket_granted_public_access.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.s3_bucket_public_access_granted
+  query           = query.s3_bucket_granted_public_access
 
   tags = merge(local.s3_common_tags, {
     mitre_attack_ids = "TA0005:T1070,TA0001:T1190"
   })
 }
 
-query "s3_bucket_public_access_granted" {
+query "s3_bucket_granted_public_access" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_bucket_name}

@@ -20,7 +20,7 @@ benchmark "iam_detections" {
     detection.iam_user_administrative_password_reset,
     detection.iam_user_console_access_enabled,
     detection.iam_user_created,
-    detection.iam_user_email_address_updated,
+    detection.iam_root_user_email_address_updated,
     detection.iam_user_inline_policy_attached,
     detection.iam_user_inline_policy_created,
     detection.iam_user_managed_policy_attached,
@@ -54,8 +54,7 @@ query "iam_user_mfa_disabled" {
       aws_cloudtrail_log
     where
       event_source = 'iam.amazonaws.com'
-      and event_name = 'UpdateLoginProfile'
-      and (request_parameters -> 'mfaSettings') = 'disabled'
+      and event_name = 'DeactivateMFADevice'
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
@@ -83,28 +82,27 @@ query "iam_user_console_access_enabled" {
       aws_cloudtrail_log
     where
       event_source = 'iam.amazonaws.com'
-      and event_name = 'UpdateLoginProfile'
-      and (request_parameters -> 'createLoginProfile') = true
+      and event_name = 'CreateLoginProfile'
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
   EOQ
 }
 
-detection "iam_user_email_address_updated" {
+detection "iam_root_user_email_address_updated" {
   title           = "IAM User Email Address Updated"
   description     = "Detect when an email address was updated for an IAM user in a login profile. This action may indicate attempts to hijack account recovery mechanisms or modify user identities."
-  documentation   = file("./detections/docs/iam_user_email_address_updated.md")
+  documentation   = file("./detections/docs/iam_root_user_email_address_updated.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.iam_user_email_address_updated
+  query           = query.iam_root_user_email_address_updated
 
   tags = merge(local.iam_common_tags, {
     mitre_attack_ids = "TA0006:T1098"
   })
 }
 
-query "iam_user_email_address_updated" {
+query "iam_root_user_email_address_updated" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_user_name}
@@ -112,8 +110,9 @@ query "iam_user_email_address_updated" {
       aws_cloudtrail_log
     where
       event_source = 'iam.amazonaws.com'
-      and event_name = 'UpdateLoginProfile'
-      and (request_parameters ->> 'email') IS NOT NULL
+      and event_name = 'EmailUpdated'
+      and user_identity.type = 'Root'
+      and (response_elements ->> 'EmailUpdated') = 'Success'
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
@@ -190,7 +189,6 @@ query "iam_user_administrative_password_reset" {
     where
       event_source = 'iam.amazonaws.com'
       and event_name = 'UpdateLoginProfile'
-      and (request_parameters ->> 'password') IS NOT NULL
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;

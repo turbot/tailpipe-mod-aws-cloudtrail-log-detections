@@ -102,7 +102,7 @@ query "rds_db_instance_restored_from_public_snapshot" {
     where
       event_source = 'rds.amazonaws.com'
       and event_name = 'RestoreDBInstanceFromDBSnapshot'
-      and (response_elements -> 'publiclyAccessible') = true
+      and (requestParameters -> 'publiclyAccessible') = true
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
