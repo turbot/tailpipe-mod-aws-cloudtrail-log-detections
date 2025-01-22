@@ -6,4 +6,4 @@ Detect when an API Gateway Rest API is granted public access. Publicly accessibl
 - [Amazon API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html)
 - [Securing Amazon API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/security.html)
 - [AWS CLI Command: get-rest-apis](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/apigateway/get-rest-apis.html)
-- [AWS Documentation: Best Practices for Securing APIs](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-best-practices.html)
+- [Best Practices for Securing APIs](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-best-practices.html)

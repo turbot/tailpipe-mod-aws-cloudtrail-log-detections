@@ -7,6 +7,6 @@ Over-permissioned policies can increase the risk of privilege escalation, unauth
 Using managed policies for individual users also complicates governance, as updates to a managed policy affect all attached users, potentially leading to unintended consequences. Monitoring managed policies attached to IAM users helps enforce best practices, such as using IAM groups for permissions management and ensuring compliance with the principle of least privilege.
 
 **References**:
-- [AWS Documentation: Managed Policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html)
+- [Managed Policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html)
 - [AWS CLI Command: attach-user-policy](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/iam/attach-user-policy.html)
-- [AWS Documentation: IAM Best Practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html)
+- [IAM Best Practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html)
