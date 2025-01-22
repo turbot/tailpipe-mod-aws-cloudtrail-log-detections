@@ -3,7 +3,6 @@ locals {
     service = "AWS/Route53"
   })
 
-  detect_route53_domain_transfered_to_another_account_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.domainName')")
   detect_route53_associate_vpc_with_hosted_zone_sql_columns       = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.hostedZoneId')")
 }
 
@@ -12,9 +11,9 @@ benchmark "route53_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for Route 53 events."
   type        = "detection"
   children    = [
-    detection.detect_route53_domain_transfers,
-    detection.detect_route53_domains_with_transfer_lock_disabled,
-    detection.detect_route53_vpc_associations_with_hosted_zones,
+    detection.route53_domain_transferred,
+    detection.route53_domain_transfer_lock_disabled,
+    detection.route53_hosted_zone_associated_with_vpc,
   ]
 
   tags = merge(local.route53_common_tags, {
@@ -22,49 +21,49 @@ benchmark "route53_detections" {
   })
 }
 
-detection "detect_route53_domain_transfers" {
-  title           = "Detect Route 53 Domain Transfers"
-  description     = "Detect when Route 53 domains are transferred to another AWS account. Unauthorized domain transfers can result in the loss of control over your domains, leading to service disruption, domain hijacking, or malicious use of your web infrastructure."
-  documentation   = file("./detections/docs/detect_route53_domain_transfers.md")
+detection "route53_domain_transferred" {
+  title           = "Route 53 Domain Transferred"
+  description     = "Detect when a Route 53 domain was transferred to another AWS account to check for potential risks of unauthorized transfers, which could lead to domain hijacking, service disruption, or malicious use of web infrastructure."
+  documentation   = file("./detections/docs/route53_domain_transferred.md")
   severity        = "low"
   display_columns = local.detection_display_columns
-  query           = query.detect_route53_domain_transfers
+  query           = query.route53_domain_transferred
 
   tags = merge(local.route53_common_tags, {
     mitre_attack_ids = "TA0040:T1531"
   })
 }
 
-detection "detect_route53_domains_with_transfer_lock_disabled" {
-  title           = "Detect Route 53 Domains with Transfer Lock Disabled"
-  description     = "Detect when the transfer lock on a Route 53 domain is disabled. Disabling the transfer lock can allow unauthorized domain transfers, leading to potential loss of control, domain hijacking, service disruptions, and malicious use of the domain."
-  documentation   = file("./detections/docs/detect_route53_domains_with_transfer_lock_disabled.md")
-  severity        = "low"
+detection "route53_domain_transfer_lock_disabled" {
+  title           = "Route 53 Domain Transfer Lock Disabled"
+  description     = "Detect when the transfer lock on a Route 53 domain was disabled to check for potential risks of unauthorized domain transfers, which could result in loss of control, domain hijacking, service disruptions, or malicious use of the domain."
+  documentation   = file("./detections/docs/route53_domain_transfer_lock_disabled.md")
+  severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.detect_route53_domains_with_transfer_lock_disabled
+  query           = query.route53_domain_transfer_lock_disabled
 
   tags = merge(local.route53_common_tags, {
     mitre_attack_ids = "TA0040:T1531"
   })
 }
 
-detection "detect_route53_vpc_associations_with_hosted_zones" {
-  title          = "Detect Route 53 VPC Associations with Hosted Zones"
-  description    = "Detect when a VPC is associated with a Route 53 hosted zone. Unauthorized VPC associations can expose DNS records to unintended networks, potentially enabling lateral movement, unauthorized access, or DNS-based attacks."
-  documentation   = file("./detections/docs/detect_route53_vpc_associations_with_hosted_zones.md")
+detection "route53_hosted_zone_associated_with_vpc" {
+  title           = "Route 53 Hosted Zone Associated with VPC"
+  description     = "Detect when a Route 53 hosted zone was associated with a VPC to check for potential risks of unauthorized associations, which could expose DNS records to unintended networks, enabling lateral movement, unauthorized access, or DNS-based attacks."
+  documentation   = file("./detections/docs/route53_hosted_zone_associated_with_vpc.md")
   severity        = "low"
   display_columns = local.detection_display_columns
-  query           = query.detect_route53_vpc_associations_with_hosted_zones
+  query           = query.route53_hosted_zone_associated_with_vpc
 
   tags = merge(local.route53_common_tags, {
     mitre_attack_ids = "TA0003:T1078"
   })
 }
 
-query "detect_route53_domain_transfers" {
+query "route53_domain_transferred" {
   sql = <<-EOQ
     select
-      ${local.detect_route53_domain_transfered_to_another_account_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_domain_name}
     from
       aws_cloudtrail_log
     where
@@ -76,10 +75,10 @@ query "detect_route53_domain_transfers" {
   EOQ
 }
 
-query "detect_route53_domains_with_transfer_lock_disabled" {
+query "route53_domain_transfer_lock_disabled" {
   sql = <<-EOQ
     select
-      ${local.detect_route53_domain_transfered_to_another_account_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_domain_name}
     from
       aws_cloudtrail_log
     where
@@ -91,10 +90,10 @@ query "detect_route53_domains_with_transfer_lock_disabled" {
   EOQ
 }
 
-query "detect_route53_vpc_associations_with_hosted_zones" {
+query "route53_hosted_zone_associated_with_vpc" {
   sql = <<-EOQ
     select
-      ${local.detect_route53_associate_vpc_with_hosted_zone_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_hosted_zone_id}
     from
       aws_cloudtrail_log
     where

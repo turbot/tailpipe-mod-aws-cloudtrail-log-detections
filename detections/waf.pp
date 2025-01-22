@@ -2,11 +2,6 @@ locals {
   waf_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
     service = "AWS/WAF"
   })
-
-  detect_waf_acls_with_logging_disabled_sql_columns                       = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.resourceArn')")
-  detect_waf_acl_disassociation_from_cloudfront_distributions_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.resourceArn')")
-  detect_waf_acl_disassociation_from_alb_sql_columns                      = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.resourceArn')")
-  detect_public_access_granted_to_waf_rules_sql_columns                   = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.ruleArn')")
 }
 
 benchmark "waf_detections" {
@@ -14,10 +9,9 @@ benchmark "waf_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for WAF events."
   type        = "detection"
   children = [
-    detection.detect_waf_acl_disassociation_from_alb,
-    detection.detect_waf_acl_disassociation_from_cloudfront_distributions,
-    detection.detect_waf_acls_with_logging_disabled,
-    detection.detect_public_access_granted_to_waf_rules,
+    detection.waf_web_acl_disassociated_from_elb_application_load_balancer,
+    detection.waf_web_acl_disassociated_from_cloudfront_distribution,
+    detection.waf_web_acl_logging_disabled,
   ]
 
   tags = merge(local.waf_common_tags, {
@@ -25,118 +19,90 @@ benchmark "waf_detections" {
   })
 }
 
-detection "detect_waf_acls_with_logging_disabled" {
-  title           = "Detect WAF Web ACLs with Logging Disabled"
-  description     = "Detect WAF Web ACLs with logging disabled to check for changes that could hinder monitoring and auditing, potentially obscuring malicious activity or misconfigurations."
-  documentation   = file("./detections/docs/detect_waf_acls_with_logging_disabled.md")
+detection "waf_web_acl_logging_disabled" {
+  title           = "WAF Web ACL Logging Disabled"
+  description     = "Detect when logging was disabled for a WAF Web ACL to identify changes that could hinder monitoring and auditing, potentially obscuring malicious activity or misconfigurations."
+  documentation   = file("./detections/docs/waf_web_acl_logging_disabled.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_waf_acls_with_logging_disabled
+  query           = query.waf_web_acl_logging_disabled
 
   tags = merge(local.waf_common_tags, {
     mitre_attack_ids = "TA0005:T1562.002"
   })
 }
 
-query "detect_waf_acls_with_logging_disabled" {
+query "waf_web_acl_logging_disabled" {
   sql = <<-EOQ
     select
-      ${local.detect_waf_acls_with_logging_disabled_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_resource_arn}
     from
       aws_cloudtrail_log
     where
       event_source = 'wafv2.amazonaws.com'
       and event_name in ('DeleteLoggingConfiguration', 'PutLoggingConfiguration')
-      and json_extract_string(request_parameters, '$.loggingConfiguration') is null
+      and (request_parameters -> 'loggingConfiguration') is null
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
   EOQ
 }
 
-detection "detect_waf_acl_disassociation_from_cloudfront_distributions" {
-  title           = "Detect WAF Web ACL Disassociation from CloudFront Distributions"
-  description     = "Detect when a WAF Web ACL is disassociated from CloudFront distributions, potentially exposing them to unauthorized access or attacks."
-  documentation   = file("./detections/docs/detect_waf_acl_disassociation_from_cloudfront_distributions.md")
+detection "waf_web_acl_disassociated_from_cloudfront_distribution" {
+  title           = "WAF Web ACL Disassociated from CloudFront Distribution"
+  description     = "Detect when a WAF Web ACL was disassociated from a CloudFront distribution, potentially exposing it to unauthorized access or attacks."
+  documentation   = file("./detections/docs/waf_web_acl_disassociated_from_cloudfront_distribution.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_waf_acl_disassociation_from_cloudfront_distributions
+  query           = query.waf_web_acl_disassociated_from_cloudfront_distribution
 
   tags = merge(local.waf_common_tags, {
     mitre_attack_ids = "TA0005:T1562.001"
   })
 }
 
-query "detect_waf_acl_disassociation_from_cloudfront_distributions" {
+query "waf_web_acl_disassociated_from_cloudfront_distribution" {
   sql = <<-EOQ
     select
-      ${local.detect_waf_acl_disassociation_from_cloudfront_distributions_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_resource_arn}
     from
       aws_cloudtrail_log
     where
       event_source = 'wafv2.amazonaws.com'
       and event_name = 'DisassociateWebACL'
-      and json_extract_string(request_parameters, '$.resourceArn') like '%cloudfront::%:distribution/%'
+      and (request_parameters ->> 'resourceArn') like '%cloudfront::%:distribution/%'
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
   EOQ
 }
 
-detection "detect_waf_acl_disassociation_from_alb" {
-  title           = "Detect WAF Web ACL Disassociation from Application Load Balancers"
-  description     = "Detect when a WAF Web ACL is disassociated from Application Load Balancers (ALBs), potentially exposing them to unauthorized access or attacks."
-  documentation   = file("./detections/docs/detect_waf_acl_disassociation_from_alb.md")
+detection "waf_web_acl_disassociated_from_elb_application_load_balancer" {
+  title           = "WAF Web ACL Disassociated from ELB Application Load Balancer"
+  description     = "Detect when a WAF Web ACL was disassociated from an Application Load Balancer (ALB), potentially exposing it to unauthorized access or attacks."
+  documentation   = file("./detections/docs/waf_web_acl_disassociated_from_elb_application_load_balancer.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_waf_acl_disassociation_from_alb
+  query           = query.waf_web_acl_disassociated_from_elb_application_load_balancer
 
   tags = merge(local.waf_common_tags, {
     mitre_attack_ids = "TA0005:T1562.001"
   })
 }
 
-query "detect_waf_acl_disassociation_from_alb" {
+query "waf_web_acl_disassociated_from_elb_application_load_balancer" {
   sql = <<-EOQ
     select
-      ${local.detect_waf_acl_disassociation_from_alb_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_resource_arn}
     from
       aws_cloudtrail_log
     where
       event_source = 'wafv2.amazonaws.com'
       and event_name = 'DisassociateWebACL'
-      and json_extract_string(request_parameters, '$.resourceArn') like '%elasticloadbalancing:%:%:loadbalancer/app/%'
+      and (request_parameters ->> 'resourceArn') like '%elasticloadbalancing:%:%:loadbalancer/app/%'
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
   EOQ
 }
 
-detection "detect_public_access_granted_to_waf_rules" {
-  title           = "Detect Public Access Granted to WAF Rules"
-  description     = "Detect when a WAF rule is configured to allow unrestricted public access (0.0.0.0/0), potentially exposing protected resources to unauthorized access or attacks."
-  documentation   = file("./detections/docs/detect_public_access_granted_to_waf_rules.md")
-  severity        = "high"
-  display_columns = local.detection_display_columns
-  query           = query.detect_public_access_granted_to_waf_rules
-
-  tags = merge(local.waf_common_tags, {
-    mitre_attack_ids = "TA0001:T1190"
-  })
-}
-
-query "detect_public_access_granted_to_waf_rules" {
-  sql = <<-EOQ
-    select
-      ${local.detect_public_access_granted_to_waf_rules_sql_columns}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'wafv2.amazonaws.com'
-      and event_name in ('UpdateRule', 'PutRule')
-      and json_extract_string(request_parameters, '$.rules') like '%0.0.0.0/0%'
-      ${local.detection_sql_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}

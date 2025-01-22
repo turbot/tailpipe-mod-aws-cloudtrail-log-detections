@@ -32,12 +32,12 @@ benchmark "mitre_attack_v161_ta0005_t1562_001" {
     detection.config_rule_deleted,
     detection.config_configuration_recorder_stopped,
     detection.eventbridge_rule_disabled,
-    detection.detect_guardduty_detector_deletions,
-    detection.detect_vpcs_with_classic_link_enabled,
-    detection.detect_waf_acl_disassociation_from_cloudfront_distributions,
-    detection.detect_waf_acl_disassociation_from_alb,
-    detection.detect_sns_topics_with_encryption_at_rest_disabled,
-    detection.detect_vpc_creations,
+    detection.guardduty_detector_deleted,
+    detection.vpc_classic_link_enabled,
+    detection.waf_web_acl_disassociated_from_cloudfront_distribution,
+    detection.sns_topic_encryption_at_rest_disabled,
+    detection.waf_web_acl_disassociated_from_elb_application_load_balancer,
+    detection.vpc_created,
   ]
 
   tags = merge(local.mitre_attack_v161_ta0005_t1562_common_tags, {

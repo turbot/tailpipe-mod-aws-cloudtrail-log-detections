@@ -8,9 +8,7 @@ benchmark "mitre_attack_v161_ta0008_t1570" {
   title         = "T1570 Lateral Tool Transfer"
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0008_t1570.md")
-  children = [
-    detection.detect_s3_tool_uploads
-  ]
+  children = []
 
   tags = local.mitre_attack_v161_ta0008_t1570_common_tags
 }

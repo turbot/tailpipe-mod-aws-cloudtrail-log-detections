@@ -20,12 +20,12 @@ benchmark "mitre_attack_v161_ta0040_t1565_003" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0040_t1565_003.md")
   children = [
-    detection.detect_vpc_deletions,
-    detection.detect_vpc_peering_connection_deletions,
-    detection.detect_vpc_route_table_deletions,
-    detection.detect_vpc_route_table_replace_associations,
-    detection.detect_vpc_route_tables_with_route_deletions,
-    detection.detect_vpc_route_tables_with_route_disassociations,
+    detection.vpc_deleted,
+    detection.vpc_peering_connection_deleted,
+    detection.vpc_route_table_deleted,
+    detection.vpc_route_table_association_replaced,
+    detection.vpc_route_table_route_deleted,
+    detection.vpc_route_table_route_disassociated,
   ]
 
   tags = local.mitre_attack_v161_ta0040_t1565_common_tags

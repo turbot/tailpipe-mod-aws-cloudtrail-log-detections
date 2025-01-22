@@ -9,8 +9,8 @@ benchmark "mitre_attack_v161_ta0010_t1020" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0010_t1020.md")
   children = [
-    detection.detect_rds_db_instances_public_restore,
-    detection.detect_public_access_granted_to_vpc_nacl_rules,
+    detection.rds_db_instance_restored_from_public_snapshot,
+    detection.vpc_nacl_rule_updated_with_allow_public_access,
   ]
 
   tags = local.mitre_attack_v161_ta0010_t1020_common_tags

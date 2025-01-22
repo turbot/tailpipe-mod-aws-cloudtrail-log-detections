@@ -10,10 +10,10 @@ benchmark "mitre_attack_v161_ta0003_t1546" {
   type = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0003_t1546.md")
   children = [
-    detection.detect_public_access_granted_to_lambda_functions,
-    detection.detect_lambda_function_code_updates_without_publish,
-    detection.detect_lambda_functions_with_unencrypted_environment_variables,
-    detection.detect_lambda_functions_with_unencrypted_code,
+    detection.lambda_function_granted_public_access,
+    detection.lambda_function_code_updated_without_publish,
+    detection.lambda_function_environment_variable_updated_with_encryption_at_rest_disabled,
+    detection.lambda_function_created_with_function_code_encryption_at_rest_disabled,
   ]
 
   tags = local.mitre_attack_v161_ta0003_t1546_common_tags

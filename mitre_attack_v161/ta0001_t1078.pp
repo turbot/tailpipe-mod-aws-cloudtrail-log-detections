@@ -21,10 +21,7 @@ benchmark "mitre_attack_v161_ta0001_t1078_001" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0001_t1078_001.md")
   children = [
-    detection.detect_iam_root_user_console_logins,
-    detection.detect_public_access_granted_to_iam_groups,
-    detection.detect_public_access_granted_to_iam_roles,
-    detection.detect_public_access_granted_to_iam_users,
+    detection.iam_root_user_console_login,
   ]
 
   tags = merge(local.mitre_attack_v161_ta0001_t1078_common_tags, {
@@ -37,12 +34,12 @@ benchmark "mitre_attack_v161_ta0001_t1078_004" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0001_t1078_004.md")
   children = [
-    detection.detect_iam_users_with_console_access_enabled,
-    detection.detect_iam_users_with_mfa_disabled,
-    detection.detect_iam_access_key_creations,
-    detection.detect_iam_access_key_deletions,
-    detection.detect_vpc_security_group_ipv4_allow_all,
-    detection.detect_vpc_security_group_ipv6_allow_all,
+    detection.iam_user_console_access_enabled,
+    detection.iam_user_mfa_disabled,
+    detection.iam_access_key_created,
+    detection.iam_access_key_deleted,
+    detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv4,
+    detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv6,
   ]
 
   tags = merge(local.mitre_attack_v161_ta0001_t1078_common_tags, {

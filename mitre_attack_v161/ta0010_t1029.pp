@@ -9,7 +9,7 @@ benchmark "mitre_attack_v161_ta0010_t1029" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0010_t1029.md")
   children = [
-    detection.detect_s3_object_compressed_uploads
+    detection.s3_object_compressed_uploaded
   ]
 
   tags = local.mitre_attack_v161_ta0010_t1029_common_tags

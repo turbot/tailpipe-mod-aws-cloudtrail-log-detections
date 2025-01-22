@@ -22,7 +22,7 @@ benchmark "mitre_attack_v161_ta0003_t1556_006" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0003_t1556_006.md")
   children = [
-    detection.detect_iam_users_with_mfa_disabled,
+    detection.iam_user_mfa_disabled,
   ]
 
   tags = merge(local.mitre_attack_v161_ta0003_t1556_common_tags, {
@@ -47,11 +47,7 @@ benchmark "mitre_attack_v161_ta0003_t1556_009" {
   title         = "T1556.004 Modify Authentication Process: Conditional Access Policies"
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0003_t1556_009.md")
-  children = [
-    detection.detect_public_access_granted_to_iam_groups,
-    detection.detect_public_access_granted_to_iam_roles,
-    detection.detect_public_access_granted_to_iam_users,
-  ]
+  children = []
 
   tags = merge(local.mitre_attack_v161_ta0003_t1556_common_tags, {
     mitre_technique_id = "T1556.004"

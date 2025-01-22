@@ -21,9 +21,9 @@ benchmark "mitre_attack_v161_ta0002_t1059_009" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0002_t1059_009.md")
   children = [
-    detection.detect_vpc_security_group_deletions,
-    detection.detect_vpc_deletions,
-    detection.detect_vpc_flow_log_deletions,
+    detection.vpc_security_group_deleted,
+    detection.vpc_deleted,
+    detection.vpc_flow_log_deleted,
     detection.cloudtrail_trail_logging_stopped,
   ]
 

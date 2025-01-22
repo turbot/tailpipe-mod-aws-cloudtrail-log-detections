@@ -10,19 +10,19 @@ benchmark "mitre_attack_v161_ta0005_t1070" {
   documentation = file("./mitre_attack_v161/docs/ta0005_t1070.md")
   children = [
     detection.codebuild_project_environment_variable_updated,
-    detection.detect_kms_key_deletions,
-    detection.detect_public_access_granted_to_s3_buckets,
-    detection.detect_ses_feedback_forwarding_disabled,
-    detection.detect_sqs_queues_with_dlq_disabled,
-    detection.detect_vpc_deletions,
-    detection.detect_vpc_flow_log_deletions,
-    detection.detect_vpc_peering_connection_deletions,
-    detection.detect_vpc_route_table_deletions,
-    detection.detect_vpc_route_table_replace_associations,
-    detection.detect_vpc_route_tables_with_route_deletions,
-    detection.detect_vpc_route_tables_with_route_disassociations,
-    detection.detect_vpc_security_group_ipv4_allow_all,
-    detection.detect_vpc_security_group_ipv6_allow_all,
+    detection.kms_key_scheduled_deletion,
+    detection.s3_bucket_public_access_granted,
+    detection.ses_identity_feedback_forwarding_disabled,
+    detection.sqs_queue_dlq_disabled,
+    detection.vpc_deleted,
+    detection.vpc_flow_log_deleted,
+    detection.vpc_peering_connection_deleted,
+    detection.vpc_route_table_deleted,
+    detection.vpc_route_table_association_replaced,
+    detection.vpc_route_table_route_deleted,
+    detection.vpc_route_table_route_disassociated,
+    detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv4,
+    detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv6,
   ]
 
   tags = local.mitre_attack_v161_ta0005_t1070_common_tags

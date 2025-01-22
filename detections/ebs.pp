@@ -36,7 +36,7 @@ detection "ebs_encryption_by_default_disabled" {
 query "ebs_encryption_by_default_disabled" {
   sql = <<-EOQ
     select
-      ${local.detection_sql_resource_column_empty}
+      ${local.detection_sql_resource_column_region}
     from
       aws_cloudtrail_log
     where
@@ -85,11 +85,10 @@ detection "ebs_snapshot_shared_publicly" {
   query           = query.ebs_snapshot_shared_publicly
 
   tags = merge(local.ebs_common_tags, {
-    mitre_attack_ids = "TA0001:T1531" # Initial Access and Resource Hijacking
+    mitre_attack_ids = "TA0001:T1531"
   })
 }
 
-# TODO: This query should search through 'createVolumePermissions' -> 'add' for {"group": "all"}
 query "ebs_snapshot_shared_publicly" {
   sql = <<-EOQ
     select
@@ -99,8 +98,10 @@ query "ebs_snapshot_shared_publicly" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name = 'ModifySnapshotAttribute'
-      and (request_parameters ->> 'attribute') = 'createVolumePermission'
-      and (request_parameters -> 'createVolumePermission' ->> 'add') like '%all%'
+      and json_contains(
+        (request_parameters -> 'createVolumePermission' -> 'add' -> 'items'),
+        '{"group": "all"}'
+      )
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
@@ -116,15 +117,14 @@ detection "ebs_snapshot_created_with_encryption_disabled" {
   query           = query.ebs_snapshot_created_with_encryption_disabled
 
   tags = merge(local.ebs_common_tags, {
-    mitre_attack_ids = "TA0001:T1531" # Initial Access
+    mitre_attack_ids = "TA0001:T1531"
   })
 }
 
-# TODO: Test this query
 query "ebs_snapshot_created_with_encryption_disabled" {
   sql = <<-EOQ
     select
-      ${local.detection_sql_resource_column_request_parameters_snapshot_id}
+      ${local.detection_sql_resource_column_response_elements_snapshot_id}
     from
       aws_cloudtrail_log
     where

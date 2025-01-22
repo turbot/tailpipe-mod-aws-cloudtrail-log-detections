@@ -8,9 +8,7 @@ benchmark "mitre_attack_v161_ta0009_t1005" {
   title         = "T1005 Data from Local System"
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0009_t1005.md")
-  children = [
-    detection.detect_ssm_documents_with_unauthorized_data_access_from_local_systems
-  ]
+  children = []
 
   tags = local.mitre_attack_v161_ta0009_t1005_common_tags
 }

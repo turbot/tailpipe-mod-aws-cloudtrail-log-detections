@@ -8,9 +8,7 @@ benchmark "mitre_attack_v161_ta0009_t1114_001" {
   title         = "T1114.001 Email Collection via AWS SES"
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0009_t1114_001.md")
-  children = [
-    detection.detect_ses_unauthorized_email_collections
-  ]
+  children = []
 
   tags = local.mitre_attack_v161_ta0009_t1114_001_common_tags
 }

@@ -9,7 +9,7 @@ benchmark "mitre_attack_v161_ta0010_t1530" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0010_t1530.md")
   children = [
-    detection.detect_s3_large_file_downloads
+    detection.s3_large_file_downloaded
   ]
 
   tags = local.mitre_attack_v161_ta0010_t1530_common_tags

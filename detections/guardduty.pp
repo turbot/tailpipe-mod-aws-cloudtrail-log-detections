@@ -3,7 +3,6 @@ locals {
     service = "AWS/GuardDuty"
   })
 
-  detect_guardduty_detector_deletions_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.detectorId')")
 }
 
 benchmark "guardduty_detections" {
@@ -11,7 +10,7 @@ benchmark "guardduty_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for GuardDuty events."
   type        = "detection"
   children    = [
-    detection.detect_guardduty_detector_deletions
+    detection.guardduty_detector_deleted
   ]
 
   tags = merge(local.guardduty_common_tags, {
@@ -19,23 +18,23 @@ benchmark "guardduty_detections" {
   })
 }
 
-detection "detect_guardduty_detector_deletions" {
-  title           = "Detect GuardDuty Detector Deletions"
-  description     = "Detect when GuardDuty detectors are deleted. Deleting GuardDuty detectors disables threat detection capabilities, which can allow malicious activities to go undetected and impair your ability to respond to security incidents."
-  documentation   = file("./detections/docs/detect_guardduty_detector_deletions.md")
+detection "guardduty_detector_deleted" {
+  title           = "GuardDuty Detector Deleted"
+  description     = "Detect when a GuardDuty detector was deleted to check for potential risks of disabled threat detection capabilities, which could allow malicious activities to go undetected and impair incident response."
+  documentation   = file("./detections/docs/guardduty_detector_deleted.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_guardduty_detector_deletions
+  query           = query.guardduty_detector_deleted
 
   tags = merge(local.guardduty_common_tags, {
-    mitre_attack_ids = "TA0005:T1562.001, TA0040:T1485"
+    mitre_attack_ids = "TA0005:T1562.001,TA0040:T1485"
   })
 }
 
-query "detect_guardduty_detector_deletions" {
+query "guardduty_detector_deleted" {
   sql = <<-EOQ
     select
-      ${local.detect_guardduty_detector_deletions_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_detector_id}
     from
       aws_cloudtrail_log
     where

@@ -9,7 +9,7 @@ benchmark "mitre_attack_v161_ta0008_t1550_001" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0008_t1550_001.md")
   children = [
-    detection.detect_iam_access_key_creations
+    detection.iam_access_key_created
   ]
 
   tags = local.mitre_attack_v161_ta0008_t1550_001_common_tags

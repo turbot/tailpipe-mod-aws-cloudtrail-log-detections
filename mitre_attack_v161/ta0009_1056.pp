@@ -8,9 +8,7 @@ benchmark "mitre_attack_v161_ta0009_t1056" {
   title         = "T1056 Input Capture"
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0009_t1056.md")
-  children = [
-    detection.detect_ssm_documents_with_unauthorized_input_captures
-  ]
+  children = []
 
   tags = local.mitre_attack_v161_ta0009_t1056_common_tags
 }

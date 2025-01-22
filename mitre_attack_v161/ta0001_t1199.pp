@@ -9,14 +9,12 @@ benchmark "mitre_attack_v161_ta0001_t1199" {
   type  = "detection"
   # documentation = file("./mitre_attack_v161/docs/ta0001_t1199.md")
   children = [
-    detection.detect_ec2_ami_copied_from_external_accounts,
-    detection.detect_ec2_ami_imported_from_external_accounts,
+    detection.ec2_ami_copied_from_external_account,
+    detection.ec2_ami_imported_from_external_account,
     detection.apigateway_rest_api_granted_public_access,
     detection.ebs_snapshot_shared_publicly,
-    detection.detect_public_access_granted_to_iam_roles,
-    detection.detect_public_access_granted_to_iam_users,
-    detection.detect_public_access_granted_to_lambda_functions,
-    detection.detect_public_access_granted_to_rds_db_instances,
+    detection.lambda_function_granted_public_access,
+    detection.rds_db_instance_assigned_public_ip_address,
   ]
 
   tags = local.mitre_attack_v161_ta0001_t1199_common_tags

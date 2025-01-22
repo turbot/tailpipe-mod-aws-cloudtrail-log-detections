@@ -10,11 +10,10 @@ benchmark "mitre_attack_v161_ta0001_t1190" {
   documentation = file("./mitre_attack_v161/docs/ta0001_t1190.md")
   children = [
     detection.apigateway_rest_api_granted_public_access,
-    detection.detect_public_access_granted_to_lambda_functions,
-    detection.detect_public_access_granted_to_rds_db_instances,
-    detection.detect_public_access_granted_to_waf_rules,
-    detection.detect_vpc_security_group_ingress_egress_updates,
-    detection.detect_public_access_granted_to_s3_buckets
+    detection.lambda_function_granted_public_access,
+    detection.rds_db_instance_assigned_public_ip_address,
+    detection.vpc_security_group_ingress_egress_rule_updated,
+    detection.s3_bucket_public_access_granted
   ]
 
   tags = local.mitre_attack_v161_ta0001_t1190_common_tags
