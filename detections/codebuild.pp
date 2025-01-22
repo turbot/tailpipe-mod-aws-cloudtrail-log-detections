@@ -3,7 +3,6 @@ locals {
     service = "AWS/CodeBuild"
   })
 
-  detect_public_access_granted_to_codebuild_projects_sql_columns = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.projectArn')")
 }
 
 benchmark "codebuild_detections" {
@@ -11,10 +10,10 @@ benchmark "codebuild_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for CodeBuild events."
   type        = "detection"
   children = [
-    detection.detect_codebuild_projects_with_environment_variable_updates,
-    detection.detect_codebuild_projects_with_iam_role_updates,
-    detection.detect_codebuild_projects_with_source_repository_updates,
-    detection.detect_public_access_granted_to_codebuild_projects,
+    detection.codebuild_project_environment_variable_updated,
+    detection.codebuild_project_iam_role_updated,
+    detection.codebuild_project_source_repository_updated,
+    detection.codebuild_project_granted_public_access,
   ]
 
   tags = merge(local.codebuild_common_tags, {
@@ -22,116 +21,116 @@ benchmark "codebuild_detections" {
   })
 }
 
-detection "detect_public_access_granted_to_codebuild_projects" {
-  title           = "Detect Public Access Granted to CodeBuild Projects"
-  description     = "Detect CodeBuild project visibility updates to check for misconfigurations that could expose projects publicly, leading to unauthorized access or data leaks."
-  documentation   = file("./detections/docs/detect_public_access_granted_to_codebuild_projects.md")
+detection "codebuild_project_granted_public_access" {
+  title           = "CodeBuild Project Granted Public Access"
+  description     = "Detect when a CodeBuild project was created with public access to check for risks of exposing build configurations, which could lead to unauthorized access and data breaches."
+  documentation   = file("./detections/docs/codebuild_project_granted_public_access.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_public_access_granted_to_codebuild_projects
+  query           = query.codebuild_project_granted_public_access
 
   tags = merge(local.codebuild_common_tags, {
     mitre_attack_ids = "TA0010:T1567"
   })
 }
 
-query "detect_public_access_granted_to_codebuild_projects" {
+query "codebuild_project_granted_public_access" {
   sql = <<-EOQ
     select
-      ${local.detect_public_access_granted_to_codebuild_projects_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_codebuild_project_arn}
     from
       aws_cloudtrail_log
     where
       event_source = 'codebuild.amazonaws.com'
       and event_name = 'UpdateProjectVisibility'
-      and json_extract_string(request_parameters, '$.projectVisibility') = 'PUBLIC_READ'
+      and (request_parameters ->> 'projectVisibility') = 'PUBLIC_READ'
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
   EOQ
 }
 
-detection "detect_codebuild_projects_with_iam_role_updates" {
-  title           = "Detect CodeBuild Projects with IAM Role Updates"
-  description     = "Detect updates to the IAM role associated with CodeBuild projects to check for potential privilege escalations or unauthorized access."
-  documentation   = file("./detections/docs/detect_codebuild_projects_with_iam_role_updates.md")
+detection "codebuild_project_iam_role_updated" {
+  title           = "CodeBuild Project IAM Role Updated"
+  description     = "Detect when an IAM role associated with CodeBuild project was updated to check for unauthorized changes that could grant excessive permissions, potentially leading to privilege escalation or unauthorized access."
+  documentation   = file("./detections/docs/codebuild_project_iam_role_updated.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.detect_codebuild_projects_with_iam_role_updates
+  query           = query.codebuild_project_iam_role_updated
 
   tags = merge(local.codebuild_common_tags, {
     mitre_attack_ids = "TA0004:T1078"
   })
 }
 
-query "detect_codebuild_projects_with_iam_role_updates" {
+query "codebuild_project_iam_role_updated" {
   sql = <<-EOQ
     select
-      ${local.detect_public_access_granted_to_codebuild_projects_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_codebuild_project_arn}
     from
       aws_cloudtrail_log
     where
       event_source = 'codebuild.amazonaws.com'
       and event_name = 'UpdateProject'
-      and json_extract_string(request_parameters, '$.roleArn') is not null
+      and (request_parameters ->> 'roleArn') is not null
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
   EOQ
 }
 
-detection "detect_codebuild_projects_with_source_repository_updates" {
-  title           = "Detect CodeBuild Projects with Source Repository Changes"
-  description     = "Detect updates to CodeBuild source repositories to check for changes that could redirect builds to unauthorized or malicious repositories, compromising code integrity and security."
-  documentation   = file("./detections/docs/detect_codebuild_projects_with_source_repository_updates.md")
+detection "codebuild_project_source_repository_updated" {
+  title           = "CodeBuild Project Source Repository Updated"
+  description     = "Detect when a source repository associated with CodeBuild projects was updated to check for unauthorized changes that could expose sensitive source code or credentials, potentially leading to data breaches or unauthorized access."
+  documentation   = file("./detections/docs/codebuild_project_source_repository_updated.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.detect_codebuild_projects_with_source_repository_updates
+  query           = query.codebuild_project_source_repository_updated
 
   tags = merge(local.codebuild_common_tags, {
     mitre_attack_ids = "TA0001:T1566"
   })
 }
 
-query "detect_codebuild_projects_with_source_repository_updates" {
+query "codebuild_project_source_repository_updated" {
   sql = <<-EOQ
     select
-      ${local.detect_public_access_granted_to_codebuild_projects_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_codebuild_project_arn}
     from
       aws_cloudtrail_log
     where
       event_source = 'codebuild.amazonaws.com'
       and event_name = 'UpdateProject'
-      and json_extract_string(request_parameters, '$.source.location') is not null
+      and (request_parameters -> 'source' ->> 'location') is not null
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
   EOQ
 }
 
-detection "detect_codebuild_projects_with_environment_variable_updates" {
-  title           = "Detect CodeBuild Projects with Environment Variable Updates"
-  description     = "Detect updates to CodeBuild environment variables to check for unauthorized changes to sensitive values like access tokens or API keys, which could lead to privilege escalation or data exfiltration."
-  documentation   = file("./detections/docs/detect_codebuild_projects_with_environment_variable_updates.md")
+detection "codebuild_project_environment_variable_updated" {
+  title           = "CodeBuild Project Environment Variable Updated"
+  description     = "Detect when a CodeBuild project's environment variable was updated to check for unauthorized changes that could expose sensitive information, potentially leading to data breaches or unauthorized access."
+  documentation   = file("./detections/docs/codebuild_project_environment_variable_updated.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.detect_codebuild_projects_with_environment_variable_updates
+  query           = query.codebuild_project_environment_variable_updated
 
   tags = merge(local.codebuild_common_tags, {
     mitre_attack_ids = "TA0005:T1562.001"
   })
 }
 
-query "detect_codebuild_projects_with_environment_variable_updates" {
+query "codebuild_project_environment_variable_updated" {
   sql = <<-EOQ
     select
-      ${local.detect_public_access_granted_to_codebuild_projects_sql_columns}
+      ${local.detection_sql_resource_column_request_parameters_codebuild_project_arn}
     from
       aws_cloudtrail_log
     where
       event_source = 'codebuild.amazonaws.com'
       and event_name = 'UpdateProject'
-      and json_extract_string(request_parameters, '$.environment.environmentVariables') is not null
+      and (request_parameters -> 'environment' ->> 'environmentVariables') is not null
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
