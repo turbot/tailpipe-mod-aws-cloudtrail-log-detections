@@ -40,7 +40,7 @@ query "efs_file_system_backup_policy_disabled" {
     where
       event_source = 'elasticfilesystem.amazonaws.com'
       and event_name = 'PutBackupPolicy'
-      and (request_parameters ->> 'BackupPolicyStatus') = 'DISABLED'
+      and (request_parameters -> 'backupPolicy' ->> 'status') = 'DISABLED'
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;

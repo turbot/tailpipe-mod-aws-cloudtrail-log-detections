@@ -52,7 +52,7 @@ query "eventbridge_rule_disabled" {
     from
       aws_cloudtrail_log
     where
-      event_source = 'eventbridge.amazonaws.com'
+      event_source = 'events.amazonaws.com'
       and event_name = 'DisableRule'
       ${local.detection_sql_where_conditions}
     order by
@@ -67,7 +67,7 @@ query "eventbridge_rule_deleted" {
     from
       aws_cloudtrail_log
     where
-      event_source = 'eventbridge.amazonaws.com'
+      event_source = 'events.amazonaws.com'
       and event_name = 'DeleteRule'
       ${local.detection_sql_where_conditions}
     order by
