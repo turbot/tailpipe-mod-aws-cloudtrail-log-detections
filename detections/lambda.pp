@@ -10,7 +10,6 @@ benchmark "lambda_detections" {
   type        = "detection"
   children    = [
     detection.lambda_function_granted_public_access,
-    detection.lambda_function_code_updated_without_publish,
     detection.lambda_function_environment_variable_updated_with_encryption_at_rest_disabled,
     detection.lambda_function_created_with_function_code_encryption_at_rest_disabled,
   ]
@@ -43,35 +42,6 @@ query "lambda_function_granted_public_access" {
       event_source = 'lambda.amazonaws.com'
       and event_name like 'AddPermission%'
       and (request_parameters ->> 'principal') = '*'
-      ${local.detection_sql_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}
-
-detection "lambda_function_code_updated_without_publish" {
-  title           = "Lambda Function Code Updated Without Publish"
-  description     = "Detect when a Lambda function's code was updated without being published, potentially indicating unapproved testing or staging activities. This can lead to risks such as unintended code changes or unauthorized execution of unpublished code."
-  documentation   = file("./detections/docs/lambda_function_code_updated_without_publish.md")
-  severity        = "low"
-  display_columns = local.detection_display_columns
-  query           = query.lambda_function_code_updated_without_publish
-
-  tags = merge(local.lambda_common_tags, {
-    mitre_attack_ids = "TA0003:T1078"
-  })
-}
-
-query "lambda_function_code_updated_without_publish" {
-  sql = <<-EOQ
-    select
-      ${local.detection_sql_resource_column_request_parameters_function_name}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'lambda.amazonaws.com'
-      and event_name like 'UpdateFunctionCode%'
-      and (request_parameters -> 'publish') = false
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
