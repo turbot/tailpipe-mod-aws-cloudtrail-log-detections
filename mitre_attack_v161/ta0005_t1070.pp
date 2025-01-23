@@ -21,8 +21,7 @@ benchmark "mitre_attack_v161_ta0005_t1070" {
     detection.vpc_route_table_association_replaced,
     detection.vpc_route_table_route_deleted,
     detection.vpc_route_table_route_disassociated,
-    detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv4,
-    detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv6,
+    detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all,
   ]
 
   tags = local.mitre_attack_v161_ta0005_t1070_common_tags

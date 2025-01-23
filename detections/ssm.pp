@@ -37,8 +37,12 @@ query "ssm_document_shared_publicly" {
     from
       aws_cloudtrail_log
     where
-      event_name = 'ModifyDocumentPermission'
-      and (request_parameters ->> 'accountIdsToAdd') like '%all%'
+      event_source = 'ssm.amazonaws.com'
+      and event_name = 'ModifyDocumentPermission'
+      and json_contains(
+        (request_parameters -> 'accountIdsToAdd'),
+        '"all"'
+      )
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;

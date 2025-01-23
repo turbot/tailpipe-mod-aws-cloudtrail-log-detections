@@ -21,8 +21,7 @@ benchmark "vpc_detections" {
     detection.vpc_route_table_route_disassociated,
     detection.vpc_security_group_deleted,
     detection.vpc_security_group_ingress_egress_rule_updated,
-    detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv4,
-    detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv6,
+    detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all,
     detection.vpc_nacl_rule_updated_with_allow_public_access,
     detection.vpc_classic_link_enabled,
     detection.vpc_internet_gateway_detached
@@ -104,7 +103,7 @@ detection "vpc_route_table_deleted" {
 
 detection "vpc_route_table_route_deleted" {
   title           = "VPC Route Table Route Deleted"
-  description     = "Detect when a route is deleted from a VPC route table, which could disrupt network traffic, impair defenses, or facilitate unauthorized traffic manipulation."
+  description     = "Detect when a route was deleted from a VPC route table, which could disrupt network traffic, impair defenses, or facilitate unauthorized traffic manipulation."
   documentation   = file("./detections/docs/vpc_route_table_route_deleted.md")
   severity        = "high"
   display_columns = local.detection_display_columns
@@ -117,7 +116,7 @@ detection "vpc_route_table_route_deleted" {
 
 detection "vpc_route_table_route_disassociated" {
   title           = "VPC Route Table Route Disassociated"
-  description     = "Detect when a route is disassociated from a VPC route table, potentially disrupting network routing or facilitating malicious traffic manipulation."
+  description     = "Detect when a route was disassociated from a VPC route table, potentially disrupting network routing or facilitating malicious traffic manipulation."
   documentation   = file("./detections/docs/vpc_route_table_route_disassociated.md")
   severity        = "high"
   display_columns = local.detection_display_columns
@@ -195,7 +194,7 @@ detection "vpc_peering_connection_deleted" {
 
 detection "vpc_security_group_ingress_egress_rule_updated" {
   title           = "VPC Security Group Ingress/Egress Rule Updated"
-  description     = "Detect when a VPC security group's ingress or egress rule is updated to check for unauthorized access or potential data exfiltration."
+  description     = "Detect when a VPC security group's ingress or egress rule was updated to check for unauthorized access or potential data exfiltration."
   documentation   = file("./detections/docs/vpc_security_group_ingress_egress_rule_updated.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
@@ -205,6 +204,7 @@ detection "vpc_security_group_ingress_egress_rule_updated" {
     mitre_attack_ids = "TA0001:T1190,TA0005:T1562"
   })
 }
+
 detection "vpc_network_acl_updated" {
   title           = "VPC Network ACL Updated"
   description     = "Detect when a VPC Network ACL was updated to check for unauthorized changes in network configurations, which could allow or restrict traffic unexpectedly and impact security posture."
@@ -231,26 +231,13 @@ detection "vpc_flow_log_deleted" {
   })
 }
 
-detection "vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv4" {
-  title           = "VPC Security Group Ingress/Egress Rule Authorized to Allow All IPv4"
-  description     = "Detect when a VPC security group's ingress or egress rule was authorized to allow all IPv4 traffic, potentially exposing resources to unauthorized access or malicious activity."
-  documentation   = file("./detections/docs/vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv4.md")
+detection "vpc_security_group_ingress_egress_rule_authorized_to_allow_all" {
+  title           = "VPC Security Group Ingress/Egress Rule Authorized to Allow All"
+  description     = "Detect when a VPC security group's ingress or egress rule was authorized to allow all IPv4 or IPv6 traffic, potentially exposing resources to unauthorized access or malicious activity."
+  documentation   = file("./detections/docs/vpc_security_group_ingress_egress_rule_authorized_to_allow_all.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv4
-
-  tags = merge(local.vpc_common_tags, {
-    mitre_attack_ids = "TA0005:T1070"
-  })
-}
-
-detection "vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv6" {
-  title           = "VPC Security Group Ingress/Egress Rule Authorized to Allow All IPv6"
-  description     = "Detect when a VPC security group's ingress or egress rule was authorized to allow all IPv6 traffic, potentially exposing resources to unauthorized access or malicious activity."
-  documentation   = file("./detections/docs/vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv6.md")
-  severity        = "high"
-  display_columns = local.detection_display_columns
-  query           = query.vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv6
+  query           = query.vpc_security_group_ingress_egress_rule_authorized_to_allow_all
 
   tags = merge(local.vpc_common_tags, {
     mitre_attack_ids = "TA0005:T1070"
@@ -392,34 +379,26 @@ query "vpc_flow_log_deleted" {
   EOQ
 }
 
-// Need to refactor the query to iterate the ipPermissions over items (request_parameters -> 'ipPermissions' -> 'items') for better manipulation
-query "vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv4" {
+query "vpc_security_group_ingress_egress_rule_authorized_to_allow_all" {
   sql = <<-EOQ
+    with permissions as (
+      select 
+        *,
+        (item -> 'unnest') as ip_permission
+      from
+        aws_cloudtrail_log,
+        unnest(from_json((request_parameters ->> 'ipPermissions' -> 'items'), '["JSON"]')) as item
+      where
+        event_source = 'ec2.amazonaws.com'
+        and event_name in ('AuthorizeSecurityGroupIngress', 'AuthorizeSecurityGroupEgress')
+    )
     select
       ${local.detection_sql_resource_column_request_parameters_network_security_group_id}
     from
-      aws_cloudtrail_log
+      permissions,
+      unnest(from_json((ip_permission -> 'ipRanges' -> 'items'), '["JSON"]')) as item
     where
-      event_source = 'ec2.amazonaws.com'
-      and event_name in ('AuthorizeSecurityGroupIngress', 'AuthorizeSecurityGroupEgress')
-      and (request_parameters ->> 'ipPermissions') like '%0.0.0.0/0%'
-      ${local.detection_sql_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}
-
-// Need to refactor the query to iterate the ipPermissions over items (request_parameters -> 'ipPermissions' -> 'items') for better manipulation
-query "vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv6" {
-  sql = <<-EOQ
-    select
-      ${local.detection_sql_resource_column_request_parameters_network_security_group_id}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'ec2.amazonaws.com'
-      and event_name in ('AuthorizeSecurityGroupIngress', 'AuthorizeSecurityGroupEgress')
-      and (request_parameters ->> 'ipPermissions') like '%::/0%'
+      ((item -> 'unnest' ->> 'cidrIp') = '0.0.0.0/0' or (item -> 'unnest' ->> 'cidrIp') = '::/0')
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;

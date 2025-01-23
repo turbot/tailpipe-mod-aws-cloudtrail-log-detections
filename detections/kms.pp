@@ -9,7 +9,7 @@ benchmark "kms_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for KMS events."
   type        = "detection"
   children    = [
-    detection.kms_key_scheduled_deletion,
+    detection.kms_key_deletion_scheduled,
   ]
 
   tags = merge(local.kms_common_tags, {
@@ -17,20 +17,20 @@ benchmark "kms_detections" {
   })
 }
 
-detection "kms_key_scheduled_deletion" {
-  title           = "KMS Key Scheduled Deletion"
+detection "kms_key_deletion_scheduled" {
+  title           = "KMS Key Deletion Scheduled"
   description     = "Detect when KMS key was scheduled for deletion. This action could render encrypted data permanently inaccessible, disrupt critical services, or impair data protection mechanisms. Unauthorized scheduling of deletion may indicate an attempt to destroy evidence or disable security controls."
-  documentation   = file("./detections/docs/kms_key_scheduled_deletion.md")
+  documentation   = file("./detections/docs/kms_key_deletion_scheduled.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.kms_key_scheduled_deletion
+  query           = query.kms_key_deletion_scheduled
 
   tags = merge(local.kms_common_tags, {
     mitre_attack_ids = "TA0005:T1070"
   })
 }
 
-query "kms_key_scheduled_deletion" {
+query "kms_key_deletion_scheduled" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_key_id}

@@ -38,8 +38,7 @@ benchmark "mitre_attack_v161_ta0004_t1078_004" {
     detection.iam_user_mfa_disabled,
     detection.iam_access_key_created,
     detection.iam_access_key_deleted,
-     detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv4,
-    detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv6,
+     detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all,
   ]
 
   tags = merge(local.mitre_attack_v161_ta0004_t1078_common_tags, {
