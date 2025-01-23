@@ -104,7 +104,7 @@ detection "vpc_route_table_deleted" {
 
 detection "vpc_route_table_route_deleted" {
   title           = "VPC Route Table Route Deleted"
-  description     = "Detect when a route is deleted from a VPC route table, which could disrupt network traffic, impair defenses, or facilitate unauthorized traffic manipulation."
+  description     = "Detect when a route was deleted from a VPC route table, which could disrupt network traffic, impair defenses, or facilitate unauthorized traffic manipulation."
   documentation   = file("./detections/docs/vpc_route_table_route_deleted.md")
   severity        = "high"
   display_columns = local.detection_display_columns
@@ -117,7 +117,7 @@ detection "vpc_route_table_route_deleted" {
 
 detection "vpc_route_table_route_disassociated" {
   title           = "VPC Route Table Route Disassociated"
-  description     = "Detect when a route is disassociated from a VPC route table, potentially disrupting network routing or facilitating malicious traffic manipulation."
+  description     = "Detect when a route was disassociated from a VPC route table, potentially disrupting network routing or facilitating malicious traffic manipulation."
   documentation   = file("./detections/docs/vpc_route_table_route_disassociated.md")
   severity        = "high"
   display_columns = local.detection_display_columns
@@ -195,7 +195,7 @@ detection "vpc_peering_connection_deleted" {
 
 detection "vpc_security_group_ingress_egress_rule_updated" {
   title           = "VPC Security Group Ingress/Egress Rule Updated"
-  description     = "Detect when a VPC security group's ingress or egress rule is updated to check for unauthorized access or potential data exfiltration."
+  description     = "Detect when a VPC security group's ingress or egress rule was updated to check for unauthorized access or potential data exfiltration."
   documentation   = file("./detections/docs/vpc_security_group_ingress_egress_rule_updated.md")
   severity        = "medium"
   display_columns = local.detection_display_columns

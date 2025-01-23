@@ -50,7 +50,7 @@ query "sqs_queue_created_with_encryption_at_rest_disabled" {
 
 detection "sqs_queue_granted_public_access" {
   title           = "SQS Queue Granted Public Access"
-  description     = "Detect when an SQS queue policy is modified to grant public access, potentially exposing sensitive data or allowing unauthorized actions like message injection or tampering."
+  description     = "Detect when an SQS queue policy was modified to grant public access, potentially exposing sensitive data or allowing unauthorized actions like message injection or tampering."
   documentation   = file("./detections/docs/sqs_queue_granted_public_access.md")
   severity        = "high"
   display_columns = local.detection_display_columns

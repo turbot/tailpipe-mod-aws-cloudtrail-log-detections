@@ -49,7 +49,7 @@ query "lambda_function_granted_public_access" {
 
 detection "lambda_function_created_with_function_code_encryption_at_rest_disabled" {
   title           = "Lambda Function Created With Function Code Encryption at Rest Disabled"
-  description     = "Detect when a Lambda function is created or updated without encryption at rest enabled for its code, potentially exposing sensitive information to unauthorized access."
+  description     = "Detect when a Lambda function was created without encryption at rest enabled for its code, potentially exposing sensitive information to unauthorized access."
   documentation   = file("./detections/docs/lambda_function_created_with_function_code_encryption_at_rest_disabled.md")
   severity        = "high"
   display_columns = local.detection_display_columns

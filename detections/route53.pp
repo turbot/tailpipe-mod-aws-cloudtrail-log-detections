@@ -2,8 +2,6 @@ locals {
   route53_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
     service = "AWS/Route53"
   })
-
-  detect_route53_associate_vpc_with_hosted_zone_sql_columns       = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "json_extract_string(request_parameters, '$.hostedZoneId')")
 }
 
 benchmark "route53_detections" {

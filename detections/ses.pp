@@ -19,7 +19,7 @@ benchmark "ses_detections" {
 
 detection "ses_identity_feedback_forwarding_disabled" {
   title           = "SES Identity Feedback Forwarding Disabled"
-  description     = "Detect when AWS SES feedback forwarding is disabled for an identity, which may allow attackers to evade monitoring of bounce or complaint notifications, enabling undetected spam or phishing attacks."
+  description     = "Detect when AWS SES feedback forwarding was disabled for an identity, which may allow attackers to evade monitoring of bounce or complaint notifications, enabling undetected spam or phishing attacks."
   documentation   = file("./detections/docs/ses_identity_feedback_forwarding_disabled.md")
   severity        = "high"
   display_columns = local.detection_display_columns
