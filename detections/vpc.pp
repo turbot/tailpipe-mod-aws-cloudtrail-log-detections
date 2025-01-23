@@ -21,8 +21,7 @@ benchmark "vpc_detections" {
     detection.vpc_route_table_route_disassociated,
     detection.vpc_security_group_deleted,
     detection.vpc_security_group_ingress_egress_rule_updated,
-    detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv4,
-    detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv6,
+    detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all,
     detection.vpc_nacl_rule_updated_with_allow_public_access,
     detection.vpc_classic_link_enabled,
     detection.vpc_internet_gateway_detached
@@ -232,26 +231,13 @@ detection "vpc_flow_log_deleted" {
   })
 }
 
-detection "vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv4" {
-  title           = "VPC Security Group Ingress/Egress Rule Authorized to Allow All IPv4"
-  description     = "Detect when a VPC security group's ingress or egress rule was authorized to allow all IPv4 traffic, potentially exposing resources to unauthorized access or malicious activity."
-  documentation   = file("./detections/docs/vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv4.md")
+detection "vpc_security_group_ingress_egress_rule_authorized_to_allow_all" {
+  title           = "VPC Security Group Ingress/Egress Rule Authorized to Allow All"
+  description     = "Detect when a VPC security group's ingress or egress rule was authorized to allow all IPv4 or IPv6 traffic, potentially exposing resources to unauthorized access or malicious activity."
+  documentation   = file("./detections/docs/vpc_security_group_ingress_egress_rule_authorized_to_allow_all.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv4
-
-  tags = merge(local.vpc_common_tags, {
-    mitre_attack_ids = "TA0005:T1070"
-  })
-}
-
-detection "vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv6" {
-  title           = "VPC Security Group Ingress/Egress Rule Authorized to Allow All IPv6"
-  description     = "Detect when a VPC security group's ingress or egress rule was authorized to allow all IPv6 traffic, potentially exposing resources to unauthorized access or malicious activity."
-  documentation   = file("./detections/docs/vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv6.md")
-  severity        = "high"
-  display_columns = local.detection_display_columns
-  query           = query.vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv6
+  query           = query.vpc_security_group_ingress_egress_rule_authorized_to_allow_all
 
   tags = merge(local.vpc_common_tags, {
     mitre_attack_ids = "TA0005:T1070"
@@ -393,7 +379,7 @@ query "vpc_flow_log_deleted" {
   EOQ
 }
 
-query "vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv4" {
+query "vpc_security_group_ingress_egress_rule_authorized_to_allow_all" {
   sql = <<-EOQ
     with permissions as (
       select 
@@ -412,33 +398,7 @@ query "vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv4" {
       permissions,
       unnest(from_json((ip_permission -> 'ipRanges' -> 'items'), '["JSON"]')) as item
     where
-      (item -> 'unnest' ->> 'cidrIp') = '0.0.0.0/0'
-      ${local.detection_sql_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}
-
-query "vpc_security_group_ingress_egress_rule_authorized_to_allow_all_ipv6" {
-  sql = <<-EOQ
-   with permissions as (
-      select 
-        *,
-        (item -> 'unnest') as ip_permission
-      from
-        aws_cloudtrail_log,
-        unnest(from_json((request_parameters ->> 'ipPermissions' -> 'items'), '["JSON"]')) as item
-      where
-        event_source = 'ec2.amazonaws.com'
-        and event_name in ('AuthorizeSecurityGroupIngress', 'AuthorizeSecurityGroupEgress')
-    )
-    select
-      ${local.detection_sql_resource_column_request_parameters_network_security_group_id}
-    from
-      permissions,
-      unnest(from_json((ip_permission -> 'ipRanges' -> 'items'), '["JSON"]')) as item
-    where
-      (item -> 'unnest' ->> 'cidrIp') = '::/0'
+      ((item -> 'unnest' ->> 'cidrIp') = '0.0.0.0/0' or (item -> 'unnest' ->> 'cidrIp') = '::/0')
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;

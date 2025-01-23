@@ -20,7 +20,7 @@ benchmark "sqs_detections" {
 }
 
 detection "sqs_queue_created_with_encryption_at_rest_disabled" {
-  title           = "SQS Queues Created with Encryption at Rest Disabled"
+  title           = "SQS Queue Created with Encryption at Rest Disabled"
   description     = "Detect when an AWS SQS queue was created or updated with encryption at rest disabled to check for potential risks of unauthorized access or data exfiltration due to unencrypted data."
   documentation   = file("./detections/docs/sqs_queue_created_with_encryption_at_rest_disabled.md")
   severity        = "medium"
@@ -40,7 +40,6 @@ query "sqs_queue_created_with_encryption_at_rest_disabled" {
       aws_cloudtrail_log
     where
       event_name = 'CreateQueue'
-      -- Check for missing KMS key ID, which means no encryption at rest
       and (request_parameters -> 'attributes' ->> 'KmsMasterKeyId') is null
       ${local.detection_sql_where_conditions}
     order by
@@ -63,16 +62,26 @@ detection "sqs_queue_granted_public_access" {
 
 query "sqs_queue_granted_public_access" {
   sql = <<-EOQ
+    with policy as (
+      select
+        *
+      from
+        aws_cloudtrail_log
+      where
+        event_source = 'sqs.amazonaws.com'
+        and event_name = 'SetQueueAttributes'
+        and (request_parameters -> 'attributes' ->> 'Policy') != ''
+    )
     select
       distinct ${local.detection_sql_resource_column_request_parameters_or_response_elements_queue_url},
       (item -> 'unnest') as statement
     from
-      aws_cloudtrail_log,
-      unnest(from_json((request_parameters -> 'attributes' ->> 'Policy' -> 'Statement'), '["JSON"]')) as item
+      policy,
+      unnest(
+        from_json((request_parameters -> 'attributes' ->> 'Policy' -> 'Statement'), '["JSON"]')
+     ) as item
     where
-      event_source = 'sqs.amazonaws.com'
-      and event_name = 'SetQueueAttributes'
-      and (statement ->> 'Effect') = 'Allow'
+      (statement ->> 'Effect') = 'Allow'
       and (json_contains((statement -> 'Principal'), '{"AWS":"*"}') or (statement ->> 'Principal') = '*')
       ${local.detection_sql_where_conditions}
     order by
@@ -101,9 +110,8 @@ query "sqs_queue_dlq_disabled" {
       aws_cloudtrail_log
     where
       event_source = 'sqs.amazonaws.com'
-      and event_name in ('CreateQueue', 'SetQueueAttributes')
+      and event_name = 'SetQueueAttributes'
       and (
-        -- Check if the RedrivePolicy (DLQ configuration) is missing or empty
         (request_parameters -> 'attributes' ->> 'RedrivePolicy') is null
         or (request_parameters -> 'attributes' ->> 'RedrivePolicy') = ''
       )

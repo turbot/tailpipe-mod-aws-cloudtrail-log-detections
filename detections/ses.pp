@@ -39,7 +39,6 @@ query "ses_identity_feedback_forwarding_disabled" {
     where
       event_source = 'ses.amazonaws.com'
       and event_name = 'SetIdentityFeedbackForwardingEnabled'
-      -- Check specifically for disabling feedback forwarding
       and (request_parameters -> 'forwardingEnabled') = false
       ${local.detection_sql_where_conditions}
     order by

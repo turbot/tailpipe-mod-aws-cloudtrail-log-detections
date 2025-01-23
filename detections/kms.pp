@@ -18,7 +18,7 @@ benchmark "kms_detections" {
 }
 
 detection "kms_key_deletion_scheduled" {
-  title           = "KMS Key Scheduled Deletion"
+  title           = "KMS Key Deletion Scheduled"
   description     = "Detect when KMS key was scheduled for deletion. This action could render encrypted data permanently inaccessible, disrupt critical services, or impair data protection mechanisms. Unauthorized scheduling of deletion may indicate an attempt to destroy evidence or disable security controls."
   documentation   = file("./detections/docs/kms_key_deletion_scheduled.md")
   severity        = "medium"
