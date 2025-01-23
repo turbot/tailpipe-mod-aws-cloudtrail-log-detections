@@ -22,12 +22,9 @@ benchmark "mitre_attack_v161_ta0005_t1562_001" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0005_t1562_001.md")
   children = [
-    detection.cloudtrail_trail_encryption_disabled,
     detection.cloudtrail_trail_global_service_logging_disabled,
     detection.cloudtrail_trail_kms_key_updated,
-    detection.cloudtrail_trail_lambda_logging_disabled,
-    detection.cloudtrail_trail_s3_logging_bucket_modified,
-    detection.cloudtrail_trail_s3_logging_disabled,
+    detection.cloudtrail_trail_s3_logging_bucket_updated,
     detection.codebuild_project_source_repository_updated,
     detection.config_rule_deleted,
     detection.config_configuration_recorder_stopped,

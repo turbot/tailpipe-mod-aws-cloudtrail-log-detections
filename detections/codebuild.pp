@@ -11,7 +11,7 @@ benchmark "codebuild_detections" {
   type        = "detection"
   children = [
     detection.codebuild_project_environment_variable_updated,
-    detection.codebuild_project_iam_role_updated,
+    detection.codebuild_project_service_role_updated,
     detection.codebuild_project_source_repository_updated,
     detection.codebuild_project_granted_public_access,
   ]
@@ -50,20 +50,20 @@ query "codebuild_project_granted_public_access" {
   EOQ
 }
 
-detection "codebuild_project_iam_role_updated" {
-  title           = "CodeBuild Project IAM Role Updated"
-  description     = "Detect when an IAM role associated with CodeBuild project was updated to check for unauthorized changes that could grant excessive permissions, potentially leading to privilege escalation or unauthorized access."
-  documentation   = file("./detections/docs/codebuild_project_iam_role_updated.md")
+detection "codebuild_project_service_role_updated" {
+  title           = "CodeBuild Project Service Role Updated"
+  description     = "Detect when an service role associated with CodeBuild project was updated to check for unauthorized changes that could grant excessive permissions, potentially leading to privilege escalation or unauthorized access."
+  documentation   = file("./detections/docs/codebuild_project_service_role_updated.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.codebuild_project_iam_role_updated
+  query           = query.codebuild_project_service_role_updated
 
   tags = merge(local.codebuild_common_tags, {
     mitre_attack_ids = "TA0004:T1078"
   })
 }
 
-query "codebuild_project_iam_role_updated" {
+query "codebuild_project_service_role_updated" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_name}
@@ -130,7 +130,7 @@ query "codebuild_project_environment_variable_updated" {
     where
       event_source = 'codebuild.amazonaws.com'
       and event_name = 'UpdateProject'
-      and (request_parameters -> 'environment' ->> 'environmentVariables') is not null
+      and (request_parameters -> 'environment' -> 'environmentVariables') is not null
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;

@@ -1,3 +1,5 @@
+<!-- Restricting to CLI-based events, as console requests show all fields while CLI only shows updated fields. -->
+
 ## Overview
 
 Detect when an AWS CloudTrail trail is created without global service logging enabled. Disabling global service logging reduces visibility into critical account activities, such as authentication attempts and IAM changes, potentially compromising account security. Enabling this logging ensures comprehensive monitoring and supports compliance with security best practices.

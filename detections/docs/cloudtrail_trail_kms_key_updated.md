@@ -1,3 +1,5 @@
+<!-- Restricting to CLI-based events, as console requests show all fields while CLI only shows updated fields. -->
+
 ## Overview
 
 Detect when an AWS CloudTrail trail is updated with a new AWS Key Management Service (KMS) key. Changes to the KMS key may disrupt log encryption or decryption, potentially resulting in data loss or logging interruptions. Monitoring these updates ensures encryption integrity and protects against unauthorized modifications.
