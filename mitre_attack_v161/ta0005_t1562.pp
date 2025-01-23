@@ -59,7 +59,6 @@ benchmark "mitre_attack_v161_ta0005_t1562_004" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0005_t1562_004.md")
   children = [
-    detection.cloudfront_distribution_geo_restriction_disabled,
     detection.cloudfront_distribution_default_certificate_disabled,
   ]
 
