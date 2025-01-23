@@ -458,7 +458,7 @@ query "vpc_nacl_rule_updated_with_allow_public_access" {
     where
       event_source = 'ec2.amazonaws.com'
       and event_name in ('CreateNetworkAclEntry', 'ReplaceNetworkAclEntry')
-      and (request_parameters ->> 'ruleAction') = 'alow'
+      and (request_parameters ->> 'ruleAction') = 'allow'
       and (request_parameters ->> 'cidrBlock') = '0.0.0.0/0'
       ${local.detection_sql_where_conditions}
     order by 
