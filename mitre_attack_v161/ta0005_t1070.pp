@@ -10,7 +10,7 @@ benchmark "mitre_attack_v161_ta0005_t1070" {
   documentation = file("./mitre_attack_v161/docs/ta0005_t1070.md")
   children = [
     detection.codebuild_project_environment_variable_updated,
-    detection.kms_key_scheduled_deletion,
+    detection.kms_key_deletion_scheduled,
     detection.s3_bucket_granted_public_access,
     detection.ses_identity_feedback_forwarding_disabled,
     detection.sqs_queue_dlq_disabled,
