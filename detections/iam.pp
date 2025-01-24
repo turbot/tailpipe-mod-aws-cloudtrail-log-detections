@@ -21,7 +21,7 @@ benchmark "iam_detections" {
     detection.iam_user_administrative_password_reset,
     detection.iam_user_console_access_enabled,
     detection.iam_user_created,
-    detection.iam_user_inline_policy_attached,
+    detection.iam_user_inline_policy_created,
     detection.iam_user_inline_policy_created,
     detection.iam_user_managed_policy_attached,
     detection.iam_user_mfa_disabled,
@@ -33,6 +33,7 @@ benchmark "iam_detections" {
   })
 }
 
+// iam_user_mfa_disabled --> iam_user_mfa_device_deleted
 detection "iam_user_mfa_disabled" {
   title           = "IAM User MFA Disabled"
   description     = "Detect when MFA was disabled for an IAM user through login profile updates. Disabling MFA weakens security controls, potentially exposing accounts to unauthorized access."
@@ -61,6 +62,7 @@ query "iam_user_mfa_disabled" {
   EOQ
 }
 
+// Use login profile created
 detection "iam_user_console_access_enabled" {
   title           = "IAM User Console Access Enabled"
   description     = "Detect when console access was enabled for an IAM user through login profile updates, potentially increasing attack surfaces if credentials were compromised."
@@ -112,13 +114,13 @@ query "iam_root_user_email_address_updated" {
       event_source = 'iam.amazonaws.com'
       and event_name = 'EmailUpdated'
       and user_identity.type = 'Root'
-      and (response_elements ->> 'EmailUpdated') = 'Success'
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
   EOQ
 }
 
+// use idemtity instead of entity and just keep user, group and role
 detection "iam_entity_created_without_cloudformation" {
   title           = "IAM Entity Created Without CloudFormation"
   description     = "Detect when an IAM entity was created without using CloudFormation. This action may indicate mismanaged permissions or deviations from infrastructure-as-code practices."
@@ -239,7 +241,7 @@ detection "iam_root_user_console_login" {
 query "iam_root_user_console_login" {
   sql = <<-EOQ
     select
-      ${local.detection_sql_resource_column_request_parameters_user_name}
+      ${local.detection_sql_resource_column_root}
     from
       aws_cloudtrail_log
     where
@@ -313,6 +315,7 @@ query "iam_access_key_deleted" {
   EOQ
 }
 
+// Need to remove this query and detection
 detection "iam_user_added_to_administrator_group" {
   title           = "IAM User Added to Administrator Group"
   description     = "Detect when an IAM user was added to an administrator group. This action may indicate privilege escalation attempts or unauthorized changes, potentially granting elevated permissions and leading to full control over AWS resources."
@@ -342,20 +345,20 @@ query "iam_user_added_to_administrator_group" {
   EOQ
 }
 
-detection "iam_user_inline_policy_attached" {
-  title           = "IAM User Inline Policy Attached"
+detection "iam_user_inline_policy_created" {
+  title           = "IAM User Inline Policy Created"
   description     = "Detect when an inline policy was attached to an IAM user. Adding inline policies can grant or modify permissions, potentially leading to privilege escalation or unauthorized access if done without proper authorization."
-  documentation   = file("./detections/docs/iam_user_inline_policy_attached.md")
+  documentation   = file("./detections/docs/iam_user_inline_policy_created.md")
   severity        = "low"
   display_columns = local.detection_display_columns
-  query           = query.iam_user_inline_policy_attached
+  query           = query.iam_user_inline_policy_created
 
   tags = merge(local.iam_common_tags, {
     mitre_attack_ids = "TA0004:T1098"
   })
 }
 
-query "iam_user_inline_policy_attached" {
+query "iam_user_inline_policy_created" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_user_name}
@@ -448,35 +451,6 @@ query "iam_role_inline_policy_created" {
     where
       event_source = 'iam.amazonaws.com'
       and event_name = 'PutRolePolicy'
-      and (request_parameters ->> 'PolicyName') IS NOT NULL
-      ${local.detection_sql_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}
-
-detection "iam_user_inline_policy_created" {
-  title           = "IAM User Inline Policy Created"
-  description     = "Detect when an inline policy was created for an IAM user. Inline policies may bypass centralized controls and lead to privilege escalation or security misconfigurations."
-  documentation   = file("./detections/docs/iam_user_inline_policy_created.md")
-  severity        = "low"
-  display_columns = local.detection_display_columns
-  query           = query.iam_user_inline_policy_created
-
-  tags = merge(local.iam_common_tags, {
-    mitre_attack_ids = "TA0040:T1484.001, TA0003:T1098"
-  })
-}
-
-query "iam_user_inline_policy_created" {
-  sql = <<-EOQ
-    select
-      ${local.detection_sql_resource_column_request_parameters_policy_name}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'iam.amazonaws.com'
-      and event_name = 'PutUserPolicy'
       and (request_parameters ->> 'PolicyName') IS NOT NULL
       ${local.detection_sql_where_conditions}
     order by

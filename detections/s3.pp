@@ -13,9 +13,7 @@ benchmark "s3_detections" {
     detection.s3_bucket_deleted,
     detection.s3_bucket_granted_public_access,
     detection.s3_bucket_policy_modified,
-    detection.s3_data_archived,
     detection.s3_large_file_downloaded,
-    detection.s3_object_compressed_uploaded,
   ]
 
   tags = merge(local.s3_common_tags, {
@@ -44,6 +42,7 @@ query "s3_bucket_deleted" {
     from
       aws_cloudtrail_log
     where
+      event_source = 's3.amazonaws.com'
       event_name = 'DeleteBucket'
       ${local.detection_sql_where_conditions}
     order by
@@ -71,7 +70,8 @@ query "s3_bucket_policy_modified" {
     from
       aws_cloudtrail_log
     where
-      event_name in ('PutBucketPolicy')
+      event_source = 's3.amazonaws.com'
+      and event_name in ('PutBucketPolicy')
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
@@ -98,7 +98,8 @@ query "s3_bucket_granted_public_access" {
     from
       aws_cloudtrail_log
     where
-      event_name = 'PutBucketPolicy'
+      event_source = 's3.amazonaws.com'
+      and event_name = 'PutBucketPolicy'
       and (request_parameters ->> 'bucketPolicy') like '%"Principal":"*"%'
       ${local.detection_sql_where_conditions}
     order by
@@ -126,40 +127,12 @@ query "s3_bucket_block_public_access_disabled" {
     from
       aws_cloudtrail_log
     where
-      event_name = 'PutBucketPublicAccessBlock'
-      and (request_parameters -> 'PublicAccessBlockConfiguration' -> 'RestrictPublicBuckets') = false
-      and (request_parameters -> 'PublicAccessBlockConfiguration' -> 'BlockPublicPolicy') = false
-      and (request_parameters -> 'PublicAccessBlockConfiguration' -> 'BlockPublicAcls') = false
-      and (request_parameters -> 'PublicAccessBlockConfiguration' -> 'IgnorePublicAcls') = false
-      ${local.detection_sql_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}
-
-detection "s3_data_archived" {
-  title           = "S3 Data Archived"
-  description     = "Detect when data was archived in S3. Archiving large amounts of data may indicate an attempt to package information for exfiltration. This activity could be part of a malicious workflow aimed at transferring or storing data outside of standard security controls."
-  severity        = "medium"
-  display_columns = local.detection_display_columns
-  documentation   = file("./detections/docs/s3_data_archived.md")
-  query           = query.s3_data_archived
-
-  tags = merge(local.s3_common_tags, {
-    mitre_attack_ids = "TA0009:T1560.001"
-  })
-}
-
-query "s3_data_archived" {
-  sql = <<-EOQ
-    select
-      ${local.detection_sql_resource_column_request_parameters_bucket_name}
-    from
-      aws_cloudtrail_log
-    where
       event_source = 's3.amazonaws.com'
-      and event_name = 'PutObject'
-      and (request_parameters ->> 'key') like '%.zip%'
+      and event_name = 'PutBucketPublicAccessBlock'
+      and ((request_parameters -> 'PublicAccessBlockConfiguration' -> 'RestrictPublicBuckets') = false
+      or (request_parameters -> 'PublicAccessBlockConfiguration' -> 'BlockPublicPolicy') = false
+      or (request_parameters -> 'PublicAccessBlockConfiguration' -> 'BlockPublicAcls') = false
+      or (request_parameters -> 'PublicAccessBlockConfiguration' -> 'IgnorePublicAcls') = false)
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
@@ -189,36 +162,6 @@ query "s3_large_file_downloaded" {
       event_source = 's3.amazonaws.com'
       and event_name = 'GetObject'
       and (request_parameters -> 'size')::int > 104857600 -- Size greater than 100MB
-      ${local.detection_sql_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}
-
-detection "s3_object_compressed_uploaded" {
-  title           = "S3 Object Compressed Uploaded"
-  description     = "Detect when an S3 object was compressed before being uploaded or modified. Data compression may indicate preparation for data exfiltration, as attackers often compress data to facilitate faster transfer and minimize detection."
-  severity        = "medium"
-  display_columns = local.detection_display_columns
-  documentation   = file("./detections/docs/s3_object_compressed_uploaded.md")
-  query           = query.s3_object_compressed_uploaded
-
-  tags = merge(local.s3_common_tags, {
-    mitre_attack_ids = "TA0010:T1029"
-  })
-}
-
-query "s3_object_compressed_uploaded" {
-  sql = <<-EOQ
-    select
-      ${local.detection_sql_resource_column_request_parameters_name}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 's3.amazonaws.com'
-      and event_name in ('PutObject', 'UploadPart')
-      and (request_parameters ->> 'compressionFormat') is not null
-      and ((user_identity ->> 'type') = 'IAMUser' or (user_identity ->> 'type') = 'AssumedRole')
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
