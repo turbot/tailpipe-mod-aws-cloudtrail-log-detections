@@ -15,7 +15,7 @@ benchmark "vpc_detections" {
     detection.vpc_flow_log_deleted,
     detection.vpc_internet_gateway_added_to_public_route_table,
     detection.vpc_internet_gateway_detached,
-    detection.vpc_nacl_rule_updated_with_allow_public_access,
+    detection.vpc_network_acl_entry_updated_with_allow_public_access,
     detection.vpc_network_acl_updated,
     detection.vpc_peering_connection_deleted,
     detection.vpc_route_table_association_replaced,
@@ -381,45 +381,16 @@ query "vpc_flow_log_deleted" {
 
 query "vpc_security_group_ingress_egress_rule_authorized_to_allow_all" {
   sql = <<-EOQ
-    with permissions as (
-      select 
-        *,
-        (item -> 'unnest') as ip_permission
-      from
-        aws_cloudtrail_log,
-        unnest(from_json((request_parameters ->> 'ipPermissions' -> 'items'), '["JSON"]')) as item
-      where
-        event_source = 'ec2.amazonaws.com'
-        and event_name in ('AuthorizeSecurityGroupIngress', 'AuthorizeSecurityGroupEgress')
-        ${local.detection_sql_where_conditions}
-    ),
-    ipv4 as (
-      select
-        *
-      from
-        permissions, 
-        unnest(from_json((ip_permission -> 'ipRanges' -> 'items'), '["JSON"]')) as item,
-      where
-        (item -> 'unnest' ->> 'cidrIp') = '0.0.0.0/0'
-    ),
-    ipv6 as (
-      select
-        *
-      from
-        permissions, 
-        unnest(from_json((ip_permission -> 'ipv6Ranges' -> 'items'), '["JSON"]')) as item,
-      where
-        (item -> 'unnest' ->> 'cidrIpv6') = '::/0'
-    ),
-    all_ip as (
-      select * from ipv4
-      union all
-      select * from ipv6
-     ) 
-    select
+    select 
       ${local.detection_sql_resource_column_request_parameters_network_security_group_id}
     from
-      all_ip
+      aws_cloudtrail_log,
+      unnest(from_json((request_parameters ->> 'ipPermissions' -> 'items'), '["JSON"]')) as item
+    where
+      event_source = 'ec2.amazonaws.com'
+      and event_name in ('AuthorizeSecurityGroupIngress', 'AuthorizeSecurityGroupEgress')
+      and (json_contains((request_parameters ->> 'ipPermissions' -> 'items'), '{"cidrIp": "0.0.0.0/0"}') or json_contains((request_parameters ->> 'ipPermissions' -> 'items'), '{"cidrIpv6": "::/0"}'))
+      ${local.detection_sql_where_conditions}
     order by
       event_time desc;
   EOQ
@@ -448,27 +419,27 @@ query "vpc_network_acl_updated" {
       aws_cloudtrail_log
     where
       event_source = 'ec2.amazonaws.com'
-      and event_name in ('DeleteNetworkAclEntry', 'ReplaceNetworkAclEntry', 'ReplaceNetworkAclAssociation')
+      and event_name in ('CreateNetworkAclEntry', 'DeleteNetworkAclEntry', 'ReplaceNetworkAclEntry', 'ReplaceNetworkAclAssociation')
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
   EOQ
 }
 
-detection "vpc_nacl_rule_updated_with_allow_public_access" {
-  title           = "VPC Network ACL Rule Updated With Allow Public Access"
+detection "vpc_network_acl_entry_updated_with_allow_public_access" {
+  title           = "VPC Network ACL Entry Updated With Allow Public Access"
   description     = "Detect when a VPC Network ACL rule was created or updated to allow public access (0.0.0.0/0), potentially exposing resources to unauthorized access or disrupting security controls."
-  documentation   = file("./detections/docs/vpc_nacl_rule_updated_with_allow_public_access.md")
+  documentation   = file("./detections/docs/vpc_network_acl_entry_updated_with_allow_public_access.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.vpc_nacl_rule_updated_with_allow_public_access
+  query           = query.vpc_network_acl_entry_updated_with_allow_public_access
 
   tags = merge(local.vpc_common_tags, {
     mitre_attack_ids = "TA0040:T1562.004"
   })
 }
 
-query "vpc_nacl_rule_updated_with_allow_public_access" {
+query "vpc_network_acl_entry_updated_with_allow_public_access" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_network_acl_id}
