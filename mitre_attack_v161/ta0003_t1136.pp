@@ -20,7 +20,7 @@ benchmark "mitre_attack_v161_ta0003_t1136_003" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0003_t1136_003.md")
   children = [
-    detection.iam_entity_created_without_cloudformation,
+    detection.iam_identity_created_without_cloudformation,
     detection.iam_user_created,
   ]
 

@@ -37,8 +37,8 @@ benchmark "mitre_attack_v161_ta0004_t1078_004" {
   children = [
     detection.iam_access_key_created,
     detection.iam_access_key_deleted,
-    detection.iam_user_console_access_enabled,
-    detection.iam_user_mfa_disabled,
+    detection.iam_user_login_profile_created,
+    detection.iam_user_mfa_device_removed,
     detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all,
   ]
 

@@ -66,7 +66,12 @@ locals {
   detection_sql_resource_column_request_parameters_vpc_id                            = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'vpcId'")
   detection_sql_resource_column_response_elements_snapshot_id                        = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "response_elements ->> 'snapshotId'")
   detection_sql_resource_column_root                                                 = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "user_identity.type")
-
+  detection_sql_resource_column_request_parameters_group_name                        = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'groupName'")
+  detection_sql_resource_column_request_parameters_identity_name                     = replace(
+    local.detection_sql_columns,
+    "__RESOURCE_SQL__",
+    "coalesce(request_parameters ->> 'userName', request_parameters ->> 'roleName', request_parameters ->> 'groupName')"
+  )
   // Keep same order as SQL statement for easier readability
   detection_display_columns = [
     "timestamp",
