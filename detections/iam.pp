@@ -22,7 +22,6 @@ benchmark "iam_detections" {
     detection.iam_user_console_access_enabled,
     detection.iam_user_created,
     detection.iam_user_inline_policy_created,
-    detection.iam_user_inline_policy_created,
     detection.iam_user_managed_policy_attached,
     detection.iam_user_mfa_disabled,
     detection.iam_user_password_changed,
