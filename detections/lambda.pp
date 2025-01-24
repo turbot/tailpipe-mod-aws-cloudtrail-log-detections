@@ -9,8 +9,8 @@ benchmark "lambda_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for Lambda events."
   type        = "detection"
   children    = [
-    detection.lambda_function_granted_public_access,
     detection.lambda_function_created_with_function_code_encryption_at_rest_disabled,
+    detection.lambda_function_granted_public_access,
   ]
 
   tags = merge(local.lambda_common_tags, {

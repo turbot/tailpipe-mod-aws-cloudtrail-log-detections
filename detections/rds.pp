@@ -9,12 +9,12 @@ benchmark "rds_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for RDS events."
   type        = "detection"
   children = [
+    detection.rds_db_cluster_deletion_protection_disabled,
+    detection.rds_db_instance_assigned_public_ip_address,
+    detection.rds_db_instance_deletion_protection_disabled,
+    detection.rds_db_instance_iam_authentication_disabled,
     detection.rds_db_instance_master_password_updated,
     detection.rds_db_instance_restored_from_public_snapshot,
-    detection.rds_db_cluster_deletion_protection_disabled,
-    detection.rds_db_instance_deletion_protection_disabled,
-    detection.rds_db_instance_assigned_public_ip_address,
-    detection.rds_db_instance_iam_authentication_disabled,
   ]
 
   tags = merge(local.rds_common_tags, {

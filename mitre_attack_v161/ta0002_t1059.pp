@@ -21,10 +21,10 @@ benchmark "mitre_attack_v161_ta0002_t1059_009" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0002_t1059_009.md")
   children = [
-    detection.vpc_security_group_deleted,
+    detection.cloudtrail_trail_logging_stopped,
     detection.vpc_deleted,
     detection.vpc_flow_log_deleted,
-    detection.cloudtrail_trail_logging_stopped,
+    detection.vpc_security_group_deleted,
   ]
 
   tags = merge(local.mitre_attack_v161_ta0002_common_tags, {

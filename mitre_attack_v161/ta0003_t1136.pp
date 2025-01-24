@@ -21,7 +21,7 @@ benchmark "mitre_attack_v161_ta0003_t1136_003" {
   documentation = file("./mitre_attack_v161/docs/ta0003_t1136_003.md")
   children = [
     detection.iam_entity_created_without_cloudformation,
-    detection.iam_user_created
+    detection.iam_user_created,
   ]
 
   tags = merge(local.mitre_attack_v161_ta0003_common_tags, {

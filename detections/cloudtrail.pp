@@ -34,7 +34,6 @@ detection "cloudtrail_trail_logging_stopped" {
   })
 }
 
-
 query "cloudtrail_trail_logging_stopped" {
   sql = <<-EOQ
     select

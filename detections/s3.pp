@@ -9,9 +9,9 @@ benchmark "s3_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for S3 events."
   type        = "detection"
   children = [
-    detection.s3_bucket_granted_public_access,
     detection.s3_bucket_block_public_access_disabled,
     detection.s3_bucket_deleted,
+    detection.s3_bucket_granted_public_access,
     detection.s3_bucket_policy_modified,
     detection.s3_data_archived,
     detection.s3_large_file_downloaded,

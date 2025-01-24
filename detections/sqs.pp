@@ -10,8 +10,8 @@ benchmark "sqs_detections" {
   type        = "detection"
   children = [
     detection.sqs_queue_created_with_encryption_at_rest_disabled,
-    detection.sqs_queue_granted_public_access,
     detection.sqs_queue_dlq_disabled,
+    detection.sqs_queue_granted_public_access,
   ]
 
   tags = merge(local.sqs_common_tags, {

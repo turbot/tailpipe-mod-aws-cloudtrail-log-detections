@@ -11,6 +11,7 @@ benchmark "mitre_attack_v161_ta0004_t1078" {
   children = [
     benchmark.mitre_attack_v161_ta0004_t1078_001,
     benchmark.mitre_attack_v161_ta0004_t1078_004,
+    detection.codebuild_project_service_role_updated,
   ]
 
   tags = local.mitre_attack_v161_ta0004_t1078_common_tags
@@ -34,10 +35,10 @@ benchmark "mitre_attack_v161_ta0004_t1078_004" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0004_t1078_004.md")
   children = [
-    detection.iam_user_console_access_enabled,
-    detection.iam_user_mfa_disabled,
     detection.iam_access_key_created,
     detection.iam_access_key_deleted,
+    detection.iam_user_console_access_enabled,
+    detection.iam_user_mfa_disabled,
     detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all,
   ]
 

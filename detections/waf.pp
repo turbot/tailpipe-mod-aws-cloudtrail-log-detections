@@ -9,8 +9,8 @@ benchmark "waf_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for WAF events."
   type        = "detection"
   children = [
-    detection.waf_web_acl_disassociated_from_elb_application_load_balancer,
     detection.waf_web_acl_disassociated_from_cloudfront_distribution,
+    detection.waf_web_acl_disassociated_from_elb_application_load_balancer,
     detection.waf_web_acl_logging_disabled,
   ]
 

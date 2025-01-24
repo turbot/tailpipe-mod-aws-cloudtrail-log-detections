@@ -11,9 +11,9 @@ benchmark "ec2_detections" {
   children = [
     detection.ec2_ami_copied_from_external_account,
     detection.ec2_ami_imported_from_external_account,
+    detection.ec2_ami_launch_permission_updated,
     detection.ec2_ami_restore_image_task_from_external_account,
     detection.ec2_ami_store_image_task_from_external_account,
-    detection.ec2_ami_launch_permission_updated,
     detection.ec2_instance_source_dest_check_disabled,
     detection.ec2_instance_user_data_modified_with_ssh_key_addition,
   ]

@@ -22,8 +22,8 @@ benchmark "mitre_attack_v161_ta0040_t1565_003" {
   children = [
     detection.vpc_deleted,
     detection.vpc_peering_connection_deleted,
-    detection.vpc_route_table_deleted,
     detection.vpc_route_table_association_replaced,
+    detection.vpc_route_table_deleted,
     detection.vpc_route_table_route_deleted,
     detection.vpc_route_table_route_disassociated,
   ]

@@ -9,8 +9,8 @@ benchmark "route53_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for Route 53 events."
   type        = "detection"
   children    = [
-    detection.route53_domain_transferred,
     detection.route53_domain_transfer_lock_disabled,
+    detection.route53_domain_transferred,
     detection.route53_hosted_zone_associated_with_vpc,
   ]
 

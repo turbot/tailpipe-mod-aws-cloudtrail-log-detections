@@ -9,22 +9,22 @@ benchmark "vpc_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for VPC events."
   type        = "detection"
   children = [
-    detection.vpc_internet_gateway_added_to_public_route_table,
+    detection.vpc_classic_link_enabled,
     detection.vpc_created,
     detection.vpc_deleted,
     detection.vpc_flow_log_deleted,
+    detection.vpc_internet_gateway_added_to_public_route_table,
+    detection.vpc_internet_gateway_detached,
+    detection.vpc_nacl_rule_updated_with_allow_public_access,
     detection.vpc_network_acl_updated,
     detection.vpc_peering_connection_deleted,
-    detection.vpc_route_table_deleted,
     detection.vpc_route_table_association_replaced,
+    detection.vpc_route_table_deleted,
     detection.vpc_route_table_route_deleted,
     detection.vpc_route_table_route_disassociated,
     detection.vpc_security_group_deleted,
-    detection.vpc_security_group_ingress_egress_rule_updated,
     detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all,
-    detection.vpc_nacl_rule_updated_with_allow_public_access,
-    detection.vpc_classic_link_enabled,
-    detection.vpc_internet_gateway_detached
+    detection.vpc_security_group_ingress_egress_rule_updated,
   ]
 
   tags = merge(local.vpc_common_tags, {

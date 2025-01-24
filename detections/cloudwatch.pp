@@ -26,7 +26,7 @@ detection "cloudwatch_log_group_created_with_encryption_disabled" {
   query           = query.cloudwatch_log_group_created_with_encryption_disabled
 
   tags = merge(local.cloudwatch_common_tags, {
-    mitre_attack_ids = "T1537"
+    mitre_attack_ids = "TA0005:T1562.008"
   })
 }
 

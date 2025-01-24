@@ -11,9 +11,9 @@ benchmark "codebuild_detections" {
   type        = "detection"
   children = [
     detection.codebuild_project_environment_variable_updated,
+    detection.codebuild_project_granted_public_access,
     detection.codebuild_project_service_role_updated,
     detection.codebuild_project_source_repository_updated,
-    detection.codebuild_project_granted_public_access,
   ]
 
   tags = merge(local.codebuild_common_tags, {
@@ -88,7 +88,7 @@ detection "codebuild_project_source_repository_updated" {
   query           = query.codebuild_project_source_repository_updated
 
   tags = merge(local.codebuild_common_tags, {
-    mitre_attack_ids = "TA0001:T1566"
+    mitre_attack_ids = "TA0005:T1562.001"
   })
 }
 
@@ -117,7 +117,7 @@ detection "codebuild_project_environment_variable_updated" {
   query           = query.codebuild_project_environment_variable_updated
 
   tags = merge(local.codebuild_common_tags, {
-    mitre_attack_ids = "TA0005:T1562.001"
+    mitre_attack_ids = "TA0005:T1070,TA0006:T1552.004"
   })
 }
 

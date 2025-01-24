@@ -10,8 +10,8 @@ benchmark "config_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for Config events."
   type        = "detection"
   children = [
-    detection.config_rule_deleted,
     detection.config_configuration_recorder_stopped,
+    detection.config_rule_deleted,
   ]
 
   tags = merge(local.config_common_tags, {
