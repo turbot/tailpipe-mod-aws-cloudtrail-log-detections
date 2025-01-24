@@ -42,7 +42,7 @@ detection "iam_user_mfa_disabled" {
   query           = query.iam_user_mfa_disabled
 
   tags = merge(local.iam_common_tags, {
-    mitre_attack_ids = "TA0005:T1078"
+    mitre_attack_ids = "TA0001:T1078,TA0003:T1078,TA0003:T1556.001,TA0004:T1078"
   })
 }
 

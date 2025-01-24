@@ -16,7 +16,7 @@ benchmark "mitre_attack_v161_ta0040_t1565" {
 }
 
 benchmark "mitre_attack_v161_ta0040_t1565_003" {
-  title         = "T1565.003 Runtime Data Manipulation"
+  title         = "T1565.003 Data Manipulation: Runtime Data Manipulation"
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0040_t1565_003.md")
   children = [

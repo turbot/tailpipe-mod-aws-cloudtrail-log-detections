@@ -7,7 +7,7 @@ locals {
 benchmark "mitre_attack_v161_ta0001_t1199" {
   title = "T1199 Trusted Relationship"
   type  = "detection"
-  # documentation = file("./mitre_attack_v161/docs/ta0001_t1199.md")
+  documentation = file("./mitre_attack_v161/docs/ta0001_t1199.md")
   children = [
     detection.ec2_ami_copied_from_external_account,
     detection.ec2_ami_imported_from_external_account,

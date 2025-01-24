@@ -9,16 +9,14 @@ benchmark "mitre_attack_v161_ta0003_t1556" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0003_t1556.md")
   children = [
-    benchmark.mitre_attack_v161_ta0003_t1556_006,
-    benchmark.mitre_attack_v161_ta0003_t1556_007,
-    benchmark.mitre_attack_v161_ta0003_t1556_009,
+    benchmark.mitre_attack_v161_ta0003_t1556_006
   ]
 
   tags = local.mitre_attack_v161_ta0003_t1556_common_tags
 }
 
 benchmark "mitre_attack_v161_ta0003_t1556_006" {
-  title         = "T1556.001 Modify Authentication Process: Multi-Factor Authentication"
+  title         = "T1556.006 Modify Authentication Process: Multi-Factor Authentication"
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0003_t1556_006.md")
   children = [
@@ -26,30 +24,6 @@ benchmark "mitre_attack_v161_ta0003_t1556_006" {
   ]
 
   tags = merge(local.mitre_attack_v161_ta0003_t1556_common_tags, {
-    mitre_technique_id = "T1556.001"
-  })
-}
-
-benchmark "mitre_attack_v161_ta0003_t1556_007" {
-  title         = "T1556.004 Modify Authentication Process: Hybrid Identity"
-  type          = "detection"
-  documentation = file("./mitre_attack_v161/docs/ta0003_t1556_007.md")
-  children = [
-    #TODO: Add detections
-  ]
-
-  tags = merge(local.mitre_attack_v161_ta0003_t1556_common_tags, {
-    mitre_technique_id = "T1556.004"
-  })
-}
-
-benchmark "mitre_attack_v161_ta0003_t1556_009" {
-  title         = "T1556.004 Modify Authentication Process: Conditional Access Policies"
-  type          = "detection"
-  documentation = file("./mitre_attack_v161/docs/ta0003_t1556_009.md")
-  children = []
-
-  tags = merge(local.mitre_attack_v161_ta0003_t1556_common_tags, {
-    mitre_technique_id = "T1556.004"
+    mitre_technique_id = "T1556.006"
   })
 }

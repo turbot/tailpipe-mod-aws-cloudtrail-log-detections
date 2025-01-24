@@ -5,7 +5,7 @@ locals {
 }
 
 benchmark "mitre_attack_v161_ta0010_t1029" {
-  title         = "T1029 Data Compressed Before Exfiltration"
+  title         = "T1029 Scheduled Transfer"
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0010_t1029.md")
   children = [

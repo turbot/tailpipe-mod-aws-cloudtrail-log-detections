@@ -5,7 +5,7 @@ locals {
 }
 
 benchmark "mitre_attack_v161_ta0003_t1525" {
-  title         = "T1525 Malicious Image"
+  title         = "T1525 Implant Internal Image"
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0003_t1525.md")
   children = [

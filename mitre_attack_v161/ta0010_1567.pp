@@ -16,7 +16,7 @@ benchmark "mitre_attack_v161_ta0010_t1567" {
 }
 
 benchmark "mitre_attack_v161_ta0010_t1567_001" {
-  title         = "T1567.001 Exfiltration to Code Repository"
+  title         = "T1567.001 Exfiltration Over Web Service: Exfiltration to Code Repository"
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0010_t1567_001.md")
   children = [

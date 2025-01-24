@@ -20,7 +20,7 @@ benchmark "mitre_attack_v161_ta0004_t1098" {
 benchmark "mitre_attack_v161_ta0004_t1098_001" {
   title         = "T1098.001 Account Manipulation: Additional Cloud Credentials"
   type          = "detection"
-  documentation = file("./mitre_attack_v161/docs/ta0003_t1098_001.md")
+  documentation = file("./mitre_attack_v161/docs/ta0004_t1098_001.md")
   children = [
     detection.iam_user_created,
     detection.iam_user_console_access_enabled,
@@ -33,7 +33,7 @@ benchmark "mitre_attack_v161_ta0004_t1098_001" {
 benchmark "mitre_attack_v161_ta0004_t1098_003" {
   title         = "T1098.003 Account Manipulation: Additional Cloud Roles"
   type          = "detection"
-  documentation = file("./mitre_attack_v161/docs/ta0003_t1098_003.md")
+  documentation = file("./mitre_attack_v161/docs/ta0004_t1098_003.md")
   children = [
     detection.iam_role_inline_policy_created,
   ]
@@ -44,7 +44,7 @@ benchmark "mitre_attack_v161_ta0004_t1098_003" {
 benchmark "mitre_attack_v161_ta0004_t1098_004" {
   title         = "T1098.004 Account Manipulation: SSH Authorized Keys"
   type          = "detection"
-  documentation = file("./mitre_attack_v161/docs/ta0003_t1098_004.md")
+  documentation = file("./mitre_attack_v161/docs/ta0004_t1098_004.md")
   children = [
     detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all,
     detection.vpc_security_group_ingress_egress_rule_updated,

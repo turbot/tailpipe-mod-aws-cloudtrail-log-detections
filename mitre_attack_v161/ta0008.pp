@@ -7,11 +7,10 @@ locals {
 benchmark "mitre_attack_v161_ta0008" {
   title         = "TA0008 Lateral Movement"
   type          = "detection"
-  # documentation = file("./mitre_attack_v161/docs/ta0008.md")
+  documentation = file("./mitre_attack_v161/docs/ta0008.md")
   children = [
     benchmark.mitre_attack_v161_ta0008_t1210,
-    benchmark.mitre_attack_v161_ta0008_t1550_001,
-    benchmark.mitre_attack_v161_ta0008_t1570,
+    benchmark.mitre_attack_v161_ta0008_t1550,
   ]
 
   tags = merge(local.mitre_attack_v161_ta0008_common_tags, {

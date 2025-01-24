@@ -24,16 +24,17 @@ benchmark "mitre_attack_v161_ta0005_t1562_001" {
   children = [
     detection.cloudtrail_trail_global_service_logging_disabled,
     detection.cloudtrail_trail_kms_key_updated,
+    detection.cloudtrail_trail_logging_stopped,
     detection.cloudtrail_trail_s3_logging_bucket_updated,
     detection.codebuild_project_source_repository_updated,
-    detection.config_rule_deleted,
     detection.config_configuration_recorder_stopped,
+    detection.config_rule_deleted,
     detection.eventbridge_rule_disabled,
     detection.guardduty_detector_deleted,
     detection.vpc_classic_link_enabled,
+    detection.vpc_created,
     detection.waf_web_acl_disassociated_from_cloudfront_distribution,
     detection.waf_web_acl_disassociated_from_elb_application_load_balancer,
-    detection.vpc_created,
   ]
 
   tags = merge(local.mitre_attack_v161_ta0005_t1562_common_tags, {
