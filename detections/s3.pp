@@ -10,6 +10,7 @@ benchmark "s3_detections" {
   type        = "detection"
   children = [
     detection.s3_bucket_granted_public_access,
+    detection.s3_bucket_block_public_access_disabled,
     detection.s3_bucket_deleted,
     detection.s3_bucket_policy_modified,
     detection.s3_data_archived,
@@ -98,7 +99,38 @@ query "s3_bucket_granted_public_access" {
       aws_cloudtrail_log
     where
       event_name = 'PutBucketPolicy'
-      and (request_parameters ->> 'policy') like '%"Principal":"*"%'
+      and (request_parameters ->> 'bucketPolicy') like '%"Principal":"*"%'
+      ${local.detection_sql_where_conditions}
+    order by
+      event_time desc;
+  EOQ
+}
+
+detection "s3_bucket_block_public_access_disabled" {
+  title           = "S3 Bucket Block Public Access Disabled"
+  description     = "Detect when block public access setting was disabled for an S3 bucket. Granting public access can expose sensitive data to unauthorized users, increasing the risk of data breaches, data exfiltration, or malicious exploitation."
+  documentation   = file("./detections/docs/s3_bucket_block_public_access_disabled.md")
+  severity        = "high"
+  display_columns = local.detection_display_columns
+  query           = query.s3_bucket_granted_public_access
+
+  tags = merge(local.s3_common_tags, {
+    mitre_attack_ids = "TA0005:T1070,TA0001:T1190"
+  })
+}
+
+query "s3_bucket_block_public_access_disabled" {
+  sql = <<-EOQ
+    select
+      ${local.detection_sql_resource_column_request_parameters_bucket_name}
+    from
+      aws_cloudtrail_log
+    where
+      event_name = 'PutBucketPublicAccessBlock'
+      and (request_parameters -> 'PublicAccessBlockConfiguration' -> 'RestrictPublicBuckets') = false
+      and (request_parameters -> 'PublicAccessBlockConfiguration' -> 'BlockPublicPolicy') = false
+      and (request_parameters -> 'PublicAccessBlockConfiguration' -> 'BlockPublicAcls') = false
+      and (request_parameters -> 'PublicAccessBlockConfiguration' -> 'IgnorePublicAcls') = false
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
@@ -121,7 +153,7 @@ detection "s3_data_archived" {
 query "s3_data_archived" {
   sql = <<-EOQ
     select
-      ${local.detection_sql_resource_column_request_parameters_name}
+      ${local.detection_sql_resource_column_request_parameters_bucket_name}
     from
       aws_cloudtrail_log
     where

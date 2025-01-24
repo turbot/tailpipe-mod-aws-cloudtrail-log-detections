@@ -44,7 +44,7 @@ query "rds_db_instance_assigned_public_ip_address" {
     where
       event_source = 'rds.amazonaws.com'
       and event_name in ('ModifyDBInstance', 'CreateDBInstance')
-      and (request_parameters ->> 'publiclyAccessible') = 'true'
+      and (request_parameters -> 'publiclyAccessible') = true
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
@@ -73,7 +73,7 @@ query "rds_db_instance_master_password_updated" {
     where
       event_source = 'rds.amazonaws.com'
       and event_name = 'ModifyDBInstance'
-      and (response_elements -> 'pendingModifiedValues' ->> 'masterUserPassword') is not null
+      and (request_parameters -> 'masterUserPassword') is not null
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
@@ -125,7 +125,7 @@ detection "rds_db_cluster_deletion_protection_disabled" {
 query "rds_db_cluster_deletion_protection_disabled" {
   sql = <<-EOQ
     select
-      ${local.detection_sql_resource_column_request_parameters_db_instance_identifier}
+      ${local.detection_sql_resource_column_request_parameters_db_cluster_identifier}
     from
       aws_cloudtrail_log
     where
@@ -154,13 +154,13 @@ detection "rds_db_instance_iam_authentication_disabled" {
 query "rds_db_instance_iam_authentication_disabled" {
   sql = <<-EOQ
     select
-      ${local.detection_sql_resource_column_request_parameters_name}
+      ${local.detection_sql_resource_column_request_parameters_db_instance_identifier}
     from
       aws_cloudtrail_log
     where
       event_source = 'rds.amazonaws.com'
       and event_name = 'ModifyDBInstance'
-      and (request_parameters -> 'enableIAMDatabaseAuthentication') = false
+      and (response_elements -> 'iAMDatabaseAuthenticationEnabled') = false
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
