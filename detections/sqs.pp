@@ -82,7 +82,7 @@ query "sqs_queue_granted_public_access" {
      ) as item
     where
       (statement ->> 'Effect') = 'Allow'
-      and (json_contains((statement -> 'Principal'), '{"AWS":"*"}') or (statement ->> 'Principal') = '*')
+      and ((json_contains((statement -> 'Principal'), '{"AWS":"*"}') or (statement ->> 'Principal') = '*'))
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
@@ -111,10 +111,7 @@ query "sqs_queue_dlq_disabled" {
     where
       event_source = 'sqs.amazonaws.com'
       and event_name = 'SetQueueAttributes'
-      and (
-        (request_parameters -> 'attributes' ->> 'RedrivePolicy') is null
-        or (request_parameters -> 'attributes' ->> 'RedrivePolicy') = ''
-      )
+      and (request_parameters -> 'attributes' ->> 'RedrivePolicy') = ''
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;

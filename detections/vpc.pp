@@ -391,20 +391,39 @@ query "vpc_security_group_ingress_egress_rule_authorized_to_allow_all" {
       where
         event_source = 'ec2.amazonaws.com'
         and event_name in ('AuthorizeSecurityGroupIngress', 'AuthorizeSecurityGroupEgress')
-    )
+        ${local.detection_sql_where_conditions}
+    ),
+    ipv4 as (
+      select
+        *
+      from
+        permissions, 
+        unnest(from_json((ip_permission -> 'ipRanges' -> 'items'), '["JSON"]')) as item,
+      where
+        (item -> 'unnest' ->> 'cidrIp') = '0.0.0.0/0'
+    ),
+    ipv6 as (
+      select
+        *
+      from
+        permissions, 
+        unnest(from_json((ip_permission -> 'ipv6Ranges' -> 'items'), '["JSON"]')) as item,
+      where
+        (item -> 'unnest' ->> 'cidrIpv6') = '::/0'
+    ),
+    all_ip as (
+      select * from ipv4
+      union all
+      select * from ipv6
+     ) 
     select
       ${local.detection_sql_resource_column_request_parameters_network_security_group_id}
     from
-      permissions,
-      unnest(from_json((ip_permission -> 'ipRanges' -> 'items'), '["JSON"]')) as item
-    where
-      ((item -> 'unnest' ->> 'cidrIp') = '0.0.0.0/0' or (item -> 'unnest' ->> 'cidrIp') = '::/0')
-      ${local.detection_sql_where_conditions}
+      all_ip
     order by
       event_time desc;
   EOQ
 }
-
 
 query "vpc_security_group_ingress_egress_rule_updated" {
   sql = <<-EOQ
@@ -459,7 +478,7 @@ query "vpc_nacl_rule_updated_with_allow_public_access" {
       event_source = 'ec2.amazonaws.com'
       and event_name in ('CreateNetworkAclEntry', 'ReplaceNetworkAclEntry')
       and (request_parameters ->> 'ruleAction') = 'allow'
-      and (request_parameters ->> 'cidrBlock') = '0.0.0.0/0'
+      and ((request_parameters ->> 'cidrBlock') = '0.0.0.0/0' or (request_parameters ->> 'ipv6CidrBlock') = '::/0')
       ${local.detection_sql_where_conditions}
     order by 
       event_time desc;
