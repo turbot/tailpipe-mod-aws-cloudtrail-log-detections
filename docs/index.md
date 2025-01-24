@@ -4,9 +4,8 @@ View dashboards, run reports, and scan for anomalies across your AWS CloudTrail 
 
 ## Documentation
 
-- **[Dashboards →](https://hub.powerpipe.io/mods/turbot/tailpipe-mod-aws-detections/dashboards)**
-- **[Benchmarks and controls →](https://hub.powerpipe.io/mods/turbot/aws_compliance/controls)**
-- **[Named queries →](https://hub.powerpipe.io/mods/turbot/aws_compliance/queries)**
+- **[Dashboards →](https://hub.powerpipe.io/mods/turbot/tailpipe-mod-aws-cloudtrail-log-detections/dashboards)**
+- **[Benchmarks and detections →](https://hub.powerpipe.io/mods/turbot/tailpipe-mod-aws-cloudtrail-log-detections/benchmarks)**
 
 ## Getting Started
 
@@ -18,31 +17,86 @@ Install Powerpipe (https://powerpipe.io/downloads), or use Brew:
 brew install turbot/tap/powerpipe
 ```
 
-This mod also requires [Steampipe](https://steampipe.io) with the [AWS plugin](https://hub.steampipe.io/plugins/turbot/aws) as the data source. Install Steampipe (https://steampipe.io/downloads), or use Brew:
-
-```sh
-brew install turbot/tap/steampipe
-steampipe plugin install aws
-```
-
-Steampipe will automatically use your default AWS credentials. Optionally, you can [setup multiple accounts](https://hub.steampipe.io/plugins/turbot/aws#multi-account-connections) or [customize AWS credentials](https://hub.steampipe.io/plugins/turbot/aws#configuring-aws-credentials).
-
-Finally, install the mod:
+Install the mod:
 
 ```sh
 mkdir dashboards
 cd dashboards
-powerpipe mod init
-powerpipe mod install github.com/turbot/steampipe-mod-aws-compliance
+powerpipe mod install github.com/turbot/tailpipe-mod-aws-cloudtrail-log-detections
 ```
 
-### Browsing Dashboards
+This mod also requires [Tailpipe](https://tailpipe.io) with the [AWS plugin](https://hub.tailpipe.io/plugins/turbot/aws).
 
-Start Steampipe as the data source:
+Install Tailpipe (https://tailpipe.io/downloads), or use Brew:
 
 ```sh
-steampipe service start
+brew install turbot/tap/tailpipe
+tailpipe plugin install aws
 ```
+
+### Configuration
+
+Configure your log source:
+
+```sh
+vi ~/.tailpipe/config/aws.tpc
+```
+
+```hcl
+connection "aws" "aws_profile" {
+  profile = "my-profile"
+}
+
+partition "aws_cloudtrail_log" "my_logs" {
+  source "aws_s3_bucket" {
+    connection = connection.aws.aws_profile
+    bucket     = "aws-cloudtrail-logs-bucket"
+  }
+}
+```
+
+For AWS credentails, you can also use the [default AWS connection](https://tailpipe.io/docs/reference/config-files/connection/aws#default-connection), which uses the same the same mechanism as the AWS CLI (AWS environment variables, default profile, etc) or a connection with an access key pair. For more information on AWS connections in Tailpipe, please see [Managing AWS Connections](https://tailpipe.io/docs/reference/config-files/connection/aws).
+
+You can also try this mod with locally downloaded files, like the [public dataset from flaws.cloud](https://summitroute.com/blog/2020/10/09/public_dataset_of_cloudtrail_logs_from_flaws_cloud/):
+
+```hcl
+partition "aws_cloudtrail_log" "local_logs" {
+  source "file"  {
+    paths       = ["/Users/mscott/cloudtrail_logs"]
+    file_layout = "%{DATA}.json.gz"
+  }
+}
+```
+
+For more examples on how you can configure your partitions, please see [aws_cloudtrail_log](https://hub.tailpipe.io/plugins/turbot/aws/tables/aws_cloudtrail_log).
+
+### Log Collection
+
+Collect logs:
+
+```sh
+tailpipe collect aws_cloudtrail_log
+```
+
+When running `tailpipe collect` for the first time, logs from the last 7 days are collected. Subsequent `tailpipe collect` runs will collect logs from the last collection date.
+
+You can override the default behaviour by specifying `--from`:
+
+```sh
+tailpipe collect aws_cloudtrail_log --from 2025-01-01
+```
+
+You can also use relative times. For instance, to collect logs from the last 60 days:
+
+```sh
+tailpipe collect aws_cloudtrail_log --from T-60d
+```
+
+Please note that if you specify a date in `--from`, Tailpipe will delete any collected data for that partition starting from that date to help avoid gaps in the data.
+
+For additional examples on using `tailpipe collect`, please see [tailpipe collect](https://tailpipe.io/docs/reference/cli/collect) reference documentation.
+
+### Browsing Dashboards
 
 Start the dashboard server:
 
@@ -52,7 +106,7 @@ powerpipe server
 
 Browse and view your dashboards at **http://localhost:9033**.
 
-### Running Checks in Your Terminal
+### Running Benchmarks in Your Terminal
 
 Instead of running benchmarks in a dashboard, you can also run them within your
 terminal with the `powerpipe benchmark` command:
@@ -66,36 +120,11 @@ powerpipe benchmark list
 Run a benchmark:
 
 ```sh
-powerpipe benchmark run aws_compliance.benchmark.cis_v400
+powerpipe benchmark run aws_cloudtrail_log_detections.benchmark.mitre_attack_v161
 ```
 
 Different output formats are also available, for more information please see
 [Output Formats](https://powerpipe.io/docs/reference/cli/benchmark#output-formats).
-
-### Common and Tag Dimensions
-
-The benchmark queries use common properties (like `account_id`, `connection_name` and `region`) and tags that are defined in the form of a default list of strings in the `variables.sp` file. These properties can be overwritten in several ways:
-
-It's easiest to setup your vars file, starting with the sample:
-
-```sh
-cp powerpipe.ppvars.example powerpipe.ppvars
-vi powerpipe.ppvars
-```
-
-Alternatively you can pass variables on the command line:
-
-```sh
-powerpipe benchmark run aws_compliance.benchmark.cis_v400 --var 'tag_dimensions=["Environment", "Owner"]'
-```
-
-Or through environment variables:
-
-```sh
-export PP_VAR_common_dimensions='["account_id", "connection_name", "region"]'
-export PP_VAR_tag_dimensions='["Environment", "Owner"]'
-powerpipe benchmark run aws_compliance.benchmark.cis_v400
-```
 
 ## Open Source & Contributing
 

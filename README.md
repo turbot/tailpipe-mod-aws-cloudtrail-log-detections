@@ -1,18 +1,17 @@
 # AWS CloudTrail Log Detections Mod for Powerpipe
 
-View dashboards, run reports, and scan for anomalies across your AWS CloudTrail logs.
+View dashboards, run detections, and scan for anomalies across your AWS CloudTrail logs.
 
-Run benchmarks in a dashboard:
-![image](https://raw.githubusercontent.com/turbot/tailpipe-mod-aws-detections/main/docs/aws_cis_v400_dashboard.png)
+View dashboards:
+![image](https://raw.githubusercontent.com/turbot/tailpipe-mod-aws-cloudtrail-log-detections/main/docs/aws_cis_v400_dashboard.png)
 
-Or in a terminal:
-![image](https://raw.githubusercontent.com/turbot/tailpipe-mod-aws-detections/main/docs/aws_cis_v400_console.png)
+Run detection benchmarks:
+![image](https://raw.githubusercontent.com/turbot/tailpipe-mod-aws-cloudtrail-log-detections/main/docs/aws_cis_v400_dashboard.png)
 
 ## Documentation
 
-- **[Dashboards →](https://hub.powerpipe.io/mods/turbot/tailpipe-mod-aws-detections/dashboards)**
-- **[Benchmarks and detections →](https://hub.powerpipe.io/mods/turbot/tailpipe-mod-aws-detections/benchmarks)**
-- **[Named queries →](https://hub.powerpipe.io/mods/turbot/tailpipe-mod-aws-detections/queries)**
+- **[Dashboards →](https://hub.powerpipe.io/mods/turbot/tailpipe-mod-aws-cloudtrail-log-detections/dashboards)**
+- **[Benchmarks and detections →](https://hub.powerpipe.io/mods/turbot/tailpipe-mod-aws-cloudtrail-log-detections/benchmarks)**
 
 ## Getting Started
 
@@ -24,45 +23,84 @@ Install Powerpipe (https://powerpipe.io/downloads), or use Brew:
 brew install turbot/tap/powerpipe
 ```
 
-This mod also requires [Tailpipe](https://tailpipe.io) with the [AWS plugin](https://hub.tailpipe.io/plugins/turbot/aws) as the data source. Install Tailpipe (https://tailpipe.io/downloads), or use Brew:
+Install the mod:
+
+```sh
+mkdir dashboards
+cd dashboards
+powerpipe mod install github.com/turbot/tailpipe-mod-aws-cloudtrail-log-detections
+```
+
+This mod also requires [Tailpipe](https://tailpipe.io) with the [AWS plugin](https://hub.tailpipe.io/plugins/turbot/aws).
+
+Install Tailpipe (https://tailpipe.io/downloads), or use Brew:
 
 ```sh
 brew install turbot/tap/tailpipe
 tailpipe plugin install aws
 ```
 
+### Configuration
+
 Configure your log source:
 
-```shell
-vi ~/.tailpipe/config/aws.spc
+```sh
+vi ~/.tailpipe/config/aws.tpc
 ```
 
-```terraform
-connection "aws" "dev" {
-  profile = "dev"
+```hcl
+connection "aws" "aws_profile" {
+  profile = "my-profile"
 }
 
-partition "aws_cloudtrail_log" "dev" {
+partition "aws_cloudtrail_log" "my_logs" {
   source "aws_s3_bucket" {
-    bucket = "aws-cloudtrail-logs-bucket"
+    connection = connection.aws.aws_profile
+    bucket     = "aws-cloudtrail-logs-bucket"
   }
 }
 ```
 
+For AWS credentails, you can also use the [default AWS connection](https://tailpipe.io/docs/reference/config-files/connection/aws#default-connection), which uses the same the same mechanism as the AWS CLI (AWS environment variables, default profile, etc) or a connection with an access key pair. For more information on AWS connections in Tailpipe, please see [Managing AWS Connections](https://tailpipe.io/docs/reference/config-files/connection/aws).
+
+You can also try this mod with locally downloaded files, like the [public dataset from flaws.cloud](https://summitroute.com/blog/2020/10/09/public_dataset_of_cloudtrail_logs_from_flaws_cloud/):
+
+```hcl
+partition "aws_cloudtrail_log" "local_logs" {
+  source "file"  {
+    paths       = ["/Users/mscott/cloudtrail_logs"]
+    file_layout = "%{DATA}.json.gz"
+  }
+}
+```
+
+For more examples on how you can configure your partitions, please see [aws_cloudtrail_log](https://hub.tailpipe.io/plugins/turbot/aws/tables/aws_cloudtrail_log).
+
+### Log Collection
+
 Collect logs:
 
-```shell
-tailpipe collect aws_cloudtrail_log.dev
+```sh
+tailpipe collect aws_cloudtrail_log
 ```
 
-Finally, install the mod:
+When running `tailpipe collect` for the first time, logs from the last 7 days are collected. Subsequent `tailpipe collect` runs will collect logs from the last collection date.
+
+You can override the default behaviour by specifying `--from`:
 
 ```sh
-mkdir dashboards
-cd dashboards
-powerpipe mod init
-powerpipe mod install github.com/turbot/tailpipe-mod-aws-detections
+tailpipe collect aws_cloudtrail_log --from 2025-01-01
 ```
+
+You can also use relative times. For instance, to collect logs from the last 60 days:
+
+```sh
+tailpipe collect aws_cloudtrail_log --from T-60d
+```
+
+Please note that if you specify a date in `--from`, Tailpipe will delete any collected data for that partition starting from that date to help avoid gaps in the data.
+
+For additional examples on using `tailpipe collect`, please see [tailpipe collect](https://tailpipe.io/docs/reference/cli/collect) reference documentation.
 
 ### Browsing Dashboards
 
@@ -88,7 +126,7 @@ powerpipe benchmark list
 Run a benchmark:
 
 ```sh
-powerpipe benchmark run aws_detections.benchmark.cloudtrail_log_detections
+powerpipe benchmark run aws_cloudtrail_log_detections.benchmark.mitre_attack_v161
 ```
 
 Different output formats are also available, for more information please see
@@ -107,4 +145,5 @@ This repository is published under the [Apache 2.0 license](https://www.apache.o
 Want to help but don't know where to start? Pick up one of the `help wanted` issues:
 
 - [Powerpipe](https://github.com/turbot/powerpipe/labels/help%20wanted)
-- [AWS Detections Mod](https://github.com/turbot/tailpipe-mod-aws-detections/labels/help%20wanted)
+- [Tailpipe](https://github.com/turbot/tailpipe/labels/help%20wanted)
+- [AWS CloudTrail Log Detections Mod](https://github.com/turbot/tailpipe-mod-aws-cloudtrail-log-detections/labels/help%20wanted)
