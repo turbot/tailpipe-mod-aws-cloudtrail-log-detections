@@ -142,7 +142,7 @@ detection "ebs_snapshot_unlocked" {
   title           = "EBS Snapshot Unlocked"
   description     = "Detect when an EBS snapshot was unlocked, which could allow access to data for a specified duration, potentially exposing sensitive information."
   documentation   = file("./detections/docs/ebs_snapshot_unlocked.md")
-  severity        = "medium"
+  severity        = "low"
   display_columns = local.detection_display_columns
   query           = query.ebs_snapshot_unlocked
 

@@ -43,7 +43,7 @@ query "s3_bucket_deleted" {
       aws_cloudtrail_log
     where
       event_source = 's3.amazonaws.com'
-      event_name = 'DeleteBucket'
+      and event_name = 'DeleteBucket'
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;

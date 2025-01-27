@@ -22,7 +22,7 @@ benchmark "iam_detections" {
     detection.iam_user_created,
     detection.iam_user_inline_policy_updated,
     detection.iam_user_managed_policy_attached,
-    detection.iam_user_mfa_device_removed,
+    detection.iam_user_mfa_device_deactivated,
     detection.iam_user_password_changed,
     detection.iam_user_administrator_policy_attached,
     detection.iam_role_administrator_policy_attached,
@@ -34,20 +34,20 @@ benchmark "iam_detections" {
   })
 }
 
-detection "iam_user_mfa_device_removed" {
+detection "iam_user_mfa_device_deactivated" {
   title           = "IAM User MFA Device Removed"
   description     = "Detect when an MFA device was removed for an IAM user through login profile updates. Disabling MFA weakens security controls, potentially exposing accounts to unauthorized access."
-  documentation   = file("./detections/docs/iam_user_mfa_device_removed.md")
+  documentation   = file("./detections/docs/iam_user_mfa_device_deactivated.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.iam_user_mfa_device_removed
+  query           = query.iam_user_mfa_device_deactivated
 
   tags = merge(local.iam_common_tags, {
     mitre_attack_ids = "TA0001:T1078,TA0003:T1078,TA0003:T1556.001,TA0004:T1078"
   })
 }
 
-query "iam_user_mfa_device_removed" {
+query "iam_user_mfa_device_deactivated" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_user_name}
