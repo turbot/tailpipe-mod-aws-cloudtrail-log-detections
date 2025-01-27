@@ -13,6 +13,7 @@ benchmark "ebs_detections" {
     detection.ebs_snapshot_created_with_encryption_disabled,
     detection.ebs_snapshot_shared_publicly,
     detection.ebs_volume_detached,
+    detection.ebs_snapshot_unlocked,
   ]
 
   tags = merge(local.ebs_common_tags, {
@@ -131,6 +132,34 @@ query "ebs_snapshot_created_with_encryption_disabled" {
       event_source = 'ec2.amazonaws.com'
       and event_name = 'CreateSnapshot'
       and (response_elements -> 'encrypted') = false
+      ${local.detection_sql_where_conditions}
+    order by
+      tp_timestamp desc;
+  EOQ
+}
+
+detection "ebs_snapshot_unlocked" {
+  title           = "EBS Snapshot Unlocked"
+  description     = "Detect when an EBS snapshot was unlocked, which could allow access to data for a specified duration, potentially exposing sensitive information."
+  documentation   = file("./detections/docs/ebs_snapshot_unlocked.md")
+  severity        = "medium"
+  display_columns = local.detection_display_columns
+  query           = query.ebs_snapshot_unlocked
+
+  tags = merge(local.ebs_common_tags, {
+    mitre_attack_ids = "TA0010:T1567"
+  })
+}
+
+query "ebs_snapshot_unlocked" {
+  sql = <<-EOQ
+    select
+      ${local.detection_sql_resource_column_request_parameters_unlock_snapshot_request_snapshot_id}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'ec2.amazonaws.com'
+      and event_name = 'UnlockSnapshot'
       ${local.detection_sql_where_conditions}
     order by
       tp_timestamp desc;

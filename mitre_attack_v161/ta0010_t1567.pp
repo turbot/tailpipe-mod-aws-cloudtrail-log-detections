@@ -25,6 +25,7 @@ benchmark "mitre_attack_v161_ta0010_t1567_001" {
     detection.sqs_queue_created_with_encryption_at_rest_disabled,
     detection.sqs_queue_granted_public_access,
     detection.ssm_document_shared_publicly,
+    detection.ebs_snapshot_unlocked,
   ]
 
   tags = merge(local.mitre_attack_v161_ta0010_t1567_common_tags, {
