@@ -9,10 +9,10 @@ benchmark "ec2_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for EC2 events."
   type        = "detection"
   children = [
-    detection.ec2_ami_launch_permission_updated,
+    detection.ec2_ami_shared_publicly,
     detection.ec2_instance_launched_with_public_ip,
-    detection.ec2_reserved_instance_purchased,
     detection.ec2_key_pair_deleted,
+    detection.ec2_reserved_instance_purchased,
   ]
 
   tags = merge(local.ec2_common_tags, {
@@ -20,20 +20,20 @@ benchmark "ec2_detections" {
   })
 }
 
-detection "ec2_ami_launch_permission_updated" {
-  title           = "EC2 AMI Launch Permission Updated"
-  description     = "Detect when an EC2 AMI launch permission was updated. Modifying a launch permission may have allowed unauthorized access or privilege escalation, potentially exposing a sensitive resource."
-  documentation   = file("./detections/docs/ec2_ami_launch_permission_updated.md")
+detection "ec2_ami_shared_publicly" {
+  title           = "EC2 AMI Shared Publicly"
+  description     = "Detect when an EC2 AMI was shared publicly. Sharing an AMI publicly may expose the image to unauthorized users, potentially leading to data leakage or security vulnerabilities."
+  documentation   = file("./detections/docs/ec2_ami_shared_publicly.md")
   severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.ec2_ami_launch_permission_updated
+  query           = query.ec2_ami_shared_publicly
 
   tags = merge(local.ec2_common_tags, {
     mitre_attack_ids = "TA0005:T1078"
   })
 }
 
-query "ec2_ami_launch_permission_updated" {
+query "ec2_ami_shared_publicly" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_image_id}

@@ -9,7 +9,7 @@ benchmark "mitre_attack_v161_ta0040_t1495" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0040_t1495.md")
   children = [
-    detection.ec2_ami_launch_permission_updated,
+    detection.ec2_ami_shared_publicly,
   ]
 
   tags = local.mitre_attack_v161_ta0040_t1495_common_tags

@@ -11,22 +11,22 @@ benchmark "iam_detections" {
   children = [
     detection.iam_access_key_created,
     detection.iam_access_key_deleted,
-    detection.iam_identity_created_without_cloudformation,
+    detection.iam_group_administrator_policy_attached,
     detection.iam_group_inline_policy_updated,
+    detection.iam_identity_created_without_cloudformation,
+    detection.iam_role_administrator_policy_attached,
     detection.iam_role_inline_policy_updated,
     detection.iam_role_managed_policy_attached,
     detection.iam_root_user_console_login,
     detection.iam_root_user_email_address_updated,
-    detection.iam_user_login_profile_updated,
-    detection.iam_user_login_profile_created,
+    detection.iam_user_administrator_policy_attached,
     detection.iam_user_created,
     detection.iam_user_inline_policy_updated,
+    detection.iam_user_login_profile_created,
+    detection.iam_user_login_profile_updated,
     detection.iam_user_managed_policy_attached,
     detection.iam_user_mfa_device_deactivated,
     detection.iam_user_password_changed,
-    detection.iam_user_administrator_policy_attached,
-    detection.iam_role_administrator_policy_attached,
-    detection.iam_group_administrator_policy_attached,
   ]
 
   tags = merge(local.iam_common_tags, {

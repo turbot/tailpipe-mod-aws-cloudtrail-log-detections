@@ -11,7 +11,7 @@ benchmark "eventbridge_detections" {
   type        = "detection"
   children = [
     detection.eventbridge_rule_deleted,
-    detection.eventbridge_rule_disabled
+    detection.eventbridge_rule_disabled,
   ]
 
   tags = merge(local.eventbridge_common_tags, {
