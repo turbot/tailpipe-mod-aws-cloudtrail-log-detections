@@ -45,8 +45,8 @@ query "sns_topic_granted_public_access" {
         and event_name = 'SetTopicAttributes'
         and (request_parameters ->> 'attributeName') = 'Policy'
     )
-    select
-      distinct ${local.detection_sql_resource_column_request_parameters_topic_arn}
+    select      
+      ${local.detection_sql_resource_column_request_parameters_topic_arn}
     from
       policy
     where

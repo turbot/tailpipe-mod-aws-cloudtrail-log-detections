@@ -76,7 +76,7 @@ query "sqs_queue_granted_public_access" {
         and (request_parameters -> 'attributes' ->> 'Policy') != ''
     )
     select
-      distinct ${local.detection_sql_resource_column_request_parameters_or_response_elements_queue_url}
+      ${local.detection_sql_resource_column_request_parameters_or_response_elements_queue_url}
     from
       policy
     where
@@ -104,7 +104,7 @@ detection "sqs_queue_dlq_disabled" {
 query "sqs_queue_dlq_disabled" {
   sql = <<-EOQ
     select
-      distinct ${local.detection_sql_resource_column_request_parameters_or_response_elements_queue_url}
+      ${local.detection_sql_resource_column_request_parameters_or_response_elements_queue_url}
     from
       aws_cloudtrail_log
     where
