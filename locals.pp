@@ -68,11 +68,11 @@ locals {
   detection_sql_resource_column_request_parameters_unlock_snapshot_request_snapshot_id = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters -> 'UnlockSnapshotRequest' ->> 'SnapshotId'")
   detection_sql_resource_column_root                                                   = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "user_identity.type")
   detection_sql_resource_column_request_parameters_group_name                          = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'groupName'")
-  detection_sql_resource_column_request_parameters_identity_name = replace(
-    local.detection_sql_columns,
-    "__RESOURCE_SQL__",
-    "coalesce(request_parameters ->> 'userName', request_parameters ->> 'roleName', request_parameters ->> 'groupName')"
-  )
+  detection_sql_resource_column_request_parameters_identity_name                       = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "coalesce(request_parameters ->> 'userName', request_parameters ->> 'roleName', request_parameters ->> 'groupName')")
+  detection_sql_resource_column_response_elements_instance_id                          = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "response_elements -> 'instancesSet' -> 'items' -> 0 ->> 'instanceId'")
+  detection_sql_resource_column_response_elements_reserved_instances_id                = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "response_elements ->> 'reservedInstancesId'")
+  detection_sql_resource_column_request_parameters_key_name = replace(local.detection_sql_columns, "__RESOURCE_SQL__", "request_parameters ->> 'keyPairId'")
+
   // Keep same order as SQL statement for easier readability
   detection_display_columns = [
     "timestamp",

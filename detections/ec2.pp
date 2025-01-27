@@ -9,80 +9,16 @@ benchmark "ec2_detections" {
   description = "This benchmark contains recommendations when scanning CloudTrail logs for EC2 events."
   type        = "detection"
   children = [
-    detection.ec2_ami_copied_from_external_account,
-    detection.ec2_ami_imported_from_external_account,
     detection.ec2_ami_launch_permission_updated,
-    detection.ec2_ami_restore_image_task_from_external_account,
-    detection.ec2_ami_store_image_task_from_external_account,
-    detection.ec2_instance_source_dest_check_disabled,
-    detection.ec2_instance_user_data_modified_with_ssh_key_addition,
+    detection.ec2_instance_launched_with_public_ip,
+    detection.ec2_reserved_instance_purchased,
+    detection.ec2_key_pair_deleted,
   ]
 
   tags = merge(local.ec2_common_tags, {
     type = "Benchmark"
   })
 }
-
-detection "ec2_instance_source_dest_check_disabled" {
-  title           = "EC2 Instance Source/Destination Check Disabled"
-  description     = "Detect when the source/destination check was disabled for an EC2 instance. Disabling this check could have allowed unauthorized traffic routing, potentially enabling a malicious activity such as a man-in-the-middle attack or lateral movement."
-  documentation   = file("./detections/docs/ec2_instance_source_dest_check_disabled.md")
-  severity        = "medium"
-  display_columns = local.detection_display_columns
-  query           = query.ec2_instance_source_dest_check_disabled
-
-  tags = merge(local.ec2_common_tags, {
-    mitre_attack_ids = "TA0005:T1562.001"
-  })
-}
-
-query "ec2_instance_source_dest_check_disabled" {
-  sql = <<-EOQ
-    select
-      ${local.detection_sql_resource_column_request_parameters_instance_id}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'ec2.amazonaws.com'
-      and event_name = 'ModifyInstanceAttribute'
-      and (request_parameters ->> 'attribute') = 'sourceDestCheck'
-      and (request_parameters -> 'value') = false
-      ${local.detection_sql_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}
-
-detection "ec2_instance_user_data_modified_with_ssh_key_addition" {
-  title           = "EC2 Instance User Data Modified with SSH Key Addition"
-  description     = "Detect when the user data of an EC2 instance was modified to include an SSH key addition. This modification could indicate unauthorized access attempts or compromise."
-  documentation   = file("./detections/docs/ec2_instance_user_data_modified_with_ssh_key_addition.md")
-  severity        = "critical"
-  display_columns = local.detection_display_columns
-  query           = query.ec2_instance_user_data_modified_with_ssh_key_addition
-
-  tags = merge(local.ec2_common_tags, {
-    mitre_attack_ids = "TA0003:T1098.004"
-  })
-}
-
-query "ec2_instance_user_data_modified_with_ssh_key_addition" {
-  sql = <<-EOQ
-    select
-      ${local.detection_sql_resource_column_request_parameters_user_data}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'ec2.amazonaws.com'
-      and event_name = 'ModifyInstanceAttribute'
-      and (request_parameters -> 'attributeName') = 'userData'
-      and (request_parameters -> 'value') like '%ssh-rsa%'
-      ${local.detection_sql_where_conditions}
-    order by
-      event_time desc;
-  EOQ
-}
-
 
 detection "ec2_ami_launch_permission_updated" {
   title           = "EC2 AMI Launch Permission Updated"
@@ -105,127 +41,100 @@ query "ec2_ami_launch_permission_updated" {
       aws_cloudtrail_log
     where
       event_source = 'ec2.amazonaws.com'
-      and event_name = 'ResetImageAttribute'
-      and (request_parameters ->> 'attribute') = 'launchPermission'
+      and event_name = 'ModifyImageAttribute'
+      and (request_parameters ->> 'attributeType') = 'launchPermission'
+      and (request_parameters -> 'launchPermission' -> 'add' -> 0 ->> 'group') = 'all'
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
   EOQ
 }
 
-detection "ec2_ami_copied_from_external_account" {
-  title           = "EC2 AMI Copied from External Account"
-  description     = "Detect when an EC2 AMI was copied from an external account. This could indicate potential unauthorized duplication or data exfiltration."
-  documentation   = file("./detections/docs/ec2_ami_copied_from_external_account.md")
+detection "ec2_instance_launched_with_public_ip" {
+  title           = "EC2 Instance Launched with Public IP Address"
+  description     = "Detect when an EC2 instance was launched with a public IP address. Launching instances with public IP addresses may expose them to the internet, potentially leading to unauthorized access or attacks."
+  documentation   = file("./detections/docs/ec2_instance_launched_with_public_ip.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.ec2_ami_copied_from_external_account
+  query           = query.ec2_instance_launched_with_public_ip
 
   tags = merge(local.ec2_common_tags, {
-    mitre_attack_ids = "TA0010:T1020"
+    mitre_attack_ids = "TA0010:T1567"
   })
 }
 
-query "ec2_ami_copied_from_external_account" {
+query "ec2_instance_launched_with_public_ip" {
   sql = <<-EOQ
     select
-      ${local.detection_sql_resource_column_request_parameters_source_image_id}
+      ${local.detection_sql_resource_column_response_elements_instance_id}
     from
       aws_cloudtrail_log
     where
       event_source = 'ec2.amazonaws.com'
-      and event_name in ('CopyImage', 'CopyFpgaImage')
-      and (user_identity ->> 'accountId') != (request_parameters ->> 'SourceAccountId')
+      and event_name = 'RunInstances'
+      and json_contains(
+        (request_parameters -> 'networkInterfaces' -> 'items'),
+        '{"associatePublicIpAddress": true}'
+      )
       ${local.detection_sql_where_conditions}
     order by
-      event_time desc;
+      tp_timestamp desc;
   EOQ
 }
 
-detection "ec2_ami_restore_image_task_from_external_account" {
-  title           = "EC2 AMI Restore Image Task from External Account"
-  description     = "Detect when an EC2 AMI restore image task was created from a different account. This action could indicate unauthorized restoration or data recovery, potentially exposing sensitive data."
-  documentation   = file("./detections/docs/ec2_ami_restore_image_task_from_external_account.md")
-  severity        = "high"
+detection "ec2_reserved_instance_purchased" {
+  title           = "EC2 Reserved Instance Purchased"
+  description     = "Detect when an EC2 Reserved Instance was purchased. Purchasing reserved instances may indicate changes in resource planning or cost management strategies, which should be reviewed for compliance and alignment with organizational policies."
+  documentation   = file("./detections/docs/ec2_reserved_instance_purchased.md")
+  severity        = "low"
   display_columns = local.detection_display_columns
-  query           = query.ec2_ami_restore_image_task_from_external_account
+  query           = query.ec2_reserved_instance_purchased
 
   tags = merge(local.ec2_common_tags, {
-    mitre_attack_ids = "TA0007:T1078"
+    mitre_attack_ids = "TA0040:T1587"
   })
 }
 
-query "ec2_ami_restore_image_task_from_external_account" {
+query "ec2_reserved_instance_purchased" {
   sql = <<-EOQ
     select
-      ${local.detection_sql_resource_column_request_parameters_source_image_id}
+      ${local.detection_sql_resource_column_response_elements_reserved_instances_id}
     from
       aws_cloudtrail_log
     where
       event_source = 'ec2.amazonaws.com'
-      and event_name = 'CreateRestoreImageTask'
-      and (user_identity ->> 'accountId') != (request_parameters ->> 'OwnerId')
+      and event_name = 'PurchaseReservedInstancesOffering'
       ${local.detection_sql_where_conditions}
     order by
-      event_time desc;
+      tp_timestamp desc;
   EOQ
 }
 
-detection "ec2_ami_store_image_task_from_external_account" {
-  title           = "EC2 AMI Store Image Task from External Account"
-  description     = "Detect when an EC2 AMI store image task was created for an external account. This action could indicate potential data exfiltration or unauthorized usage of an AMI."
-  documentation   = file("./detections/docs/ec2_ami_store_image_task_from_external_account.md")
-  severity        = "high"
+detection "ec2_key_pair_deleted" {
+  title           = "EC2 Key Pair Deleted"
+  description     = "Detect when an EC2 key pair was deleted. Deleting key pairs may remove access to instances configured to use the key, potentially leading to disruption or unauthorized access attempts."
+  documentation   = file("./detections/docs/ec2_key_pair_deleted.md")
+  severity        = "medium"
   display_columns = local.detection_display_columns
-  query           = query.ec2_ami_store_image_task_from_external_account
+  query           = query.ec2_key_pair_deleted
 
   tags = merge(local.ec2_common_tags, {
-    mitre_attack_ids = "TA0010:T1537"
+    mitre_attack_ids = "TA0001:T1558"
   })
 }
 
-query "ec2_ami_store_image_task_from_external_account" {
+query "ec2_key_pair_deleted" {
   sql = <<-EOQ
     select
-      ${local.detection_sql_resource_column_request_parameters_source_image_id}
+      ${local.detection_sql_resource_column_request_parameters_key_name}
     from
       aws_cloudtrail_log
     where
       event_source = 'ec2.amazonaws.com'
-      and event_name = 'CreateStoreImageTask'
-      and (user_identity ->> 'accountId') != (request_parameters ->> 'OwnerId')
+      and event_name = 'DeleteKeyPair'
       ${local.detection_sql_where_conditions}
     order by
-      event_time desc;
-  EOQ
-}
-
-detection "ec2_ami_imported_from_external_account" {
-  title           = "EC2 AMI Imported from External Account"
-  description     = "Detect when an EC2 AMI was imported from an external account. Importing AMIs from external accounts may introduce untrusted or unauthorized images, potentially leading to security vulnerabilities."
-  documentation   = file("./detections/docs/ec2_ami_imported_from_external_account.md")
-  severity        = "high"
-  display_columns = local.detection_display_columns
-  query           = query.ec2_ami_imported_from_external_account
-
-  tags = merge(local.ec2_common_tags, {
-    mitre_attack_ids = "TA0003:T1577"
-  })
-}
-
-query "ec2_ami_imported_from_external_account" {
-  sql = <<-EOQ
-    select
-      ${local.detection_sql_resource_column_request_parameters_image_id}
-    from
-      aws_cloudtrail_log
-    where
-      event_source = 'ec2.amazonaws.com'
-      and event_name = 'ImportImage'
-      and (user_identity ->> 'accountId') != (request_parameters ->> 'OwnerId')
-      ${local.detection_sql_where_conditions}
-    order by
-      event_time desc;
+      tp_timestamp desc;
   EOQ
 }
 

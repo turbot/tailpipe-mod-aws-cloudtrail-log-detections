@@ -12,8 +12,8 @@ benchmark "ebs_detections" {
     detection.ebs_encryption_by_default_disabled,
     detection.ebs_snapshot_created_with_encryption_disabled,
     detection.ebs_snapshot_shared_publicly,
-    detection.ebs_volume_detached,
     detection.ebs_snapshot_unlocked,
+    detection.ebs_volume_detached,
   ]
 
   tags = merge(local.ebs_common_tags, {
@@ -55,7 +55,7 @@ detection "ebs_volume_detached" {
   documentation   = file("./detections/docs/ebs_volume_detached.md")
   severity        = "critical"
   display_columns = local.detection_display_columns
-  query = query.ebs_volume_detached
+  query           = query.ebs_volume_detached
 
   tags = merge(local.ebs_common_tags, {
     mitre_attack_ids = "TA0040:T1561.002"

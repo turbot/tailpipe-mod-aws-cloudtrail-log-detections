@@ -10,8 +10,7 @@ benchmark "mitre_attack_v161_ta0001_t1199" {
   documentation = file("./mitre_attack_v161/docs/ta0001_t1199.md")
   children = [
     detection.ebs_snapshot_shared_publicly,
-    detection.ec2_ami_copied_from_external_account,
-    detection.ec2_ami_imported_from_external_account,
+    detection.ec2_instance_launched_with_public_ip,
     detection.lambda_function_granted_public_access,
     detection.rds_db_instance_assigned_public_ip_address,
   ]

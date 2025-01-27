@@ -8,12 +8,7 @@ benchmark "mitre_attack_v161_ta0003_t1525" {
   title         = "T1525 Implant Internal Image"
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0003_t1525.md")
-  children = [
-    detection.ec2_ami_copied_from_external_account,
-    detection.ec2_ami_imported_from_external_account,
-    detection.ec2_ami_restore_image_task_from_external_account,
-    detection.ec2_ami_store_image_task_from_external_account,
-  ]
+  children = []
 
   tags = local.mitre_attack_v161_ta0003_t1525_common_tags
 }
