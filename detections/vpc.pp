@@ -16,7 +16,7 @@ benchmark "vpc_detections" {
     detection.vpc_internet_gateway_added_to_public_route_table,
     detection.vpc_internet_gateway_detached,
     detection.vpc_network_acl_entry_updated_with_allow_public_access,
-    detection.vpc_network_acl_updated,
+    detection.vpc_network_acl_entry_updated,
     detection.vpc_peering_connection_deleted,
     detection.vpc_route_table_association_replaced,
     detection.vpc_route_table_deleted,
@@ -205,13 +205,13 @@ detection "vpc_security_group_ingress_egress_rule_updated" {
   })
 }
 
-detection "vpc_network_acl_updated" {
-  title           = "VPC Network ACL Updated"
-  description     = "Detect when a VPC Network ACL was updated to check for unauthorized changes in network configurations, which could allow or restrict traffic unexpectedly and impact security posture."
-  documentation   = file("./detections/docs/vpc_network_acl_updated.md")
+detection "vpc_network_acl_entry_updated" {
+  title           = "VPC Network ACL Entry Updated"
+  description     = "Detect when a VPC Network ACL entry was updated to check for unauthorized changes in network configurations, which could allow or restrict traffic unexpectedly and impact security posture."
+  documentation   = file("./detections/docs/vpc_network_acl_entry_updated.md")
   severity        = "low"
   display_columns = local.detection_display_columns
-  query           = query.vpc_network_acl_updated
+  query           = query.vpc_network_acl_entry_updated
 
   tags = merge(local.vpc_common_tags, {
     mitre_attack_ids = "TA0005:T1562"
@@ -411,7 +411,7 @@ query "vpc_security_group_ingress_egress_rule_updated" {
   EOQ
 }
 
-query "vpc_network_acl_updated" {
+query "vpc_network_acl_entry_updated" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_network_acl_id}
@@ -419,7 +419,7 @@ query "vpc_network_acl_updated" {
       aws_cloudtrail_log
     where
       event_source = 'ec2.amazonaws.com'
-      and event_name in ('CreateNetworkAclEntry', 'DeleteNetworkAclEntry', 'ReplaceNetworkAclEntry', 'ReplaceNetworkAclAssociation')
+      and event_name in ('CreateNetworkAclEntry', 'DeleteNetworkAclEntry', 'ReplaceNetworkAclEntry')
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;

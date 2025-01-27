@@ -34,7 +34,10 @@ query "sns_topic_granted_public_access" {
   sql = <<-EOQ
     with policy as (
       select
-        *
+        *,
+        unnest(
+        from_json((request_parameters ->> 'attributeValue' -> 'Statement'), '["JSON"]')
+      ) as statement_item
       from
         aws_cloudtrail_log
       where
@@ -43,16 +46,12 @@ query "sns_topic_granted_public_access" {
         and (request_parameters ->> 'attributeName') = 'Policy'
     )
     select
-      ${local.detection_sql_resource_column_request_parameters_topic_arn},
-      (item -> 'unnest') as statement
+      distinct ${local.detection_sql_resource_column_request_parameters_topic_arn}
     from
-      policy,
-      unnest(
-        from_json((request_parameters ->> 'attributeValue' -> 'Statement'), '["JSON"]')
-      ) as item
+      policy
     where
-      (statement ->> 'Effect') = 'Allow'
-      and (json_contains((statement -> 'Principal'), '{"AWS":"*"}'))
+      (statement_item ->> 'Effect') = 'Allow'
+      and (json_contains((statement_item -> 'Principal'), '{"AWS":"*"}') or ((statement_item ->> 'Principal') = '*'))
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;

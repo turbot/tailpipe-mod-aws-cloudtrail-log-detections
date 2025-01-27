@@ -64,7 +64,10 @@ query "sqs_queue_granted_public_access" {
   sql = <<-EOQ
     with policy as (
       select
-        *
+        *,
+        unnest(
+            from_json((request_parameters -> 'attributes' ->> 'Policy' -> 'Statement'), '["JSON"]')
+         ) as statement_item,
       from
         aws_cloudtrail_log
       where
@@ -73,16 +76,12 @@ query "sqs_queue_granted_public_access" {
         and (request_parameters -> 'attributes' ->> 'Policy') != ''
     )
     select
-      distinct ${local.detection_sql_resource_column_request_parameters_or_response_elements_queue_url},
-      (item -> 'unnest') as statement
+      distinct ${local.detection_sql_resource_column_request_parameters_or_response_elements_queue_url}
     from
-      policy,
-      unnest(
-        from_json((request_parameters -> 'attributes' ->> 'Policy' -> 'Statement'), '["JSON"]')
-     ) as item
+      policy
     where
-      (statement ->> 'Effect') = 'Allow'
-      and ((json_contains((statement -> 'Principal'), '{"AWS":"*"}') or (statement ->> 'Principal') = '*'))
+      (statement_item ->> 'Effect') = 'Allow'
+      and ((json_contains((statement_item -> 'Principal'), '{"AWS":"*"}') ) or ((statement_item ->> 'Principal') = '*'))
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
