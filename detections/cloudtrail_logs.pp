@@ -17,7 +17,7 @@ benchmark "cloudtrail_log_detections" {
     benchmark.kms_detections,
     benchmark.lambda_detections,
     benchmark.rds_detections,
-    benchmark.route53_detections,
+    benchmark.route_53_detections,
     benchmark.s3_detections,
     benchmark.ses_detections,
     benchmark.sns_detections,

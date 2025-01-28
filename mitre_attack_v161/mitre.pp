@@ -6,7 +6,7 @@ locals {
 }
 
 benchmark "mitre_attack_v161" {
-  title         = "MITRE ATT&CK v16.1 for CloudTrail Logs"
+  title         = "MITRE ATT&CK v16.1"
   description   = "MITRE ATT&CK is a globally-accessible knowledge base of adversary tactics and techniques based on real-world observations."
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/mitre.md")
