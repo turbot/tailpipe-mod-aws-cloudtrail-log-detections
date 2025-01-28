@@ -11,7 +11,6 @@ benchmark "mitre_attack_v161_ta0004_t1078" {
   children = [
     benchmark.mitre_attack_v161_ta0004_t1078_001,
     benchmark.mitre_attack_v161_ta0004_t1078_004,
-    detection.codebuild_project_service_role_updated,
   ]
 
   tags = local.mitre_attack_v161_ta0004_t1078_common_tags

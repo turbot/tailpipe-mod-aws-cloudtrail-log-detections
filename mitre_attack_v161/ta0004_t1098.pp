@@ -22,8 +22,8 @@ benchmark "mitre_attack_v161_ta0004_t1098_001" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0004_t1098_001.md")
   children = [
-    detection.iam_user_login_profile_created,
     detection.iam_user_created,
+    detection.iam_user_login_profile_created,
     detection.rds_db_instance_master_password_updated,
   ]
 
