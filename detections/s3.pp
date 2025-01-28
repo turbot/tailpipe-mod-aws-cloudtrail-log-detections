@@ -51,8 +51,8 @@ query "s3_bucket_deleted" {
 }
 
 detection "s3_bucket_policy_updated" {
-  title           = "S3 Bucket Policy Modified"
-  description     = "Detect when an S3 bucket policy was modified. Changes to bucket policies can weaken security controls, potentially exposing data to unauthorized access or enabling data exfiltration."
+  title           = "S3 Bucket Policy Updated"
+  description     = "Detect when an S3 bucket policy was updated. Changes to bucket policies can weaken security controls, potentially exposing data to unauthorized access or enabling data exfiltration."
   documentation   = file("./detections/docs/s3_bucket_policy_updated.md")
   severity        = "low"
   display_columns = local.detection_display_columns
@@ -100,7 +100,8 @@ query "s3_bucket_granted_public_access" {
     where
       event_source = 's3.amazonaws.com'
       and event_name = 'PutBucketPolicy'
-      and (request_parameters ->> 'bucketPolicy') like '%"Principal":"*"%'
+      and json_contains(request_parameters -> 'bucketPolicy', '{"Principal": "*"}')
+      and json_contains(request_parameters -> 'bucketPolicy', '{"Effect": "Allow"}')
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
