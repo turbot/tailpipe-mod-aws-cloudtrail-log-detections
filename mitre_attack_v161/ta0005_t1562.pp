@@ -1,6 +1,6 @@
 locals {
   mitre_attack_v161_ta0005_t1562_common_tags = merge(local.mitre_attack_v161_ta0005_common_tags, {
-    mitre_technique_id = "T1562"
+    mitre_attack_technique_id = "T1562"
   })
 }
 
@@ -39,7 +39,7 @@ benchmark "mitre_attack_v161_ta0005_t1562_001" {
   ]
 
   tags = merge(local.mitre_attack_v161_ta0005_t1562_common_tags, {
-    mitre_technique_id = "T1562.001"
+    mitre_attack_technique_id = "T1562.001"
   })
 }
 
@@ -52,7 +52,7 @@ benchmark "mitre_attack_v161_ta0005_t1562_002" {
   ]
 
   tags = merge(local.mitre_attack_v161_ta0005_t1562_common_tags, {
-    mitre_technique_id = "T1562.002"
+    mitre_attack_technique_id = "T1562.002"
   })
 }
 
@@ -65,7 +65,7 @@ benchmark "mitre_attack_v161_ta0005_t1562_004" {
   ]
 
   tags = merge(local.mitre_attack_v161_ta0005_t1562_common_tags, {
-    mitre_technique_id = "T1562.004"
+    mitre_attack_technique_id = "T1562.004"
   })
 }
 
@@ -78,6 +78,6 @@ benchmark "mitre_attack_v161_ta0005_t1562_008" {
   ]
 
   tags = merge(local.mitre_attack_v161_ta0005_t1562_common_tags, {
-    mitre_technique_id = "T1562.008"
+    mitre_attack_technique_id = "T1562.008"
   })
 }

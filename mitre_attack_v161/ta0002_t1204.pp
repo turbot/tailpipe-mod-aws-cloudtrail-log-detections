@@ -1,6 +1,6 @@
 locals {
   mitre_attack_v161_ta0002_t1204_common_tags = merge(local.mitre_attack_v161_ta0002_common_tags, {
-    mitre_technique_id = "T1204"
+    mitre_attack_technique_id = "T1204"
   })
 }
 
@@ -23,6 +23,6 @@ benchmark "mitre_attack_v161_ta0002_t1204_003" {
   children = []
 
   tags = merge(local.mitre_attack_v161_ta0002_common_tags, {
-    mitre_technique_id = "T1204.003"
+    mitre_attack_technique_id = "T1204.003"
   })
 }

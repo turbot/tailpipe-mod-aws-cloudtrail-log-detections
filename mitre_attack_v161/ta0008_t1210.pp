@@ -1,6 +1,6 @@
 locals {
   mitre_attack_v161_ta0008_t1210_common_tags = merge(local.mitre_attack_v161_ta0008_common_tags, {
-    mitre_technique_id = "T1210"
+    mitre_attack_technique_id = "T1210"
   })
 }
 
