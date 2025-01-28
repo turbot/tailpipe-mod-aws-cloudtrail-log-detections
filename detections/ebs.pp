@@ -87,6 +87,7 @@ detection "ebs_snapshot_shared_publicly" {
 
   tags = merge(local.ebs_common_tags, {
     mitre_attack_ids = "TA0001:T1531"
+    recommended      = "true"
   })
 }
 

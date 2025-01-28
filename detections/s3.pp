@@ -117,6 +117,7 @@ detection "s3_bucket_block_public_access_disabled" {
 
   tags = merge(local.s3_common_tags, {
     mitre_attack_ids = "TA0005:T1070,TA0001:T1190"
+    recommended      = "true"
   })
 }
 
