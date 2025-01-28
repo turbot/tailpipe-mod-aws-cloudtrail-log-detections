@@ -94,7 +94,7 @@ detection "iam_root_user_email_address_updated" {
   title           = "IAM User Email Address Updated"
   description     = "Detect when an email address was updated for an IAM user in a login profile. This action may indicate attempts to hijack account recovery mechanisms or modify user identities."
   documentation   = file("./detections/docs/iam_root_user_email_address_updated.md")
-  severity        = "medium"
+  severity        = "low"
   display_columns = local.detection_display_columns
   query           = query.iam_root_user_email_address_updated
 
@@ -197,7 +197,7 @@ detection "iam_user_password_changed" {
   title           = "IAM User Password Changed"
   description     = "Detect when an IAM user's password was changed. While password changes are common for legitimate purposes, unauthorized or unexpected changes may indicate credential compromise, brute-force attempts, or account takeover."
   documentation   = file("./detections/docs/iam_user_password_changed.md")
-  severity        = "low"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.iam_user_password_changed
 
@@ -314,7 +314,7 @@ detection "iam_user_inline_policy_updated" {
   title           = "IAM User Inline Policy Updated"
   description     = "Detect when an inline policy was attached to an IAM user. Adding inline policies can grant or modify permissions, potentially leading to privilege escalation or unauthorized access if done without proper authorization."
   documentation   = file("./detections/docs/iam_user_inline_policy_updated.md")
-  severity        = "low"
+  severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.iam_user_inline_policy_updated
 
@@ -370,7 +370,7 @@ detection "iam_group_inline_policy_updated" {
   title           = "IAM Group Inline Policy Updated"
   description     = "Detect when an inline policy was updated for an IAM group. Inline policies may bypass centralized controls and lead to privilege escalation or security misconfigurations."
   documentation   = file("./detections/docs/iam_group_inline_policy_updated.md")
-  severity        = "low"
+  severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.iam_group_inline_policy_updated
 
@@ -398,7 +398,7 @@ detection "iam_user_managed_policy_attached" {
   title           = "IAM User Managed Policy Attached"
   description     = "Detect when a managed policy was attached to an IAM user. Attaching managed policies can grant new permissions, potentially leading to privilege escalation or unauthorized access if done without proper authorization."
   documentation   = file("./detections/docs/iam_user_managed_policy_attached.md")
-  severity        = "low"
+  severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.iam_user_managed_policy_attached
 
@@ -482,7 +482,7 @@ detection "iam_user_administrator_policy_attached" {
   title           = "IAM User Administrator Policy Attached"
   description     = "Detect when the AdministratorAccess policy was attached to an IAM user. Assigning this policy can grant full access to AWS resources, potentially leading to unauthorized privilege escalation or security misconfigurations."
   documentation   = file("./detections/docs/iam_user_administrator_policy_attached.md")
-  severity        = "medium"
+  severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.iam_user_administrator_policy_attached
 
@@ -540,7 +540,7 @@ detection "iam_group_administrator_policy_attached" {
   title           = "IAM Group Administrator Policy Attached"
   description     = "Detect when the AdministratorAccess policy was attached to an IAM group. Assigning this policy can grant full access to AWS resources, potentially leading to unauthorized privilege escalation or security misconfigurations."
   documentation   = file("./detections/docs/iam_group_administrator_policy_attached.md")
-  severity        = "medium"
+  severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.iam_group_administrator_policy_attached
 

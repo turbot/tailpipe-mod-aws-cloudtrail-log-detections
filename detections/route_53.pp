@@ -36,7 +36,7 @@ detection "route_53_domain_transfer_lock_disabled" {
   title           = "Route 53 Domain Transfer Lock Disabled"
   description     = "Detect when the transfer lock on a Route 53 domain was disabled to check for potential risks of unauthorized domain transfers, which could result in loss of control, domain hijacking, service disruptions, or malicious use of the domain."
   documentation   = file("./detections/docs/route_53_domain_transfer_lock_disabled.md")
-  severity        = "medium"
+  severity        = "low"
   display_columns = local.detection_display_columns
   query           = query.route_53_domain_transfer_lock_disabled
 

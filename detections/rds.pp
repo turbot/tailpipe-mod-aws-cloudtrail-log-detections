@@ -26,7 +26,7 @@ detection "rds_db_instance_assigned_public_ip_address" {
   title           = "RDS DB Instance Assigned Public IP Address"
   description     = "Detect when public access was granted to an RDS database instance, potentially exposing sensitive data to unauthorized users and increasing the risk of attacks such as brute force, SQL injection, or exploitation."
   documentation   = file("./detections/docs/rds_db_instance_assigned_public_ip_address.md")
-  severity        = "medium"
+  severity        = "high"
   display_columns = local.detection_display_columns
   query           = query.rds_db_instance_assigned_public_ip_address
 
@@ -55,7 +55,7 @@ detection "rds_db_instance_master_password_updated" {
   title           = "RDS DB Instance Master Password Updated"
   description     = "Detect when the master password of an RDS DB instance was updated. While a password update is common for security maintenance, an unexpected or unauthorized change may indicate an attempt to compromise database access or escalate privileges."
   documentation   = file("./detections/docs/rds_db_instance_master_password_updated.md")
-  severity        = "low"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.rds_db_instance_master_password_updated
 
@@ -142,7 +142,7 @@ detection "rds_db_instance_iam_authentication_disabled" {
   title           = "RDS DB Instance IAM Authentication Disabled"
   description     = "Detect when IAM authentication was disabled on an RDS DB instance. Disabling IAM authentication could have weakened access controls, making it easier for attackers to exploit misconfigured or vulnerable services for unauthorized access or lateral movement."
   documentation   = file("./detections/docs/rds_db_instance_iam_authentication_disabled.md")
-  severity        = "critical"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.rds_db_instance_iam_authentication_disabled
 

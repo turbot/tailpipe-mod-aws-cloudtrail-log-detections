@@ -23,7 +23,7 @@ detection "waf_web_acl_logging_disabled" {
   title           = "WAF Web ACL Logging Disabled"
   description     = "Detect when logging was disabled for a WAF Web ACL to identify changes that could hinder monitoring and auditing, potentially obscuring malicious activity or misconfigurations."
   documentation   = file("./detections/docs/waf_web_acl_logging_disabled.md")
-  severity        = "high"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.waf_web_acl_logging_disabled
 
@@ -52,7 +52,7 @@ detection "waf_web_acl_disassociated_from_cloudfront_distribution" {
   title           = "WAF Web ACL Disassociated from CloudFront Distribution"
   description     = "Detect when a WAF Web ACL was disassociated from a CloudFront distribution, potentially exposing it to unauthorized access or attacks."
   documentation   = file("./detections/docs/waf_web_acl_disassociated_from_cloudfront_distribution.md")
-  severity        = "high"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.waf_web_acl_disassociated_from_cloudfront_distribution
 
@@ -81,7 +81,7 @@ detection "waf_web_acl_disassociated_from_elb_application_load_balancer" {
   title           = "WAF Web ACL Disassociated from ELB Application Load Balancer"
   description     = "Detect when a WAF Web ACL was disassociated from an Application Load Balancer (ALB), potentially exposing it to unauthorized access or attacks."
   documentation   = file("./detections/docs/waf_web_acl_disassociated_from_elb_application_load_balancer.md")
-  severity        = "high"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.waf_web_acl_disassociated_from_elb_application_load_balancer
 

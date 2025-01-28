@@ -92,7 +92,7 @@ detection "vpc_route_table_deleted" {
   title           = "VPC Route Table Deleted"
   description     = "Detect when a VPC route table was deleted to check for changes in network configurations, which could disrupt routing, impair connectivity, or impact security posture."
   documentation   = file("./detections/docs/vpc_route_table_deleted.md")
-  severity        = "low"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.vpc_route_table_deleted
 
@@ -105,7 +105,7 @@ detection "vpc_route_table_route_deleted" {
   title           = "VPC Route Table Route Deleted"
   description     = "Detect when a route was deleted from a VPC route table, which could disrupt network traffic, impair defenses, or facilitate unauthorized traffic manipulation."
   documentation   = file("./detections/docs/vpc_route_table_route_deleted.md")
-  severity        = "high"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.vpc_route_table_route_deleted
 
@@ -118,7 +118,7 @@ detection "vpc_route_table_route_disassociated" {
   title           = "VPC Route Table Route Disassociated"
   description     = "Detect when a route was disassociated from a VPC route table, potentially disrupting network routing or facilitating malicious traffic manipulation."
   documentation   = file("./detections/docs/vpc_route_table_route_disassociated.md")
-  severity        = "high"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.vpc_route_table_route_disassociated
 
@@ -157,7 +157,7 @@ detection "vpc_deleted" {
   title           = "VPC Deleted"
   description     = "Detect when a VPC was deleted to check for disruptions to network infrastructure, which could impair defenses, disrupt monitoring, and impact overall connectivity and security."
   documentation   = file("./detections/docs/vpc_deleted.md")
-  severity        = "high"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.vpc_deleted
 
@@ -170,7 +170,7 @@ detection "vpc_classic_link_enabled" {
   title           = "VPC Classic Link Enabled"
   description     = "Detect when VPC ClassicLink was enabled, as it could increase the attack surface by allowing connections to legacy EC2-Classic instances, potentially exposing resources to unauthorized access or misconfigurations."
   documentation   = file("./detections/docs/vpc_classic_link_enabled.md")
-  severity        = "medium"
+  severity        = "low"
   display_columns = local.detection_display_columns
   query           = query.vpc_classic_link_enabled
 
@@ -209,7 +209,7 @@ detection "vpc_network_acl_entry_updated" {
   title           = "VPC Network ACL Entry Updated"
   description     = "Detect when a VPC Network ACL entry was updated to check for unauthorized changes in network configurations, which could allow or restrict traffic unexpectedly and impact security posture."
   documentation   = file("./detections/docs/vpc_network_acl_entry_updated.md")
-  severity        = "low"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.vpc_network_acl_entry_updated
 
@@ -222,7 +222,7 @@ detection "vpc_flow_log_deleted" {
   title           = "VPC Flow Log Deleted"
   description     = "Detect when a VPC flow log was deleted to check for unauthorized changes, which may impact network monitoring and hinder forensic investigations."
   documentation   = file("./detections/docs/vpc_flow_log_deleted.md")
-  severity        = "high"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.vpc_flow_log_deleted
 

@@ -83,7 +83,7 @@ detection "codebuild_project_source_repository_updated" {
   title           = "CodeBuild Project Source Repository Updated"
   description     = "Detect when a source repository associated with CodeBuild projects was updated to check for unauthorized changes that could expose sensitive source code or credentials, potentially leading to data breaches or unauthorized access."
   documentation   = file("./detections/docs/codebuild_project_source_repository_updated.md")
-  severity        = "high"
+  severity        = "low"
   display_columns = local.detection_display_columns
   query           = query.codebuild_project_source_repository_updated
 
@@ -112,7 +112,7 @@ detection "codebuild_project_environment_variable_updated" {
   title           = "CodeBuild Project Environment Variable Updated"
   description     = "Detect when a CodeBuild project's environment variable was updated to check for unauthorized changes that could expose sensitive information, potentially leading to data breaches or unauthorized access."
   documentation   = file("./detections/docs/codebuild_project_environment_variable_updated.md")
-  severity        = "medium"
+  severity        = "low"
   display_columns = local.detection_display_columns
   query           = query.codebuild_project_environment_variable_updated
 

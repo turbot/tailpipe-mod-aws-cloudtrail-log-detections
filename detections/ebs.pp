@@ -53,7 +53,7 @@ detection "ebs_volume_detached" {
   title           = "EBS Volume Detached"
   description     = "Detect when an EBS volume was detached from an EC2 instance to check for potential risks of unauthorized modification, corruption, or data loss."
   documentation   = file("./detections/docs/ebs_volume_detached.md")
-  severity        = "critical"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.ebs_volume_detached
 
@@ -114,7 +114,7 @@ detection "ebs_snapshot_created_with_encryption_disabled" {
   title           = "EBS Snapshot Created with Encryption Disabled"
   description     = "Detect when an EBS snapshot was created with encryption disabled, which could lead to data exposure and non-compliance with security policies."
   documentation   = file("./detections/docs/ebs_snapshot_created_with_encryption_disabled.md")
-  severity        = "high"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.ebs_snapshot_created_with_encryption_disabled
 

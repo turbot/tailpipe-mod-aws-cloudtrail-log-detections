@@ -25,7 +25,7 @@ detection "cloudtrail_trail_logging_stopped" {
   title           = "CloudTrail Trail Logging Stopped"
   description     = "detect when a CloudTrail trail's logging was stopped to check for unauthorized changes that could reduce visibility into critical AWS activity, potentially hindering threat detection and compliance efforts."
   documentation   = file("./detections/docs/cloudtrail_trail_logging_stopped.md")
-  severity        = "high"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.cloudtrail_trail_logging_stopped
 
@@ -50,7 +50,6 @@ query "cloudtrail_trail_logging_stopped" {
   EOQ
 }
 
-# Restricting to CLI-based events, as console requests show all fields while CLI only shows updated fields.
 detection "cloudtrail_trail_kms_key_updated" {
   title           = "CloudTrail Trail KMS Key Updated"
   description     = "Detect when a CloudTrail trail was updated with a new KMS key to check for changes that could expose log data to unauthorized access or tampering, potentially compromising log integrity and security."
@@ -83,12 +82,11 @@ query "cloudtrail_trail_kms_key_updated" {
   EOQ
 }
 
-# Restricting to CLI-based events, as console requests show all fields while CLI only shows updated fields.
 detection "cloudtrail_trail_s3_logging_bucket_updated" {
   title           = "CloudTrail Trail S3 Logging Bucket Updated"
   description     = "Detect when a CloudTrail trail was updated with a new S3 logging bucket to check for changes that could expose log data to unauthorized access or tampering, potentially compromising log integrity and security."
   documentation   = file("./detections/docs/cloudtrail_trail_s3_logging_bucket_updated.md")
-  severity        = "medium"
+  severity        = "low"
   display_columns = local.detection_display_columns
   query           = query.cloudtrail_trail_s3_logging_bucket_updated
 
@@ -116,7 +114,6 @@ query "cloudtrail_trail_s3_logging_bucket_updated" {
   EOQ
 }
 
-# Restricting to CLI-based events, as console requests show all fields while CLI only shows updated fields.
 detection "cloudtrail_trail_global_service_logging_disabled" {
   title           = "CloudTrail Trail Global Service Logging Disabled"
   description     = "Detect when a CloudTrail trail was created without global service logging to check for potential misconfigurations or unauthorized changes that could expose log data to unauthorized access or tampering."

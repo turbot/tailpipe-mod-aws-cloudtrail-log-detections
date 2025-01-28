@@ -43,7 +43,10 @@ query "ec2_ami_shared_publicly" {
       event_source = 'ec2.amazonaws.com'
       and event_name = 'ModifyImageAttribute'
       and (request_parameters ->> 'attributeType') = 'launchPermission'
-      and (request_parameters -> 'launchPermission' -> 'add' -> 0 ->> 'group') = 'all'
+      and json_contains(
+        (request_parameters -> 'launchPermission' -> 'add' -> 'items'),
+        '{"group": "all"}'
+      )
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;

@@ -22,7 +22,7 @@ detection "guardduty_detector_deleted" {
   title           = "GuardDuty Detector Deleted"
   description     = "Detect when a GuardDuty detector was deleted to check for potential risks of disabled threat detection capabilities, which could allow malicious activities to go undetected and impair incident response."
   documentation   = file("./detections/docs/guardduty_detector_deleted.md")
-  severity        = "high"
+  severity        = "low"
   display_columns = local.detection_display_columns
   query           = query.guardduty_detector_deleted
 

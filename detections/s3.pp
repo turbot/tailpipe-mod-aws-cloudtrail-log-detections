@@ -12,7 +12,7 @@ benchmark "s3_detections" {
     detection.s3_bucket_block_public_access_disabled,
     detection.s3_bucket_deleted,
     detection.s3_bucket_granted_public_access,
-    detection.s3_bucket_policy_modified,
+    detection.s3_bucket_policy_updated,
     detection.s3_large_file_downloaded,
   ]
 
@@ -50,20 +50,20 @@ query "s3_bucket_deleted" {
   EOQ
 }
 
-detection "s3_bucket_policy_modified" {
+detection "s3_bucket_policy_updated" {
   title           = "S3 Bucket Policy Modified"
   description     = "Detect when an S3 bucket policy was modified. Changes to bucket policies can weaken security controls, potentially exposing data to unauthorized access or enabling data exfiltration."
-  documentation   = file("./detections/docs/s3_bucket_policy_modified.md")
+  documentation   = file("./detections/docs/s3_bucket_policy_updated.md")
   severity        = "low"
   display_columns = local.detection_display_columns
-  query           = query.s3_bucket_policy_modified
+  query           = query.s3_bucket_policy_updated
 
   tags = merge(local.s3_common_tags, {
     mitre_attack_ids = "TA0010:T1567"
   })
 }
 
-query "s3_bucket_policy_modified" {
+query "s3_bucket_policy_updated" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_bucket_name}
@@ -143,7 +143,7 @@ query "s3_bucket_block_public_access_disabled" {
 detection "s3_large_file_downloaded" {
   title           = "S3 Large File Downloaded"
   description     = "Detect when a large file was downloaded from an S3 bucket. Unusually large file downloads may indicate potential data exfiltration, such as unauthorized data extraction by an external attacker or insider threat."
-  severity        = "critical"
+  severity        = "low"
   display_columns = local.detection_display_columns
   documentation   = file("./detections/docs/s3_large_file_downloaded.md")
   query           = query.s3_large_file_downloaded
