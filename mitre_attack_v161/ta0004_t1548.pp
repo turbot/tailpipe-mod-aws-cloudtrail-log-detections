@@ -22,7 +22,7 @@ benchmark "mitre_attack_v161_ta0004_t1548_005" {
   documentation = file("./mitre_attack_v161/docs/ta0004_t1548_005.md")
   children = [
     detection.lambda_function_granted_public_access,
-    detection.s3_bucket_granted_public_access,
+    detection.s3_bucket_policy_granted_public_access,
   ]
 
   tags = merge(local.mitre_attack_v161_ta0004_t1548_common_tags, {

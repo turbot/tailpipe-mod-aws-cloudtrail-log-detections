@@ -11,7 +11,7 @@ benchmark "s3_detections" {
   children = [
     detection.s3_bucket_block_public_access_disabled,
     detection.s3_bucket_deleted,
-    detection.s3_bucket_granted_public_access,
+    detection.s3_bucket_policy_granted_public_access,
     detection.s3_bucket_policy_updated,
     detection.s3_large_file_downloaded,
   ]
@@ -78,20 +78,20 @@ query "s3_bucket_policy_updated" {
   EOQ
 }
 
-detection "s3_bucket_granted_public_access" {
-  title           = "S3 Bucket Granted Public Access"
-  description     = "Detect when public access was granted to an S3 bucket by modifying its policy. Granting public access can expose sensitive data to unauthorized users, increasing the risk of data breaches, data exfiltration, or malicious exploitation."
-  documentation   = file("./detections/docs/s3_bucket_granted_public_access.md")
+detection "s3_bucket_policy_granted_public_access" {
+  title           = "S3 Bucket Policy Granted Public Access"
+  description     = "Detect when public access was granted to an S3 bucket by modifying its policy. Granting public access through a bucket policy can expose sensitive data to unauthorized users, increasing the risk of data breaches, data exfiltration, or malicious exploitation."
+  documentation   = file("./detections/docs/s3_bucket_policy_granted_public_access.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.s3_bucket_granted_public_access
+  query           = query.s3_bucket_policy_granted_public_access
 
   tags = merge(local.s3_common_tags, {
     mitre_attack_ids = "TA0005:T1070,TA0001:T1190"
   })
 }
 
-query "s3_bucket_granted_public_access" {
+query "s3_bucket_policy_granted_public_access" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_bucket_name}
@@ -100,7 +100,8 @@ query "s3_bucket_granted_public_access" {
     where
       event_source = 's3.amazonaws.com'
       and event_name = 'PutBucketPolicy'
-      and json_contains(request_parameters -> 'bucketPolicy', '{"Principal": "*"}')
+      and (json_contains(request_parameters -> 'bucketPolicy', '{"Principal": "*"}')
+        or json_contains(request_parameters -> 'bucketPolicy', '{"Principal": {"AWS": "*"}}'))
       and json_contains(request_parameters -> 'bucketPolicy', '{"Effect": "Allow"}')
       ${local.detection_sql_where_conditions}
     order by
@@ -108,13 +109,14 @@ query "s3_bucket_granted_public_access" {
   EOQ
 }
 
+
 detection "s3_bucket_block_public_access_disabled" {
   title           = "S3 Bucket Block Public Access Disabled"
   description     = "Detect when block public access setting was disabled for an S3 bucket. Granting public access can expose sensitive data to unauthorized users, increasing the risk of data breaches, data exfiltration, or malicious exploitation."
   documentation   = file("./detections/docs/s3_bucket_block_public_access_disabled.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.s3_bucket_granted_public_access
+  query           = query.s3_bucket_policy_granted_public_access
 
   tags = merge(local.s3_common_tags, {
     mitre_attack_ids = "TA0005:T1070,TA0001:T1190"
