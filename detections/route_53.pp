@@ -23,7 +23,7 @@ detection "route_53_domain_transferred" {
   title           = "Route 53 Domain Transferred"
   description     = "Detect when a Route 53 domain was transferred to another AWS account to check for potential risks of unauthorized transfers, which could lead to domain hijacking, service disruption, or malicious use of web infrastructure."
   documentation   = file("./detections/docs/route_53_domain_transferred.md")
-  severity        = "low"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.route_53_domain_transferred
 

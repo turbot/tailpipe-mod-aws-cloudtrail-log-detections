@@ -144,7 +144,7 @@ detection "vpc_created" {
   title           = "VPC Created"
   description     = "Detect when a VPC was created, which could indicate unauthorized infrastructure setup. Such actions may be used to isolate malicious activities, evade monitoring, or stage resources for lateral movement and data exfiltration. Monitoring VPC creation helps ensure compliance with security policies and detects potential misuse of cloud resources."
   documentation   = file("./detections/docs/vpc_created.md")
-  severity        = "high"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.vpc_created
 

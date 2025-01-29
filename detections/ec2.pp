@@ -117,7 +117,7 @@ detection "ec2_key_pair_deleted" {
   title           = "EC2 Key Pair Deleted"
   description     = "Detect when an EC2 key pair was deleted. Deleting key pairs may remove access to instances configured to use the key, potentially leading to disruption or unauthorized access attempts."
   documentation   = file("./detections/docs/ec2_key_pair_deleted.md")
-  severity        = "medium"
+  severity        = "low"
   display_columns = local.detection_display_columns
   query           = query.ec2_key_pair_deleted
 

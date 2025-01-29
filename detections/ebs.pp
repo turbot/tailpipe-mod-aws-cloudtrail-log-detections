@@ -53,7 +53,7 @@ detection "ebs_volume_detached" {
   title           = "EBS Volume Detached"
   description     = "Detect when an EBS volume was detached from an EC2 instance to check for potential risks of unauthorized modification, corruption, or data loss."
   documentation   = file("./detections/docs/ebs_volume_detached.md")
-  severity        = "medium"
+  severity        = "low"
   display_columns = local.detection_display_columns
   query           = query.ebs_volume_detached
 

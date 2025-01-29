@@ -94,7 +94,7 @@ detection "iam_root_user_email_address_updated" {
   title           = "IAM User Email Address Updated"
   description     = "Detect when an email address was updated for an IAM user in a login profile. This action may indicate attempts to hijack account recovery mechanisms or modify user identities."
   documentation   = file("./detections/docs/iam_root_user_email_address_updated.md")
-  severity        = "low"
+  severity        = "critical"
   display_columns = local.detection_display_columns
   query           = query.iam_root_user_email_address_updated
 
@@ -225,7 +225,7 @@ detection "iam_root_user_console_login" {
   title           = "IAM Root User Console Login"
   description     = "Detect when the IAM root user logged in via the AWS Management Console. Monitoring root user activity is critical due to the elevated permissions associated with root accounts, as such logins may indicate unauthorized access, privilege escalation attempts, or credential compromise."
   documentation   = file("./detections/docs/iam_root_user_console_login.md")
-  severity        = "high"
+  severity        = "critical"
   display_columns = local.detection_display_columns
   query           = query.iam_root_user_console_login
 
@@ -314,7 +314,7 @@ detection "iam_user_inline_policy_updated" {
   title           = "IAM User Inline Policy Updated"
   description     = "Detect when an inline policy was attached to an IAM user. Adding inline policies can grant or modify permissions, potentially leading to privilege escalation or unauthorized access if done without proper authorization."
   documentation   = file("./detections/docs/iam_user_inline_policy_updated.md")
-  severity        = "high"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.iam_user_inline_policy_updated
 
@@ -342,7 +342,7 @@ detection "iam_role_inline_policy_updated" {
   title           = "IAM Role Inline Policy Updated"
   description     = "Detect when an inline policy was updated for an IAM role. Inline policies granting administrative privileges may allow unauthorized privilege escalation or security bypass, enabling attackers to perform sensitive actions."
   documentation   = file("./detections/docs/iam_role_inline_policy_updated.md")
-  severity        = "high"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.iam_role_inline_policy_updated
 
@@ -370,7 +370,7 @@ detection "iam_group_inline_policy_updated" {
   title           = "IAM Group Inline Policy Updated"
   description     = "Detect when an inline policy was updated for an IAM group. Inline policies may bypass centralized controls and lead to privilege escalation or security misconfigurations."
   documentation   = file("./detections/docs/iam_group_inline_policy_updated.md")
-  severity        = "high"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.iam_group_inline_policy_updated
 
@@ -398,7 +398,7 @@ detection "iam_user_managed_policy_attached" {
   title           = "IAM User Managed Policy Attached"
   description     = "Detect when a managed policy was attached to an IAM user. Attaching managed policies can grant new permissions, potentially leading to privilege escalation or unauthorized access if done without proper authorization."
   documentation   = file("./detections/docs/iam_user_managed_policy_attached.md")
-  severity        = "high"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.iam_user_managed_policy_attached
 
@@ -426,7 +426,7 @@ detection "iam_role_managed_policy_attached" {
   title           = "IAM Role Managed Policy Attached"
   description     = "Detect when a managed policy was attached to an IAM role. Attaching managed policies to roles can grant or modify permissions, potentially leading to privilege escalation or unauthorized access if performed without proper authorization or oversight."
   documentation   = file("./detections/docs/iam_role_managed_policy_attached.md")
-  severity        = "low"
+  severity        = "medium"
   display_columns = local.detection_display_columns
   query           = query.iam_role_managed_policy_attached
 
