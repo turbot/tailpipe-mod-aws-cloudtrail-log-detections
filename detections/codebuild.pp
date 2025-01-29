@@ -11,7 +11,7 @@ benchmark "codebuild_detections" {
   type        = "detection"
   children = [
     detection.codebuild_project_environment_variable_updated,
-    detection.codebuild_project_granted_public_access,
+    detection.codebuild_project_visibility_set_public,
     detection.codebuild_project_service_role_updated,
     detection.codebuild_project_source_repository_updated,
   ]
@@ -21,20 +21,20 @@ benchmark "codebuild_detections" {
   })
 }
 
-detection "codebuild_project_granted_public_access" {
-  title           = "CodeBuild Project Granted Public Access"
-  description     = "Detect when a CodeBuild project was created with public access to check for risks of exposing build configurations, which could lead to unauthorized access and data breaches."
-  documentation   = file("./detections/docs/codebuild_project_granted_public_access.md")
+detection "codebuild_project_visibility_set_public" {
+  title           = "CodeBuild Project Visibility Set Public"
+  description     = "Detect when a CodeBuild project's visibility was set to public. Granting public access to a CodeBuild project can expose build configurations, credentials, or sensitive artifacts, increasing the risk of unauthorized access and data breaches."
+  documentation   = file("./detections/docs/codebuild_project_visibility_set_public.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.codebuild_project_granted_public_access
+  query           = query.codebuild_project_visibility_set_public
 
   tags = merge(local.codebuild_common_tags, {
     mitre_attack_ids = "TA0010:T1567"
   })
 }
 
-query "codebuild_project_granted_public_access" {
+query "codebuild_project_visibility_set_public" {
   sql = <<-EOQ
     select
       ${local.detection_sql_resource_column_request_parameters_codebuild_project_arn}
