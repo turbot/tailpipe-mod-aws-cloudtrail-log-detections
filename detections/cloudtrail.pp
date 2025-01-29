@@ -31,7 +31,6 @@ detection "cloudtrail_trail_logging_stopped" {
 
   tags = merge(local.cloudtrail_common_tags, {
     mitre_attack_ids = "TA0005:T1562.001,TA0002:T1059.009"
-    recommended      = "true"
   })
 }
 
@@ -48,6 +47,10 @@ query "cloudtrail_trail_logging_stopped" {
     order by
       event_time desc;
   EOQ
+
+  tags = {
+    recommended = "true"
+  }
 }
 
 detection "cloudtrail_trail_kms_key_updated" {

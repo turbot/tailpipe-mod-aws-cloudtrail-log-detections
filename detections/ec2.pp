@@ -111,6 +111,10 @@ query "ec2_reserved_instance_purchased" {
     order by
       tp_timestamp desc;
   EOQ
+
+  tags = {
+    recommended = "true"
+  }
 }
 
 detection "ec2_key_pair_deleted" {

@@ -87,7 +87,6 @@ detection "ebs_snapshot_shared_publicly" {
 
   tags = merge(local.ebs_common_tags, {
     mitre_attack_ids = "TA0001:T1531"
-    recommended      = "true"
   })
 }
 
@@ -108,6 +107,10 @@ query "ebs_snapshot_shared_publicly" {
     order by
       event_time desc;
   EOQ
+
+  tags = {
+    recommended  = "true"
+  }
 }
 
 detection "ebs_snapshot_created_with_encryption_disabled" {

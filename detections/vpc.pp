@@ -241,7 +241,6 @@ detection "vpc_security_group_ingress_egress_rule_authorized_to_allow_all" {
 
   tags = merge(local.vpc_common_tags, {
     mitre_attack_ids = "TA0005:T1070"
-    recommended      = "true"
   })
 }
 
@@ -382,7 +381,7 @@ query "vpc_flow_log_deleted" {
 
 query "vpc_security_group_ingress_egress_rule_authorized_to_allow_all" {
   sql = <<-EOQ
-    select 
+    select
       ${local.detection_sql_resource_column_request_parameters_network_security_group_id}
     from
       aws_cloudtrail_log,
@@ -395,6 +394,10 @@ query "vpc_security_group_ingress_egress_rule_authorized_to_allow_all" {
     order by
       event_time desc;
   EOQ
+
+  tags = {
+    recommended = "true"
+  }
 }
 
 query "vpc_security_group_ingress_egress_rule_updated" {
