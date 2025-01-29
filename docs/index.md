@@ -27,6 +27,9 @@ brew install turbot/tap/powerpipe
 sudo /bin/sh -c "$(curl -fsSL https://powerpipe.io/install/powerpipe.sh)"
 ```
 
+This mod also requires AWS CloudTrail logs to be collected using [Tailpipe](https://tailpipe.io) with the [AWS plugin](https://hub.tailpipe.io/plugins/turbot/aws):
+- [Get started with the AWS plugin for Tailpipe →](https://hub.tailpipe.io/plugins/turbot/aws#getting-started)
+
 Install the mod:
 
 ```sh
@@ -34,14 +37,6 @@ mkdir dashboards
 cd dashboards
 powerpipe mod install github.com/turbot/tailpipe-mod-aws-cloudtrail-log-detections
 ```
-
-This mod also requires AWS CloudTrail logs to be collected using [Tailpipe](https://tailpipe.io) with the [AWS plugin](https://hub.tailpipe.io/plugins/turbot/aws).
-
-To get started, please see:
-- **[Get started with AWS plugin →](https://hub.tailpipe.io/plugins/turbot/aws#getting-started)**
-- **[Configure aws_cloudtrail_log partitions →](https://hub.tailpipe.io/plugins/turbot/aws/tables/aws_cloudtrail_log#example-configurations)**
-
-You can also try this mod with local CloudTrail log files, like the [flaws.cloud public dataset](https://summitroute.com/blog/2020/10/09/public_dataset_of_cloudtrail_logs_from_flaws_cloud/). For an example configuration, please see [Collect logs from local files](https://hub.tailpipe.io/plugins/turbot/aws/tables/aws_cloudtrail_log#collect-logs-from-local-files).
 
 ### Browsing Dashboards
 
