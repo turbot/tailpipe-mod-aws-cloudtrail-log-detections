@@ -1,6 +1,6 @@
 ## Overview
 
-Detect when an API Gateway Rest API is granted public access. Publicly accessible API Gateways expose backend services to potential unauthorized access, increasing the risk of data breaches, API abuse, or exploitation by attackers. Monitoring these configurations ensures sensitive resources are protected and security best practices are enforced.
+Detect when an API Gateway Rest API was granted public access. Publicly accessible API Gateways expose backend services to potential unauthorized access, increasing the risk of data breaches, API abuse, or exploitation by attackers. Monitoring these configurations ensures sensitive resources are protected and security best practices are enforced.
 
 **References**:
 - [Amazon API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html)

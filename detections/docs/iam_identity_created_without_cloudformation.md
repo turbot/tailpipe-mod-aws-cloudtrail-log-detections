@@ -1,6 +1,6 @@
 ## Overview
 
-Detect when IAM entities (users, roles, or groups) were created outside of AWS CloudFormation. Manually created entities bypass centralized governance, auditing, and compliance controls, increasing the risk of over-permissioning and misconfigurations. Identifying such entities helps maintain secure resource management and ensures adherence to infrastructure-as-code (IaC) best practices.
+Detect when IAM entity (users, roles, or groups) was created outside of AWS CloudFormation. Manually created entities bypass centralized governance, auditing, and compliance controls, increasing the risk of over-permissioning and misconfigurations. Identifying such entities helps maintain secure resource management and ensures adherence to infrastructure-as-code (IaC) best practices.
 
 **References**:
 - [AWS CloudFormation Best Practices](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html)

@@ -66,8 +66,8 @@ query "sqs_queue_granted_public_access" {
       select
         *,
         unnest(
-            from_json((request_parameters -> 'attributes' ->> 'Policy' -> 'Statement'), '["JSON"]')
-         ) as statement_item,
+          from_json((request_parameters -> 'attributes' ->> 'Policy' -> 'Statement'), '["JSON"]')
+        ) as statement_item,
       from
         aws_cloudtrail_log
       where
