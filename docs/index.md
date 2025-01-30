@@ -1,4 +1,4 @@
-# AWS CloudTrail Log Detections Mod for Powerpipe
+# AWS CloudTrail Log Detections Mod
 
 [Tailpipe](https://tailpipe.io) is an open-source CLI tool that allows you to collect logs and query them with SQL.
 
@@ -6,11 +6,9 @@
 
 The [AWS CloudTrail Log Detections Mod](https://hub.powerpipe.mods/turbot/tailpipe-mod-aws-cloudtrail-log-detections) contains pre-built dashboards and detections, which can be used to monitor and analyze activity across your AWS accounts.
 
-Run detection benchmarks:
-![image](docs/images/aws_cloudtrail_log_mitre_dashboard.png)
-
-View insights in dashboards:
-![image](docs/images/aws_cloudtrail_log_activity_dashboard.png)
+<img src="https://raw.githubusercontent.com/turbot/tailpipe-mod-aws-cloudtrail-log-detections/main/docs/images/aws_cloudtrail_log_mitre_dashboard.png" width="50%" type="thumbnail"/>
+<img src="https://raw.githubusercontent.com/turbot/tailpipe-mod-aws-cloudtrail-log-detections/main/docs/images/aws_cloudtrail_log_activity_dashboard.png" width="50%" type="thumbnail"/>
+<img src="https://raw.githubusercontent.com/turbot/tailpipe-mod-aws-cloudtrail-log-detections/main/docs/images/aws_cloudtrail_log_root_user_activity_report.png" width="50%" type="thumbnail"/>
 
 ## Documentation
 
@@ -71,19 +69,3 @@ powerpipe benchmark run aws_cloudtrail_log_detections.benchmark.mitre_attack_v16
 
 Different output formats are also available, for more information please see
 [Output Formats](https://powerpipe.io/docs/reference/cli/benchmark#output-formats).
-
-## Open Source & Contributing
-
-This repository is published under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0). Please see our [code of conduct](https://github.com/turbot/.github/blob/main/CODE_OF_CONDUCT.md). We look forward to collaborating with you!
-
-[Tailpipe](https://tailpipe.io) and [Powerpipe](https://powerpipe.io) are products produced from this open source software, exclusively by [Turbot HQ, Inc](https://turbot.com). They are distributed under our commercial terms. Others are allowed to make their own distribution of the software, but cannot use any of the Turbot trademarks, cloud services, etc. You can learn more in our [Open Source FAQ](https://turbot.com/open-source).
-
-## Get Involved
-
-**[Join #tailpipe and #powerpipe on Slack →](https://turbot.com/community/join)**
-
-Want to help but don't know where to start? Pick up one of the `help wanted` issues:
-
-- [Powerpipe](https://github.com/turbot/powerpipe/labels/help%20wanted)
-- [Tailpipe](https://github.com/turbot/tailpipe/labels/help%20wanted)
-- [AWS CloudTrail Log Detections Mod](https://github.com/turbot/tailpipe-mod-aws-cloudtrail-log-detections/labels/help%20wanted)
