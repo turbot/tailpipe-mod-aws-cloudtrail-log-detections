@@ -4,7 +4,7 @@
 
 [AWS](https://aws.amazon.com/) provides on-demand cloud computing platforms and APIs to authenticated customers on a metered pay-as-you-go basis.
 
-The [AWS CloudTrail Log Detections Mod](https://hub.powerpipe.mods/turbot/tailpipe-mod-aws-cloudtrail-log-detections) contains pre-built dashboards and detections, which can be used to monitor and analyze activity across your AWS accounts.
+The [AWS CloudTrail Log Detections Mod](https://hub.powerpipe.io/mods/turbot/tailpipe-mod-aws-cloudtrail-log-detections) contains pre-built dashboards and detections, which can be used to monitor and analyze activity across your AWS accounts.
 
 Run detection benchmarks:
 ![image](docs/images/aws_cloudtrail_log_mitre_dashboard.png)
