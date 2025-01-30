@@ -116,7 +116,7 @@ detection "s3_bucket_block_public_access_disabled" {
   documentation   = file("./detections/docs/s3_bucket_block_public_access_disabled.md")
   severity        = "high"
   display_columns = local.detection_display_columns
-  query           = query.s3_bucket_policy_granted_public_access
+  query           = query.s3_bucket_block_public_access_disabled
 
   tags = merge(local.s3_common_tags, {
     mitre_attack_ids = "TA0005:T1070,TA0001:T1190"

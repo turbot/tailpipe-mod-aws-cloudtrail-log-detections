@@ -1,6 +1,6 @@
-dashboard "aws_cloudtrail_log_dashboard" {
+dashboard "activity_dashboard" {
 
-  title = "CloudTrail Log Dashboard"
+  title = "CloudTrail Log Activity Dashboard"
 
   tags = {
     type = "Dashboard"
@@ -9,19 +9,9 @@ dashboard "aws_cloudtrail_log_dashboard" {
 
   container {
 
-    input "detection_range" {
-      title = "Select the date range:"
-      type  = "date_range"
-      width = 12
-    }
-
-  }
-
-  container {
-
     # Analysis
     card {
-      query = query.cloudtrail_log_total_logs
+      query = query.activity_dashboard_total_logs
       width = 2
     }
 
@@ -30,50 +20,43 @@ dashboard "aws_cloudtrail_log_dashboard" {
   container {
 
     chart {
+      title = "Logs by Account"
+      query = query.activity_dashboard_logs_by_account
+      type  = "column"
+      width = 6
+    }
+
+    chart {
       title = "Logs by Region"
-      query = query.cloudtrail_log_logs_by_region
+      query = query.activity_dashboard_logs_by_region
       type  = "column"
-      width = 6
-    }
-
-    chart {
-      title = "Logs by Date"
-      query = query.cloudtrail_log_logs_by_date
-      type  = "column"
-      width = 6
-    }
-
-    chart {
-      title = "Logs by Hour"
-      query = query.cloudtrail_log_logs_by_hour
-      type  = "column"
-      width = 6
-    }
-
-    chart {
-      title = "Top 10 Source IPs (Excluding AWS Services and Internal)"
-      query = query.cloudtrail_log_logs_by_source_ip
-      type  = "table"
       width = 6
     }
 
     chart {
       title = "Top 10 Actors (Excluding AWS Services)"
-      query = query.cloudtrail_log_logs_by_actor
+      query = query.activity_dashboard_logs_by_actor
+      type  = "table"
+      width = 6
+    }
+
+    chart {
+      title = "Top 10 Source IPs (Excluding AWS Services and Internal)"
+      query = query.activity_dashboard_logs_by_source_ip
       type  = "table"
       width = 6
     }
 
     chart {
       title = "Top 10 Services (Excluding Read-Only)"
-      query = query.cloudtrail_log_logs_by_service
+      query = query.activity_dashboard_logs_by_service
       type  = "table"
       width = 6
     }
 
     chart {
       title = "Top 10 Events (Excluding Read-Only)"
-      query = query.cloudtrail_log_logs_by_event
+      query = query.activity_dashboard_logs_by_event
       type  = "table"
       width = 6
     }
@@ -82,9 +65,11 @@ dashboard "aws_cloudtrail_log_dashboard" {
 
 }
 
-# Query Definitions
+# Query definitions
 
-query "cloudtrail_log_total_logs" {
+query "activity_dashboard_total_logs" {
+  title = "Log Count"
+
   sql = <<-EOQ
     select
       count(*) as "Total Logs"
@@ -93,7 +78,9 @@ query "cloudtrail_log_total_logs" {
   EOQ
 }
 
-query "cloudtrail_log_logs_by_source_ip" {
+query "activity_dashboard_logs_by_source_ip" {
+  title = "Top 10 Source IPs (Non-AWS)"
+
   sql = <<-EOQ
     select
       tp_source_ip as "Source IP",
@@ -111,7 +98,9 @@ query "cloudtrail_log_logs_by_source_ip" {
   EOQ
 }
 
-query "cloudtrail_log_logs_by_actor" {
+query "activity_dashboard_logs_by_actor" {
+  title = "Top 10 Actors (Non-AWS)"
+
   sql = <<-EOQ
     select
       user_identity.arn as "Actor",
@@ -121,7 +110,6 @@ query "cloudtrail_log_logs_by_actor" {
     where
       user_identity.type != 'AWSService'
       and user_identity.arn not like '%AWSServiceRole%'
-      and user_identity.arn not like '%assumed-role/turbot_%'
     group by
       user_identity.arn
     order by
@@ -131,7 +119,9 @@ query "cloudtrail_log_logs_by_actor" {
 }
 
 
-query "cloudtrail_log_logs_by_service" {
+query "activity_dashboard_logs_by_service" {
+  title = "Top 10 Services"
+
   sql = <<-EOQ
     select
       event_source as "Service",
@@ -148,7 +138,9 @@ query "cloudtrail_log_logs_by_service" {
   EOQ
 }
 
-query "cloudtrail_log_logs_by_event" {
+query "activity_dashboard_logs_by_event" {
+  title = "Top 10 Events"
+
   sql = <<-EOQ
     select
       string_split(event_source, '.')[1] || ':' || event_name as "Event",
@@ -166,7 +158,25 @@ query "cloudtrail_log_logs_by_event" {
 }
 
 
-query "cloudtrail_log_logs_by_region" {
+query "activity_dashboard_logs_by_account" {
+  title = "Activity by Account"
+
+  sql = <<-EOQ
+    select
+      recipient_account_id,
+      count(*) as "Logs"
+    from
+      aws_cloudtrail_log
+    group by
+      recipient_account_id
+    order by
+      count(*) desc;
+  EOQ
+}
+
+query "activity_dashboard_logs_by_region" {
+  title = "Activity by Region"
+
   sql = <<-EOQ
     select
       aws_region,
@@ -177,34 +187,5 @@ query "cloudtrail_log_logs_by_region" {
       aws_region
     order by
       count(*) desc;
-  EOQ
-}
-
-query "cloudtrail_log_logs_by_date" {
-  sql = <<-EOQ
-    select
-      datetrunc('day', tp_timestamp) as log_date,
-      --strftime('%Y-%m-%d', tp_timestamp) as date_only,
-      count(*) as "Logs"
-    from
-      aws_cloudtrail_log
-    group by
-      log_date
-    order by
-      log_date;
-  EOQ
-}
-
-query "cloudtrail_log_logs_by_hour" {
-  sql = <<-EOQ
-    select
-      datetrunc('hour', tp_timestamp) as log_date,
-      count(*) as "Logs"
-    from
-      aws_cloudtrail_log
-    group by
-      log_date
-    order by
-      log_date;
   EOQ
 }

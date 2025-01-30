@@ -9,6 +9,9 @@ The [AWS CloudTrail Log Detections Mod](https://hub.powerpipe.mods/turbot/tailpi
 Run detection benchmarks:
 ![image](docs/images/aws_cloudtrail_log_mitre_dashboard.png)
 
+View insights in dashboards:
+![image](docs/images/aws_cloudtrail_log_activity_dashboard.png)
+
 ## Documentation
 
 - **[Dashboards →](https://hub.powerpipe.io/mods/turbot/tailpipe-mod-aws-cloudtrail-log-detections/dashboards)**
