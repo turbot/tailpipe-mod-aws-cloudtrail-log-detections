@@ -1,6 +1,6 @@
 ## Overview
 
-Detect when an Amazon EventBridge rule is deleted in a region. Deleting an EventBridge rule can disrupt event-driven workflows, delay processing, or prevent critical actions, potentially impacting application performance and operational continuity. Monitoring for a deleted rule ensures critical workflows are protected from unauthorized changes and accidental disruptions.
+Detect when an Amazon EventBridge rule was deleted in a region. Deleting an EventBridge rule can disrupt event-driven workflows, delay processing, or prevent critical actions, potentially impacting application performance and operational continuity. Monitoring for a deleted rule ensures critical workflows are protected from unauthorized changes and accidental disruptions.
 
 **References**:
 - [Amazon EventBridge Rules](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-rules.html)

@@ -1,6 +1,6 @@
 ## Overview
 
-Detect when managed policies were attached to IAM roles. Managed policies are standalone policies that can be attached to multiple identities, such as users, groups, and roles. Over-permissive or unmanaged policies can grant excessive access to sensitive resources, increasing the risk of privilege escalation, unauthorized access, or accidental modifications. 
+Detect when managed policy was attached to IAM roles. Managed policies are standalone policies that can be attached to multiple identities, such as users, groups, and roles. Over-permissive or unmanaged policies can grant excessive access to sensitive resources, increasing the risk of privilege escalation, unauthorized access, or accidental modifications. 
 
 Regularly monitoring these attachments ensures adherence to the principle of least privilege, reduces the attack surface, and supports compliance with security best practices.
 

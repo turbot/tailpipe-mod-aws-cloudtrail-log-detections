@@ -1,6 +1,6 @@
 ## Overview
 
-Detect when the source repository configuration of an AWS CodeBuild project is updated. Unauthorized or unintended changes can lead to builds using untrusted or malicious code, disrupting workflows and compromising downstream systems. Monitoring these updates ensures the security and integrity of the build process.
+Detect when the source repository configuration of an AWS CodeBuild project was updated. Unauthorized or unintended changes can lead to builds using untrusted or malicious code, disrupting workflows and compromising downstream systems. Monitoring these updates ensures the security and integrity of the build process.
 
 **References**:
 - [Source Repository Settings in AWS CodeBuild](https://docs.aws.amazon.com/codebuild/latest/userguide/change-project.html#change-project-console-source)

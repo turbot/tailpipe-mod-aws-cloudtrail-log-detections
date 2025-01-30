@@ -1,6 +1,6 @@
 ## Overview
 
-Detect when a CloudFront distribution's default certificate is disabled. Disabling default SSL/TLS certificates increases the risk of insecure communication by exposing sensitive data to interception or tampering during transmission. Ensuring encrypted communication with SSL/TLS is critical for protecting sensitive information and maintaining compliance with industry standards.
+Detect when a CloudFront distribution's default certificate was disabled. Disabling default SSL/TLS certificates increases the risk of insecure communication by exposing sensitive data to interception or tampering during transmission. Ensuring encrypted communication with SSL/TLS is critical for protecting sensitive information and maintaining compliance with industry standards.
 
 **References**:
 - [Using HTTPS with CloudFront](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https.html)
