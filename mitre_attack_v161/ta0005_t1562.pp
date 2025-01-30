@@ -23,6 +23,7 @@ benchmark "mitre_attack_v161_ta0005_t1562_001" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0005_t1562_001.md")
   children = [
+    detection.cloudfront_distribution_default_certificate_disabled,
     detection.cloudtrail_trail_global_service_logging_disabled,
     detection.cloudtrail_trail_kms_key_updated,
     detection.cloudtrail_trail_logging_stopped,
@@ -32,10 +33,12 @@ benchmark "mitre_attack_v161_ta0005_t1562_001" {
     detection.config_rule_deleted,
     detection.eventbridge_rule_disabled,
     detection.guardduty_detector_deleted,
+    detection.sqs_queue_created_with_encryption_at_rest_disabled,
     detection.vpc_classic_link_enabled,
     detection.vpc_created,
     detection.waf_web_acl_disassociated_from_cloudfront_distribution,
     detection.waf_web_acl_disassociated_from_elb_application_load_balancer,
+    detection.waf_web_acl_logging_disabled,
   ]
 
   tags = merge(local.mitre_attack_v161_ta0005_t1562_common_tags, {
@@ -61,7 +64,8 @@ benchmark "mitre_attack_v161_ta0005_t1562_004" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0005_t1562_004.md")
   children = [
-    detection.cloudfront_distribution_default_certificate_disabled,
+    detection.vpc_internet_gateway_detached,
+    detection.vpc_network_acl_entry_updated_with_allow_public_access,
   ]
 
   tags = merge(local.mitre_attack_v161_ta0005_t1562_common_tags, {
@@ -75,6 +79,9 @@ benchmark "mitre_attack_v161_ta0005_t1562_008" {
   documentation = file("./mitre_attack_v161/docs/ta0005_t1562_008.md")
   children = [
     detection.cloudwatch_log_group_created_with_encryption_disabled,
+    detection.config_configuration_recorder_stopped,
+    detection.s3_bucket_block_public_access_disabled,
+    detection.ses_identity_feedback_forwarding_disabled,
   ]
 
   tags = merge(local.mitre_attack_v161_ta0005_t1562_common_tags, {

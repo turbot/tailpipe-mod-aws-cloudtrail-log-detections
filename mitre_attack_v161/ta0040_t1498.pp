@@ -9,7 +9,19 @@ benchmark "mitre_attack_v161_ta0040_t1498" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0040_t1498.md")
   children = [
-    detection.vpc_security_group_ingress_egress_rule_updated
+    benchmark.mitre_attack_v161_ta0040_t1498_001
+  ]
+
+  tags = local.mitre_attack_v161_ta0040_t1498_common_tags
+}
+
+benchmark "mitre_attack_v161_ta0040_t1498_001" {
+  title         = "T1498 Network Denial of Service: Direct Network Flood"
+  type          = "detection"
+  documentation = file("./mitre_attack_v161/docs/ta0040_t1498_001.md")
+  children = [
+    detection.ec2_instance_launched_with_public_ip,
+    detection.vpc_security_group_ingress_egress_rule_updated,
   ]
 
   tags = local.mitre_attack_v161_ta0040_t1498_common_tags

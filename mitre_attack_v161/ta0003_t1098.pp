@@ -22,8 +22,8 @@ benchmark "mitre_attack_v161_ta0003_t1098_001" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0003_t1098_001.md")
   children = [
-    detection.iam_user_login_profile_created,
     detection.iam_user_created,
+    detection.iam_user_login_profile_updated,
     detection.rds_db_instance_master_password_updated,
   ]
 
@@ -36,6 +36,7 @@ benchmark "mitre_attack_v161_ta0003_t1098_003" {
   documentation = file("./mitre_attack_v161/docs/ta0003_t1098_003.md")
   children = [
     detection.iam_role_inline_policy_updated,
+    detection.iam_user_login_profile_created,
   ]
 
   tags = local.mitre_attack_v161_ta0003_t1098_common_tags

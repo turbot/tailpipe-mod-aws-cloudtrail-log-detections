@@ -21,7 +21,7 @@ benchmark "mitre_attack_v161_ta0001_t1078_001" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0001_t1078_001.md")
   children = [
-    detection.iam_root_user_console_login,
+    detection.ebs_snapshot_shared_publicly,
   ]
 
   tags = merge(local.mitre_attack_v161_ta0001_t1078_common_tags, {
@@ -34,10 +34,10 @@ benchmark "mitre_attack_v161_ta0001_t1078_004" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0001_t1078_004.md")
   children = [
+    detection.ebs_snapshot_shared_publicly,
+    detection.ec2_ami_shared_publicly,
     detection.iam_access_key_created,
     detection.iam_access_key_deleted,
-    detection.iam_user_login_profile_created,
-    detection.iam_user_mfa_device_deactivated,
     detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all,
   ]
 

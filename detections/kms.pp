@@ -26,7 +26,7 @@ detection "kms_key_deletion_scheduled" {
   query           = query.kms_key_deletion_scheduled
 
   tags = merge(local.kms_common_tags, {
-    mitre_attack_ids = "TA0005:T1070"
+    mitre_attack_ids = "TA0040:T1485"
   })
 }
 

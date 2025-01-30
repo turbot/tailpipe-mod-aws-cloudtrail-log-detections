@@ -56,7 +56,7 @@ detection "lambda_function_created_with_function_code_encryption_at_rest_disable
   query           = query.lambda_function_created_with_function_code_encryption_at_rest_disabled
 
   tags = merge(local.lambda_common_tags, {
-    mitre_attack_ids = "TA0006:T1552"
+    mitre_attack_ids = "TA0006:T1552.001"
   })
 }
 

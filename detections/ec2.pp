@@ -29,7 +29,7 @@ detection "ec2_ami_shared_publicly" {
   query           = query.ec2_ami_shared_publicly
 
   tags = merge(local.ec2_common_tags, {
-    mitre_attack_ids = "TA0005:T1078"
+    mitre_attack_ids = "TA0001:T1078.004"
   })
 }
 
@@ -62,7 +62,7 @@ detection "ec2_instance_launched_with_public_ip" {
   query           = query.ec2_instance_launched_with_public_ip
 
   tags = merge(local.ec2_common_tags, {
-    mitre_attack_ids = "TA0010:T1567"
+    mitre_attack_ids = "TA0040:T1498.001"
   })
 }
 
@@ -93,9 +93,7 @@ detection "ec2_reserved_instance_purchased" {
   display_columns = local.detection_display_columns
   query           = query.ec2_reserved_instance_purchased
 
-  tags = merge(local.ec2_common_tags, {
-    mitre_attack_ids = "TA0040:T1587"
-  })
+  tags = local.ec2_common_tags
 }
 
 query "ec2_reserved_instance_purchased" {
@@ -126,7 +124,7 @@ detection "ec2_key_pair_deleted" {
   query           = query.ec2_key_pair_deleted
 
   tags = merge(local.ec2_common_tags, {
-    mitre_attack_ids = "TA0001:T1558"
+    mitre_attack_ids = "TA0040:T1531"
   })
 }
 

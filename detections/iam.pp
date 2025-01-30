@@ -43,7 +43,7 @@ detection "iam_user_mfa_device_deactivated" {
   query           = query.iam_user_mfa_device_deactivated
 
   tags = merge(local.iam_common_tags, {
-    mitre_attack_ids = "TA0001:T1078,TA0003:T1078,TA0003:T1556.001,TA0004:T1078"
+    mitre_attack_ids = "TA0006:T1556.006"
   })
 }
 
@@ -71,7 +71,7 @@ detection "iam_user_login_profile_created" {
   query           = query.iam_user_login_profile_created
 
   tags = merge(local.iam_common_tags, {
-    mitre_attack_ids = "TA0003:T1098"
+    mitre_attack_ids = "TA0003:T1098.001,TA004:T1098.001"
   })
 }
 
@@ -174,7 +174,7 @@ detection "iam_user_login_profile_updated" {
   query           = query.iam_user_login_profile_updated
 
   tags = merge(local.iam_common_tags, {
-    mitre_attack_ids = "TA0006:T1098,TA0005:T1108,TA0005:T1550,TA0008:T1078"
+    mitre_attack_ids = "TA0003:T1098.100,TA0006:T1556.003"
   })
 }
 
@@ -230,7 +230,7 @@ detection "iam_root_user_console_login" {
   query           = query.iam_root_user_console_login
 
   tags = merge(local.iam_common_tags, {
-    mitre_attack_ids = "TA0004:T1078"
+    mitre_attack_ids = "TA0004:T1078.003"
   })
 }
 
@@ -319,7 +319,7 @@ detection "iam_user_inline_policy_updated" {
   query           = query.iam_user_inline_policy_updated
 
   tags = merge(local.iam_common_tags, {
-    mitre_attack_ids = "TA0004:T1098"
+    mitre_attack_ids = "TA0004:T1098.003"
   })
 }
 
@@ -347,7 +347,7 @@ detection "iam_role_inline_policy_updated" {
   query           = query.iam_role_inline_policy_updated
 
   tags = merge(local.iam_common_tags, {
-    mitre_attack_ids = "TA0040:T1484.001, TA0004:T1098"
+    mitre_attack_ids = "TA0040:T1484.001,TA0004:T1098.003"
   })
 }
 
@@ -375,7 +375,7 @@ detection "iam_group_inline_policy_updated" {
   query           = query.iam_group_inline_policy_updated
 
   tags = merge(local.iam_common_tags, {
-    mitre_attack_ids = "TA0040:T1484.002, TA0003:T1098"
+    mitre_attack_ids = "TA0040:T1484.002, TA0003:T1098.003"
   })
 }
 
@@ -403,7 +403,7 @@ detection "iam_user_managed_policy_attached" {
   query           = query.iam_user_managed_policy_attached
 
   tags = merge(local.iam_common_tags, {
-    mitre_attack_ids = "TA0004:T1098"
+    mitre_attack_ids = "TA0004:T1098.003"
   })
 }
 
@@ -431,7 +431,7 @@ detection "iam_role_managed_policy_attached" {
   query           = query.iam_role_managed_policy_attached
 
   tags = merge(local.iam_common_tags, {
-    mitre_attack_ids = "TA0004:T1098"
+    mitre_attack_ids = "TA0004:T1098.003"
   })
 }
 
@@ -459,7 +459,7 @@ detection "iam_user_created" {
   query           = query.iam_user_created
 
   tags = merge(local.iam_common_tags, {
-    mitre_attack_ids = "TA0003:T1136"
+    mitre_attack_ids = "TA0003:T1136.003"
   })
 }
 
@@ -487,7 +487,7 @@ detection "iam_user_administrator_policy_attached" {
   query           = query.iam_user_administrator_policy_attached
 
   tags = merge(local.iam_common_tags, {
-    mitre_attack_ids = "TA0040:T1484.003, TA0003:T1098"
+    mitre_attack_ids = "TA0040:T1484.003, TA0003:T1098.033"
   })
 }
 
@@ -545,7 +545,7 @@ detection "iam_group_administrator_policy_attached" {
   query           = query.iam_group_administrator_policy_attached
 
   tags = merge(local.iam_common_tags, {
-    mitre_attack_ids = "TA0040:T1484.002, TA0003:T1098"
+    mitre_attack_ids = "TA0040:T1484.002, TA0003:T1098.003"
   })
 }
 

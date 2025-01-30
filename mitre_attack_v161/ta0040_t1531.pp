@@ -9,6 +9,7 @@ benchmark "mitre_attack_v161_ta0040_t1531" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0040_t1531.md")
   children = [
+    detection.ec2_key_pair_deleted,
     detection.route_53_domain_transfer_lock_disabled,
     detection.route_53_domain_transferred,
   ]

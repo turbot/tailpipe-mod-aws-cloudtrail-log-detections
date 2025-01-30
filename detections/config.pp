@@ -56,7 +56,7 @@ detection "config_configuration_recorder_stopped" {
   query           = query.config_configuration_recorder_stopped
 
   tags = merge(local.config_common_tags, {
-    mitre_attack_ids = "TA0005:T1562"
+    mitre_attack_ids = "TA0005:T1562.008"
   })
 }
 

@@ -59,7 +59,7 @@ detection "s3_bucket_policy_updated" {
   query           = query.s3_bucket_policy_updated
 
   tags = merge(local.s3_common_tags, {
-    mitre_attack_ids = "TA0010:T1567"
+    mitre_attack_ids = "TA0010:T1484"
   })
 }
 

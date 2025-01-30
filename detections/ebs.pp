@@ -30,7 +30,7 @@ detection "ebs_encryption_by_default_disabled" {
   query           = query.ebs_encryption_by_default_disabled
 
   tags = merge(local.ebs_common_tags, {
-    mitre_attack_ids = "TA0003:T1486,TA0040:T1565"
+    mitre_attack_ids = "TA0005:T1578.005"
   })
 }
 
@@ -58,7 +58,7 @@ detection "ebs_volume_detached" {
   query           = query.ebs_volume_detached
 
   tags = merge(local.ebs_common_tags, {
-    mitre_attack_ids = "TA0040:T1561.002"
+    mitre_attack_ids = "TA0040:T1478"
   })
 }
 
@@ -86,7 +86,7 @@ detection "ebs_snapshot_shared_publicly" {
   query           = query.ebs_snapshot_shared_publicly
 
   tags = merge(local.ebs_common_tags, {
-    mitre_attack_ids = "TA0001:T1531"
+    mitre_attack_ids = "TA0001:T1078.004"
   })
 }
 
@@ -151,7 +151,7 @@ detection "ebs_snapshot_unlocked" {
   query           = query.ebs_snapshot_unlocked
 
   tags = merge(local.ebs_common_tags, {
-    mitre_attack_ids = "TA0010:T1567"
+    mitre_attack_ids = "TA0010:T1537"
   })
 }
 

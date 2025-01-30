@@ -27,7 +27,7 @@ detection "efs_file_system_backup_policy_disabled" {
   query           = query.efs_file_system_backup_policy_disabled
 
   tags = merge(local.efs_common_tags, {
-    mitre_attack_ids = "TA0040:T1562.001"
+    mitre_attack_ids = "TA0040:T1490"
   })
 }
 

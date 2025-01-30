@@ -54,7 +54,7 @@ detection "route_53_hosted_zone_associated_with_vpc" {
   query           = query.route_53_hosted_zone_associated_with_vpc
 
   tags = merge(local.route_53_common_tags, {
-    mitre_attack_ids = "TA0003:T1078"
+    mitre_attack_ids = "TA0003:T1078.004"
   })
 }
 

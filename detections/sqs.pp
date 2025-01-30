@@ -28,7 +28,7 @@ detection "sqs_queue_created_with_encryption_at_rest_disabled" {
   query           = query.sqs_queue_created_with_encryption_at_rest_disabled
 
   tags = merge(local.sqs_common_tags, {
-    mitre_attack_ids = "TA0010:T1567.002"
+    mitre_attack_ids = "TA0005:T1562.001"
   })
 }
 
@@ -56,7 +56,7 @@ detection "sqs_queue_granted_public_access" {
   query           = query.sqs_queue_granted_public_access
 
   tags = merge(local.sqs_common_tags, {
-    mitre_attack_ids = "TA0010:T1567.002"
+    mitre_attack_ids = "TA0001:T1190"
   })
 }
 

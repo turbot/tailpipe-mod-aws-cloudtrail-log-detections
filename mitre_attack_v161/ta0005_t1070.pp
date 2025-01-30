@@ -9,10 +9,7 @@ benchmark "mitre_attack_v161_ta0005_t1070" {
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0005_t1070.md")
   children = [
-    detection.codebuild_project_environment_variable_updated,
-    detection.kms_key_deletion_scheduled,
     detection.s3_bucket_policy_granted_public_access,
-    detection.ses_identity_feedback_forwarding_disabled,
     detection.sqs_queue_dlq_disabled,
     detection.vpc_deleted,
     detection.vpc_flow_log_deleted,
@@ -21,6 +18,7 @@ benchmark "mitre_attack_v161_ta0005_t1070" {
     detection.vpc_route_table_deleted,
     detection.vpc_route_table_route_deleted,
     detection.vpc_route_table_route_disassociated,
+    detection.vpc_security_group_deleted,
     detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all,
   ]
 

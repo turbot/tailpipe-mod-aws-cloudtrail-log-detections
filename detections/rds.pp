@@ -60,7 +60,7 @@ detection "rds_db_instance_master_password_updated" {
   query           = query.rds_db_instance_master_password_updated
 
   tags = merge(local.rds_common_tags, {
-    mitre_attack_ids = "TA0003:T1098"
+    mitre_attack_ids = "TA0003:T1098.001"
   })
 }
 
@@ -88,9 +88,7 @@ detection "rds_db_instance_restored_from_public_snapshot" {
   display_columns = local.detection_display_columns
   query           = query.rds_db_instance_restored_from_public_snapshot
 
-  tags = merge(local.rds_common_tags, {
-    mitre_attack_ids = "TA0010:T1020"
-  })
+  tags = local.rds_common_tags
 }
 
 query "rds_db_instance_restored_from_public_snapshot" {

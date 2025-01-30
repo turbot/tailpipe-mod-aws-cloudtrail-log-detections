@@ -26,7 +26,7 @@ detection "sns_topic_granted_public_access" {
   query           = query.sns_topic_granted_public_access
 
   tags = merge(local.sns_common_tags, {
-    mitre_attack_ids = "TA0010:T1567"
+    mitre_attack_ids = "TA0001:T1190"
   })
 }
 

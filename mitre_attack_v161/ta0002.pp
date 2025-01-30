@@ -10,7 +10,6 @@ benchmark "mitre_attack_v161_ta0002" {
   documentation = file("./mitre_attack_v161/docs/ta0002.md")
   children = [
     benchmark.mitre_attack_v161_ta0002_t1059,
-    benchmark.mitre_attack_v161_ta0002_t1204,
     benchmark.mitre_attack_v161_ta0002_t1648,
   ]
 

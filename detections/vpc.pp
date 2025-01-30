@@ -149,7 +149,7 @@ detection "vpc_created" {
   query           = query.vpc_created
 
   tags = merge(local.vpc_common_tags, {
-    mitre_attack_ids = "TA0005:T1562.003"
+    mitre_attack_ids = "TA0042:T1583"
   })
 }
 
@@ -162,7 +162,7 @@ detection "vpc_deleted" {
   query           = query.vpc_deleted
 
   tags = merge(local.vpc_common_tags, {
-    mitre_attack_ids = "TA0040:T1565,TA0005:T1070"
+    mitre_attack_ids = "TA0040:T1565.003"
   })
 }
 
@@ -439,7 +439,7 @@ detection "vpc_network_acl_entry_updated_with_allow_public_access" {
   query           = query.vpc_network_acl_entry_updated_with_allow_public_access
 
   tags = merge(local.vpc_common_tags, {
-    mitre_attack_ids = "TA0040:T1562.004"
+    mitre_attack_ids = "TA0005:T1562.004"
   })
 }
 
@@ -469,7 +469,7 @@ detection "vpc_internet_gateway_detached" {
   query           = query.vpc_internet_gateway_detached
 
   tags = merge(local.vpc_common_tags, {
-    mitre_attack_ids = "TA0040:T1562.004" # Disable or Modify Firewall
+    mitre_attack_ids = "TA0005:T1562.004"
   })
 }
 

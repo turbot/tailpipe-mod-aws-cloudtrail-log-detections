@@ -12,6 +12,9 @@ benchmark "mitre_attack_v161_ta0001_t1190" {
     detection.lambda_function_granted_public_access,
     detection.rds_db_instance_assigned_public_ip_address,
     detection.s3_bucket_policy_granted_public_access,
+    detection.sns_topic_granted_public_access,
+    detection.sqs_queue_granted_public_access,
+    detection.ssm_document_shared_publicly,
     detection.vpc_security_group_ingress_egress_rule_updated,
   ]
 

@@ -26,7 +26,7 @@ detection "ses_identity_feedback_forwarding_disabled" {
   query           = query.ses_identity_feedback_forwarding_disabled
 
   tags = merge(local.ses_common_tags, {
-    mitre_attack_ids = "TA0005:T1070"
+    mitre_attack_ids = "TA0005:T1562.008"
   })
 }
 

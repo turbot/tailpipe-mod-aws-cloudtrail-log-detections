@@ -59,7 +59,7 @@ detection "codebuild_project_service_role_updated" {
   query           = query.codebuild_project_service_role_updated
 
   tags = merge(local.codebuild_common_tags, {
-    mitre_attack_ids = "TA0004:T1078"
+    mitre_attack_ids = "TA0004:T1098"
   })
 }
 
@@ -117,7 +117,7 @@ detection "codebuild_project_environment_variable_updated" {
   query           = query.codebuild_project_environment_variable_updated
 
   tags = merge(local.codebuild_common_tags, {
-    mitre_attack_ids = "TA0005:T1070,TA0006:T1552.004"
+    mitre_attack_ids = "TA0006:T1552.004"
   })
 }
 

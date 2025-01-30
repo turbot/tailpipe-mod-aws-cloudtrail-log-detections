@@ -28,7 +28,7 @@ detection "cloudfront_distribution_default_certificate_disabled" {
   query           = query.cloudfront_distribution_default_certificate_disabled
 
   tags = merge(local.cloudfront_common_tags, {
-    mitre_attack_ids = "TA0005:T1562.004"
+    mitre_attack_ids = "TA0005:T1562.001"
   })
 }
 
