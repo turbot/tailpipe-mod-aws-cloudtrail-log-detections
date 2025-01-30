@@ -20,6 +20,7 @@ benchmark "mitre_attack_v161" {
     benchmark.mitre_attack_v161_ta0009,
     benchmark.mitre_attack_v161_ta0010,
     benchmark.mitre_attack_v161_ta0040,
+    benchmark.mitre_attack_v161_ta0042,
   ]
 
   tags = merge(local.mitre_attack_v161_common_tags, {

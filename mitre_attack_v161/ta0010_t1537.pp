@@ -5,7 +5,7 @@ locals {
 }
 
 benchmark "mitre_attack_v161_ta0010_t1537" {
-  title         = "T1537 	Transfer Data to Cloud Account"
+  title         = "T1537 Transfer Data to Cloud Account"
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0010_t1537.md")
   children = [

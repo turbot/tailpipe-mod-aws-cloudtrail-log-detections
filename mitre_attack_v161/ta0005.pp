@@ -11,6 +11,7 @@ benchmark "mitre_attack_v161_ta0005" {
   children = [
     benchmark.mitre_attack_v161_ta0005_t1070,
     benchmark.mitre_attack_v161_ta0005_t1562,
+    benchmark.mitre_attack_v161_ta0005_t1578,
   ]
 
   tags = merge(local.mitre_attack_v161_ta0005_common_tags, {
