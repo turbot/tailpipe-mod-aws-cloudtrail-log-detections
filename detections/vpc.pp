@@ -240,7 +240,7 @@ detection "vpc_security_group_ingress_egress_rule_authorized_to_allow_all" {
   query           = query.vpc_security_group_ingress_egress_rule_authorized_to_allow_all
 
   tags = merge(local.vpc_common_tags, {
-    mitre_attack_ids = "TA0005:T1070"
+    mitre_attack_ids = "TA0005:T1562.004"
   })
 }
 

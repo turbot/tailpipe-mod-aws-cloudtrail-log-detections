@@ -66,6 +66,7 @@ benchmark "mitre_attack_v161_ta0005_t1562_004" {
   children = [
     detection.vpc_internet_gateway_detached,
     detection.vpc_network_acl_entry_updated_with_allow_public_access,
+    detection.vpc_security_group_ingress_egress_rule_authorized_to_allow_all,
   ]
 
   tags = merge(local.mitre_attack_v161_ta0005_t1562_common_tags, {
