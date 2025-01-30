@@ -28,5 +28,7 @@ benchmark "mitre_attack_v161_ta0040_t1565_003" {
     detection.vpc_route_table_route_disassociated,
   ]
 
-  tags = local.mitre_attack_v161_ta0040_t1565_common_tags
+  tags = merge(local.mitre_attack_v161_ta0040_t1565_common_tags, {
+    mitre_attack_technique_id = "T1565.003"
+  })
 }

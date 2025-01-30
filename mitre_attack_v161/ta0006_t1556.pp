@@ -17,7 +17,7 @@ benchmark "mitre_attack_v161_ta0006_t1556" {
 }
 
 benchmark "mitre_attack_v161_ta0006_t1556_003" {
-  title         = "T1556.004 Modify Authentication Process: Pluggable Authentication Modules"
+  title         = "T1556.003 Modify Authentication Process: Pluggable Authentication Modules"
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0006_t1556_003.md")
   children = [
@@ -25,13 +25,13 @@ benchmark "mitre_attack_v161_ta0006_t1556_003" {
   ]
 
   tags = merge(local.mitre_attack_v161_ta0006_t1556_common_tags, {
-    mitre_attack_technique_id = "T1556.004"
+    mitre_attack_technique_id = "T1556.003"
   })
 }
 
 
 benchmark "mitre_attack_v161_ta0006_t1556_006" {
-  title         = "T1556.004 Unsecured Credentials: Multi-Factor Authentication"
+  title         = "T1556.006 Unsecured Credentials: Multi-Factor Authentication"
   type          = "detection"
   documentation = file("./mitre_attack_v161/docs/ta0006_t1556_006.md")
   children = [

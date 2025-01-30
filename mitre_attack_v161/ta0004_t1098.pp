@@ -26,7 +26,9 @@ benchmark "mitre_attack_v161_ta0004_t1098_001" {
     detection.iam_user_login_profile_created,
   ]
 
-  tags = local.mitre_attack_v161_ta0004_t1098_common_tags
+  tags = merge(local.mitre_attack_v161_ta0004_t1098_common_tags, {
+    mitre_attack_technique_id = "T1098.001"
+  })
 }
 
 benchmark "mitre_attack_v161_ta0004_t1098_003" {
@@ -44,7 +46,9 @@ benchmark "mitre_attack_v161_ta0004_t1098_003" {
     detection.iam_user_managed_policy_attached,
   ]
 
-  tags = local.mitre_attack_v161_ta0004_t1098_common_tags
+  tags = merge(local.mitre_attack_v161_ta0004_t1098_common_tags, {
+    mitre_attack_technique_id = "T1098.003"
+  })
 }
 
 benchmark "mitre_attack_v161_ta0004_t1098_004" {
@@ -56,5 +60,7 @@ benchmark "mitre_attack_v161_ta0004_t1098_004" {
     detection.vpc_security_group_ingress_egress_rule_updated,
   ]
 
-  tags = local.mitre_attack_v161_ta0004_t1098_common_tags
+  tags = merge(local.mitre_attack_v161_ta0004_t1098_common_tags, {
+    mitre_attack_technique_id = "T1098.004"
+  })
 }
