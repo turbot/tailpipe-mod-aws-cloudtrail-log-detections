@@ -1,9 +1,10 @@
 dashboard "root_user_activity_report" {
 
-  title = "CloudTrail Log Root User Activity Report"
+  title         = "CloudTrail Log Root User Activity Report"
+  documentation = file("./dashboards/docs/root_user_activity_report.md")
 
   tags = {
-    type = "Report"
+    type    = "Report"
     service = "AWS/CloudTrail"
   }
 
@@ -33,7 +34,7 @@ dashboard "root_user_activity_report" {
     card {
       query = query.root_user_activity_report_total_logs
       width = 2
-      args  = [
+      args = [
         self.input.read_only.value,
         self.input.aws_accounts.value
       ]
@@ -44,7 +45,7 @@ dashboard "root_user_activity_report" {
     table {
       title = "Note: This table shows a maximum of 10,000 rows"
       query = query.root_user_activity_report_table
-      args  = [
+      args = [
         self.input.read_only.value,
         self.input.aws_accounts.value
       ]
