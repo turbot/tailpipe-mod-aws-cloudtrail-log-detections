@@ -1,3 +1,9 @@
+## v0.2.0 [2025-02-06]
+
+_Enhancements_
+
+- Add documentation for `activity_dashboard` and `root_user_activity_report` dashboards. ([#9](https://github.com/turbot/tailpipe-mod-aws-cloudtrail-log-detections/pull/9))
+
 ## v0.1.0 [2025-01-30]
 
 _What's new?_
