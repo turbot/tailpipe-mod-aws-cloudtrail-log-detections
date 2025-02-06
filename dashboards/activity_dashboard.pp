@@ -1,9 +1,10 @@
 dashboard "activity_dashboard" {
 
-  title = "CloudTrail Log Activity Dashboard"
+  title         = "CloudTrail Log Activity Dashboard"
+  documentation = file("./dashboards/docs/activity_dashboard.md")
 
   tags = {
-    type = "Dashboard"
+    type    = "Dashboard"
     service = "AWS/CloudTrail"
   }
 
