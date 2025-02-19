@@ -1,5 +1,6 @@
 locals {
   ec2_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "EC2"
     service = "AWS/EC2"
   })
 }
@@ -51,6 +52,8 @@ query "ec2_ami_shared_publicly" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.ec2_common_tags
 }
 
 detection "ec2_instance_launched_with_public_ip" {
@@ -83,6 +86,8 @@ query "ec2_instance_launched_with_public_ip" {
     order by
       tp_timestamp desc;
   EOQ
+
+  tags = local.ec2_common_tags
 }
 
 detection "ec2_reserved_instance_purchased" {
@@ -110,9 +115,7 @@ query "ec2_reserved_instance_purchased" {
       tp_timestamp desc;
   EOQ
 
-  tags = {
-    recommended = "true"
-  }
+  tags = local.ec2_common_tags
 }
 
 detection "ec2_key_pair_deleted" {
@@ -141,5 +144,6 @@ query "ec2_key_pair_deleted" {
     order by
       tp_timestamp desc;
   EOQ
-}
 
+  tags = local.ec2_common_tags
+}

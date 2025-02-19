@@ -65,6 +65,10 @@ query "root_user_activity_report_total_logs" {
       and recipient_account_id in $2
       and user_identity.type = 'Root'
   EOQ
+
+  tags = {
+    folder = "Internal"
+  }
 }
 
 query "root_user_activity_report_table" {
@@ -88,6 +92,10 @@ query "root_user_activity_report_table" {
       timestamp desc
     limit 10000;
   EOQ
+
+  tags = {
+    folder = "Internal"
+  }
 }
 
 # Input queries

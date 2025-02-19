@@ -77,6 +77,10 @@ query "activity_dashboard_total_logs" {
     from
       aws_cloudtrail_log;
   EOQ
+
+  tags = {
+    folder = "Account"
+  }
 }
 
 query "activity_dashboard_logs_by_source_ip" {
@@ -97,6 +101,10 @@ query "activity_dashboard_logs_by_source_ip" {
       count(*) desc
     limit 10;
   EOQ
+
+  tags = {
+    folder = "Account"
+  }
 }
 
 query "activity_dashboard_logs_by_actor" {
@@ -117,6 +125,10 @@ query "activity_dashboard_logs_by_actor" {
       count(*) desc
     limit 10;
   EOQ
+
+  tags = {
+    folder = "Account"
+  }
 }
 
 
@@ -137,6 +149,10 @@ query "activity_dashboard_logs_by_service" {
       count(*) desc
     limit 10;
   EOQ
+
+  tags = {
+    folder = "Account"
+  }
 }
 
 query "activity_dashboard_logs_by_event" {
@@ -156,8 +172,11 @@ query "activity_dashboard_logs_by_event" {
       count(*) desc
     limit 10;
   EOQ
-}
 
+  tags = {
+    folder = "Account"
+  }
+}
 
 query "activity_dashboard_logs_by_account" {
   title = "Activity by Account"
@@ -173,6 +192,10 @@ query "activity_dashboard_logs_by_account" {
     order by
       count(*) desc;
   EOQ
+
+  tags = {
+    folder = "Account"
+  }
 }
 
 query "activity_dashboard_logs_by_region" {
@@ -189,4 +212,8 @@ query "activity_dashboard_logs_by_region" {
     order by
       count(*) desc;
   EOQ
+
+  tags = {
+    folder = "Account"
+  }
 }

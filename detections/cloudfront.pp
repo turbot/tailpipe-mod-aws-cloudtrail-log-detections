@@ -1,5 +1,6 @@
 locals {
   cloudfront_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "CloudFront"
     service = "AWS/CloudFront"
   })
 
@@ -45,6 +46,8 @@ query "cloudfront_distribution_default_certificate_disabled" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.cloudfront_common_tags
 }
 
 detection "cloudfront_distribution_logging_disabled" {
@@ -73,4 +76,6 @@ query "cloudfront_distribution_logging_disabled" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.cloudfront_common_tags
 }
