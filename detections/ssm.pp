@@ -1,5 +1,6 @@
 locals {
   ssm_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "SSM"
     service = "AWS/SSM"
   })
 }
@@ -47,4 +48,6 @@ query "ssm_document_shared_publicly" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.ssm_common_tags
 }
