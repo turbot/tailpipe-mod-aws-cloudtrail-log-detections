@@ -94,7 +94,7 @@ query "root_user_activity_report_total_logs" {
       and ('all' in $2 or (recipient_account_id in $2))
       and ('all' in $3 or (event_name in $3))
       and ('all' in $4 or (source_ip_address in $4))
-      and (event_version = 'all' or (event_version in $5))
+      and ($5 = 'all' or (event_version in $5))
       --and user_identity.type = 'Root'
   EOQ
 }
@@ -117,7 +117,7 @@ query "root_user_activity_report_table" {
       and ('all' in $2 or (recipient_account_id in $2))
       and ('all' in $3 or (event_name in $3))
       and ('all' in $4 or (source_ip_address in $4))
-      and (event_version = 'all' or (event_version in $5))
+      and ($5 = 'all' or (event_version in $5))
       --and user_identity.type = 'Root'
     order by
       timestamp desc
