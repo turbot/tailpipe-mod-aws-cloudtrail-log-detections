@@ -67,7 +67,7 @@ query "root_user_activity_report_total_logs" {
   EOQ
 
   tags = {
-    folder = "Internal"
+    folder = "Hidden"
   }
 }
 
@@ -94,15 +94,13 @@ query "root_user_activity_report_table" {
   EOQ
 
   tags = {
-    folder = "Internal"
+    folder = "Hidden"
   }
 }
 
 # Input queries
 
 query "root_user_activity_report_aws_accounts_input" {
-  title = "Root User Activity Report AWS Accounts Input"
-
   sql = <<-EOQ
     with aws_account_ids as (
       select
@@ -120,6 +118,6 @@ query "root_user_activity_report_aws_accounts_input" {
   EOQ
 
   tags = {
-    folder = "Internal"
+    folder = "Hidden"
   }
 }
