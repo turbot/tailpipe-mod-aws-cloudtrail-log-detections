@@ -1,5 +1,6 @@
 locals {
   kms_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "KMS"
     service = "AWS/KMS"
   })
 }
@@ -43,4 +44,6 @@ query "kms_key_deletion_scheduled" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.kms_common_tags
 }

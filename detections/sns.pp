@@ -1,5 +1,6 @@
 locals {
   sns_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "SNS"
     service = "AWS/SNS"
   })
 }
@@ -45,7 +46,7 @@ query "sns_topic_granted_public_access" {
         and event_name = 'SetTopicAttributes'
         and (request_parameters ->> 'attributeName') = 'Policy'
     )
-    select      
+    select
       ${local.detection_sql_resource_column_request_parameters_topic_arn}
     from
       policy
@@ -56,4 +57,6 @@ query "sns_topic_granted_public_access" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.sns_common_tags
 }

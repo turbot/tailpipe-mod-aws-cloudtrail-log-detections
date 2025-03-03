@@ -1,5 +1,6 @@
 locals {
   guardduty_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "GuardDuty"
     service = "AWS/GuardDuty"
   })
 
@@ -44,4 +45,6 @@ query "guardduty_detector_deleted" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.guardduty_common_tags
 }

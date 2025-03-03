@@ -1,5 +1,6 @@
 locals {
   route_53_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "Route 53"
     service = "AWS/Route53"
   })
 }
@@ -71,6 +72,8 @@ query "route_53_domain_transferred" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.route_53_common_tags
 }
 
 query "route_53_domain_transfer_lock_disabled" {
@@ -86,6 +89,8 @@ query "route_53_domain_transfer_lock_disabled" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.route_53_common_tags
 }
 
 query "route_53_hosted_zone_associated_with_vpc" {
@@ -101,4 +106,6 @@ query "route_53_hosted_zone_associated_with_vpc" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.route_53_common_tags
 }

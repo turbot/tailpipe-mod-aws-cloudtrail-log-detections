@@ -1,5 +1,6 @@
 locals {
   sqs_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "SQS"
     service = "AWS/SQS"
   })
 }
@@ -45,6 +46,8 @@ query "sqs_queue_created_with_encryption_at_rest_disabled" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.sqs_common_tags
 }
 
 detection "sqs_queue_granted_public_access" {
@@ -86,6 +89,8 @@ query "sqs_queue_granted_public_access" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.sqs_common_tags
 }
 
 detection "sqs_queue_dlq_disabled" {
@@ -115,5 +120,6 @@ query "sqs_queue_dlq_disabled" {
     order by
       event_time desc;
   EOQ
-}
 
+  tags = local.sqs_common_tags
+}

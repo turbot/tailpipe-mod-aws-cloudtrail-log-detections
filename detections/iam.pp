@@ -1,5 +1,6 @@
 locals {
   iam_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "IAM"
     service = "AWS/IAM"
   })
 }
@@ -60,6 +61,8 @@ query "iam_user_mfa_device_deactivated" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.iam_common_tags
 }
 
 detection "iam_user_login_profile_created" {
@@ -88,6 +91,8 @@ query "iam_user_login_profile_created" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.iam_common_tags
 }
 
 detection "iam_root_user_email_address_updated" {
@@ -117,6 +122,8 @@ query "iam_root_user_email_address_updated" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.iam_common_tags
 }
 
 detection "iam_identity_created_without_cloudformation" {
@@ -153,6 +160,8 @@ query "iam_identity_created_without_cloudformation" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.iam_common_tags
 }
 
 /*
@@ -191,6 +200,8 @@ query "iam_user_login_profile_updated" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.iam_common_tags
 }
 
 detection "iam_user_password_changed" {
@@ -219,6 +230,8 @@ query "iam_user_password_changed" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.iam_common_tags
 }
 
 detection "iam_root_user_console_login" {
@@ -249,9 +262,7 @@ query "iam_root_user_console_login" {
       event_time desc;
   EOQ
 
-  tags = {
-    recommended = "true"
-  }
+  tags = local.iam_common_tags
 }
 
 detection "iam_access_key_created" {
@@ -280,6 +291,8 @@ query "iam_access_key_created" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.iam_common_tags
 }
 
 detection "iam_access_key_deleted" {
@@ -308,6 +321,8 @@ query "iam_access_key_deleted" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.iam_common_tags
 }
 
 detection "iam_user_inline_policy_updated" {
@@ -336,6 +351,8 @@ query "iam_user_inline_policy_updated" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.iam_common_tags
 }
 
 detection "iam_role_inline_policy_updated" {
@@ -364,6 +381,8 @@ query "iam_role_inline_policy_updated" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.iam_common_tags
 }
 
 detection "iam_group_inline_policy_updated" {
@@ -392,6 +411,8 @@ query "iam_group_inline_policy_updated" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.iam_common_tags
 }
 
 detection "iam_user_managed_policy_attached" {
@@ -420,6 +441,8 @@ query "iam_user_managed_policy_attached" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.iam_common_tags
 }
 
 detection "iam_role_managed_policy_attached" {
@@ -448,6 +471,8 @@ query "iam_role_managed_policy_attached" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.iam_common_tags
 }
 
 detection "iam_user_created" {
@@ -476,6 +501,8 @@ query "iam_user_created" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.iam_common_tags
 }
 
 detection "iam_user_administrator_policy_attached" {
@@ -505,6 +532,8 @@ query "iam_user_administrator_policy_attached" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.iam_common_tags
 }
 
 detection "iam_role_administrator_policy_attached" {
@@ -534,6 +563,8 @@ query "iam_role_administrator_policy_attached" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.iam_common_tags
 }
 
 detection "iam_group_administrator_policy_attached" {
@@ -563,4 +594,6 @@ query "iam_group_administrator_policy_attached" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.iam_common_tags
 }
