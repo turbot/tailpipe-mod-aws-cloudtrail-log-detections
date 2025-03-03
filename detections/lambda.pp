@@ -1,5 +1,6 @@
 locals {
   lambda_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "Lambda"
     service = "AWS/Lambda"
   })
 }
@@ -45,6 +46,8 @@ query "lambda_function_granted_public_access" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.lambda_common_tags
 }
 
 detection "lambda_function_created_with_function_code_encryption_at_rest_disabled" {
@@ -74,4 +77,6 @@ query "lambda_function_created_with_function_code_encryption_at_rest_disabled" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.lambda_common_tags
 }

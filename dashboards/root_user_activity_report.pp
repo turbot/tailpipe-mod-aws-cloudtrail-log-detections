@@ -65,6 +65,10 @@ query "root_user_activity_report_total_logs" {
       and recipient_account_id in $2
       and user_identity.type = 'Root'
   EOQ
+
+  tags = {
+    folder = "Hidden"
+  }
 }
 
 query "root_user_activity_report_table" {
@@ -88,13 +92,15 @@ query "root_user_activity_report_table" {
       timestamp desc
     limit 10000;
   EOQ
+
+  tags = {
+    folder = "Hidden"
+  }
 }
 
 # Input queries
 
 query "root_user_activity_report_aws_accounts_input" {
-  title = "Root User Activity Report AWS Accounts Input"
-
   sql = <<-EOQ
     with aws_account_ids as (
       select
@@ -112,6 +118,6 @@ query "root_user_activity_report_aws_accounts_input" {
   EOQ
 
   tags = {
-    folder = "Internal"
+    folder = "Hidden"
   }
 }

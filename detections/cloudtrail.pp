@@ -1,5 +1,6 @@
 locals {
   cloudtrail_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "CloudTrail"
     service = "AWS/CloudTrail"
   })
 
@@ -48,9 +49,7 @@ query "cloudtrail_trail_logging_stopped" {
       event_time desc;
   EOQ
 
-  tags = {
-    recommended = "true"
-  }
+  tags = local.cloudtrail_common_tags
 }
 
 detection "cloudtrail_trail_kms_key_updated" {
@@ -83,6 +82,8 @@ query "cloudtrail_trail_kms_key_updated" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.cloudtrail_common_tags
 }
 
 detection "cloudtrail_trail_s3_logging_bucket_updated" {
@@ -115,6 +116,8 @@ query "cloudtrail_trail_s3_logging_bucket_updated" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.cloudtrail_common_tags
 }
 
 detection "cloudtrail_trail_global_service_logging_disabled" {
@@ -139,11 +142,13 @@ query "cloudtrail_trail_global_service_logging_disabled" {
     where
       event_source = 'cloudtrail.amazonaws.com'
       and event_name = 'UpdateTrail'
-      and (request_parameters -> 'includeGlobalServiceEvents') = 'false'
+      and (request_parameters -> 'includeGlobalServiceEvents') = false
       -- here we exclude console-based events by requiring 'session_credential_from_console' to be null, because console requests show all fields while CLI only shows updated fields.
       and session_credential_from_console is null
       ${local.detection_sql_where_conditions}
     order by
       event_time desc;
   EOQ
+
+  tags = local.cloudtrail_common_tags
 }

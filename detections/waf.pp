@@ -1,5 +1,6 @@
 locals {
   waf_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "WAF"
     service = "AWS/WAF"
   })
 }
@@ -46,6 +47,8 @@ query "waf_web_acl_logging_disabled" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.waf_common_tags
 }
 
 detection "waf_web_acl_disassociated_from_cloudfront_distribution" {
@@ -75,6 +78,8 @@ query "waf_web_acl_disassociated_from_cloudfront_distribution" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.waf_common_tags
 }
 
 detection "waf_web_acl_disassociated_from_elb_application_load_balancer" {
@@ -104,5 +109,6 @@ query "waf_web_acl_disassociated_from_elb_application_load_balancer" {
     order by
       event_time desc;
   EOQ
-}
 
+  tags = local.waf_common_tags
+}

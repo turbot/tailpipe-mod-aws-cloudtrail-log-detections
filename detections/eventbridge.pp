@@ -1,5 +1,6 @@
 locals {
   eventbridge_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "EventBridge"
     service = "AWS/EventBridge"
   })
 
@@ -58,6 +59,8 @@ query "eventbridge_rule_disabled" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.eventbridge_common_tags
 }
 
 query "eventbridge_rule_deleted" {
@@ -73,4 +76,6 @@ query "eventbridge_rule_deleted" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.eventbridge_common_tags
 }

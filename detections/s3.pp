@@ -1,5 +1,6 @@
 locals {
   s3_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "S3"
     service = "AWS/S3"
   })
 }
@@ -18,7 +19,6 @@ benchmark "s3_detections" {
 
   tags = merge(local.s3_common_tags, {
     type    = "Benchmark"
-    service = "AWS/S3"
   })
 }
 
@@ -48,6 +48,8 @@ query "s3_bucket_deleted" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.s3_common_tags
 }
 
 detection "s3_bucket_policy_updated" {
@@ -76,6 +78,8 @@ query "s3_bucket_policy_updated" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.s3_common_tags
 }
 
 detection "s3_bucket_policy_granted_public_access" {
@@ -107,8 +111,9 @@ query "s3_bucket_policy_granted_public_access" {
     order by
       event_time desc;
   EOQ
-}
 
+  tags = local.s3_common_tags
+}
 
 detection "s3_bucket_block_public_access_disabled" {
   title           = "S3 Bucket Block Public Access Disabled"
@@ -141,6 +146,8 @@ query "s3_bucket_block_public_access_disabled" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.s3_common_tags
 }
 
 detection "s3_large_file_downloaded" {
@@ -170,5 +177,6 @@ query "s3_large_file_downloaded" {
     order by
       event_time desc;
   EOQ
-}
 
+  tags = local.s3_common_tags
+}

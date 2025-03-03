@@ -1,5 +1,6 @@
 locals {
   vpc_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "VPC"
     service = "AWS/VPC"
   })
 }
@@ -57,6 +58,8 @@ query "vpc_security_group_deleted" {
       ${local.detection_sql_where_conditions}
     order by event_time desc;
   EOQ
+
+  tags = local.vpc_common_tags
 }
 
 detection "vpc_internet_gateway_added_to_public_route_table" {
@@ -86,6 +89,8 @@ query "vpc_internet_gateway_added_to_public_route_table" {
       ${local.detection_sql_where_conditions}
     order by event_time desc;
   EOQ
+
+  tags = local.vpc_common_tags
 }
 
 detection "vpc_route_table_deleted" {
@@ -257,6 +262,8 @@ query "vpc_route_table_deleted" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.vpc_common_tags
 }
 
 query "vpc_route_table_route_deleted" {
@@ -272,6 +279,8 @@ query "vpc_route_table_route_deleted" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.vpc_common_tags
 }
 
 query "vpc_route_table_route_disassociated" {
@@ -287,6 +296,8 @@ query "vpc_route_table_route_disassociated" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.vpc_common_tags
 }
 
 query "vpc_route_table_association_replaced" {
@@ -302,6 +313,8 @@ query "vpc_route_table_association_replaced" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.vpc_common_tags
 }
 
 query "vpc_created" {
@@ -317,6 +330,8 @@ query "vpc_created" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.vpc_common_tags
 }
 
 query "vpc_deleted" {
@@ -332,6 +347,8 @@ query "vpc_deleted" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.vpc_common_tags
 }
 
 query "vpc_classic_link_enabled" {
@@ -347,6 +364,8 @@ query "vpc_classic_link_enabled" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.vpc_common_tags
 }
 
 query "vpc_peering_connection_deleted" {
@@ -362,6 +381,8 @@ query "vpc_peering_connection_deleted" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.vpc_common_tags
 }
 
 query "vpc_flow_log_deleted" {
@@ -377,6 +398,8 @@ query "vpc_flow_log_deleted" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.vpc_common_tags
 }
 
 query "vpc_security_group_ingress_egress_rule_authorized_to_allow_all" {
@@ -395,9 +418,7 @@ query "vpc_security_group_ingress_egress_rule_authorized_to_allow_all" {
       event_time desc;
   EOQ
 
-  tags = {
-    recommended = "true"
-  }
+  tags = local.vpc_common_tags
 }
 
 query "vpc_security_group_ingress_egress_rule_updated" {
@@ -413,6 +434,8 @@ query "vpc_security_group_ingress_egress_rule_updated" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.vpc_common_tags
 }
 
 query "vpc_network_acl_entry_updated" {
@@ -428,6 +451,8 @@ query "vpc_network_acl_entry_updated" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.vpc_common_tags
 }
 
 detection "vpc_network_acl_entry_updated_with_allow_public_access" {
@@ -455,9 +480,11 @@ query "vpc_network_acl_entry_updated_with_allow_public_access" {
       and (request_parameters ->> 'ruleAction') = 'allow'
       and ((request_parameters ->> 'cidrBlock') = '0.0.0.0/0' or (request_parameters ->> 'ipv6CidrBlock') = '::/0')
       ${local.detection_sql_where_conditions}
-    order by 
+    order by
       event_time desc;
   EOQ
+
+  tags = local.vpc_common_tags
 }
 
 detection "vpc_internet_gateway_detached" {
@@ -483,8 +510,9 @@ query "vpc_internet_gateway_detached" {
       event_source = 'ec2.amazonaws.com'
       and event_name = 'DetachInternetGateway'
       ${local.detection_sql_where_conditions}
-    order by 
+    order by
       event_time desc;
   EOQ
-}
 
+  tags = local.vpc_common_tags
+}

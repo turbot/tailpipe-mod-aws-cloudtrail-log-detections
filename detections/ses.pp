@@ -1,5 +1,6 @@
 locals {
   ses_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "SES"
     service = "AWS/SES"
   })
 }
@@ -44,4 +45,6 @@ query "ses_identity_feedback_forwarding_disabled" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.ses_common_tags
 }

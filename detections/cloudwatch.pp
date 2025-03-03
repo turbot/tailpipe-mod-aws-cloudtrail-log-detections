@@ -1,5 +1,6 @@
 locals {
   cloudwatch_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "CloudWatch"
     service = "AWS/CloudWatch"
   })
 }
@@ -44,4 +45,6 @@ query "cloudwatch_log_group_created_with_encryption_disabled" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.cloudwatch_common_tags
 }

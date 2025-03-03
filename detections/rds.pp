@@ -1,5 +1,6 @@
 locals {
   rds_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "RDS"
     service = "AWS/RDS"
   })
 }
@@ -49,6 +50,8 @@ query "rds_db_instance_assigned_public_ip_address" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.rds_common_tags
 }
 
 detection "rds_db_instance_master_password_updated" {
@@ -78,6 +81,8 @@ query "rds_db_instance_master_password_updated" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.rds_common_tags
 }
 
 detection "rds_db_instance_restored_from_public_snapshot" {
@@ -105,6 +110,8 @@ query "rds_db_instance_restored_from_public_snapshot" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.rds_common_tags
 }
 
 detection "rds_db_cluster_deletion_protection_disabled" {
@@ -134,6 +141,8 @@ query "rds_db_cluster_deletion_protection_disabled" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.rds_common_tags
 }
 
 detection "rds_db_instance_iam_authentication_disabled" {
@@ -163,6 +172,8 @@ query "rds_db_instance_iam_authentication_disabled" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.rds_common_tags
 }
 
 detection "rds_db_instance_deletion_protection_disabled" {
@@ -192,4 +203,6 @@ query "rds_db_instance_deletion_protection_disabled" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.rds_common_tags
 }

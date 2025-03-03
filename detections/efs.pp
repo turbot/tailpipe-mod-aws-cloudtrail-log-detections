@@ -1,5 +1,6 @@
 locals {
   efs_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "EFS"
     service = "AWS/EFS"
   })
 
@@ -45,4 +46,6 @@ query "efs_file_system_backup_policy_disabled" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.efs_common_tags
 }

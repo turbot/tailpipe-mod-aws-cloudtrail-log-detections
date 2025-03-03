@@ -1,5 +1,6 @@
 locals {
   ebs_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "EBS"
     service = "AWS/EBS"
   })
 }
@@ -47,6 +48,8 @@ query "ebs_encryption_by_default_disabled" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.ebs_common_tags
 }
 
 detection "ebs_volume_detached" {
@@ -75,6 +78,8 @@ query "ebs_volume_detached" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.ebs_common_tags
 }
 
 detection "ebs_snapshot_shared_publicly" {
@@ -108,9 +113,7 @@ query "ebs_snapshot_shared_publicly" {
       event_time desc;
   EOQ
 
-  tags = {
-    recommended  = "true"
-  }
+  tags = local.ebs_common_tags
 }
 
 detection "ebs_snapshot_created_with_encryption_disabled" {
@@ -140,6 +143,8 @@ query "ebs_snapshot_created_with_encryption_disabled" {
     order by
       tp_timestamp desc;
   EOQ
+
+  tags = local.ebs_common_tags
 }
 
 detection "ebs_snapshot_unlocked" {
@@ -168,4 +173,6 @@ query "ebs_snapshot_unlocked" {
     order by
       tp_timestamp desc;
   EOQ
+
+  tags = local.ebs_common_tags
 }

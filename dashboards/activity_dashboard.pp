@@ -69,7 +69,8 @@ dashboard "activity_dashboard" {
 # Query definitions
 
 query "activity_dashboard_total_logs" {
-  title = "Log Count"
+  title       = "Log Count"
+  description = "Count the total log entries."
 
   sql = <<-EOQ
     select
@@ -77,10 +78,15 @@ query "activity_dashboard_total_logs" {
     from
       aws_cloudtrail_log;
   EOQ
+
+  tags = {
+    folder = "Account"
+  }
 }
 
 query "activity_dashboard_logs_by_source_ip" {
-  title = "Top 10 Source IPs (Non-AWS)"
+  title       = "Top 10 Source IPs (Excluding AWS Services and Internal)"
+  description = "List the top 10 source IPs by frequency, excluding events from AWS services and internal."
 
   sql = <<-EOQ
     select
@@ -97,10 +103,15 @@ query "activity_dashboard_logs_by_source_ip" {
       count(*) desc
     limit 10;
   EOQ
+
+  tags = {
+    folder = "Account"
+  }
 }
 
 query "activity_dashboard_logs_by_actor" {
-  title = "Top 10 Actors (Non-AWS)"
+  title       = "Top 10 Actors (Excluding AWS Services)"
+  description = "List the top 10 actors by frequency, excluding AWS services and service roles."
 
   sql = <<-EOQ
     select
@@ -117,11 +128,15 @@ query "activity_dashboard_logs_by_actor" {
       count(*) desc
     limit 10;
   EOQ
+
+  tags = {
+    folder = "Account"
+  }
 }
 
-
 query "activity_dashboard_logs_by_service" {
-  title = "Top 10 Services"
+  title       = "Top 10 Services (Excluding Read-Only)"
+  description = "List the top 10 services by frequency, excluding read-only events."
 
   sql = <<-EOQ
     select
@@ -137,10 +152,15 @@ query "activity_dashboard_logs_by_service" {
       count(*) desc
     limit 10;
   EOQ
+
+  tags = {
+    folder = "Account"
+  }
 }
 
 query "activity_dashboard_logs_by_event" {
-  title = "Top 10 Events"
+  title       = "Top 10 Events (Excluding Read-Only)"
+  description = "List the 10 most frequently called events, excluding read-only events."
 
   sql = <<-EOQ
     select
@@ -156,11 +176,15 @@ query "activity_dashboard_logs_by_event" {
       count(*) desc
     limit 10;
   EOQ
+
+  tags = {
+    folder = "Account"
+  }
 }
 
-
 query "activity_dashboard_logs_by_account" {
-  title = "Activity by Account"
+  title       = "Logs by Account"
+  description = "Count log entries grouped by account ID."
 
   sql = <<-EOQ
     select
@@ -173,10 +197,15 @@ query "activity_dashboard_logs_by_account" {
     order by
       count(*) desc;
   EOQ
+
+  tags = {
+    folder = "Account"
+  }
 }
 
 query "activity_dashboard_logs_by_region" {
-  title = "Activity by Region"
+  title       = "Logs by Region"
+  description = "Count log entries grouped by region."
 
   sql = <<-EOQ
     select
@@ -189,4 +218,8 @@ query "activity_dashboard_logs_by_region" {
     order by
       count(*) desc;
   EOQ
+
+  tags = {
+    folder = "Account"
+  }
 }

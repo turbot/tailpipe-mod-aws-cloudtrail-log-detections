@@ -1,5 +1,6 @@
 locals {
   codebuild_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "CodeBuild"
     service = "AWS/CodeBuild"
   })
 
@@ -48,6 +49,8 @@ query "codebuild_project_visibility_set_public" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.codebuild_common_tags
 }
 
 detection "codebuild_project_service_role_updated" {
@@ -77,6 +80,8 @@ query "codebuild_project_service_role_updated" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.codebuild_common_tags
 }
 
 detection "codebuild_project_source_repository_updated" {
@@ -106,6 +111,8 @@ query "codebuild_project_source_repository_updated" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.codebuild_common_tags
 }
 
 detection "codebuild_project_environment_variable_updated" {
@@ -135,4 +142,6 @@ query "codebuild_project_environment_variable_updated" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.codebuild_common_tags
 }

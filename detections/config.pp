@@ -1,5 +1,6 @@
 locals {
   config_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "Config"
     service = "AWS/Config"
   })
 
@@ -45,6 +46,8 @@ query "config_rule_deleted" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.config_common_tags
 }
 
 detection "config_configuration_recorder_stopped" {
@@ -73,4 +76,6 @@ query "config_configuration_recorder_stopped" {
     order by
       event_time desc;
   EOQ
+
+  tags = local.config_common_tags
 }
