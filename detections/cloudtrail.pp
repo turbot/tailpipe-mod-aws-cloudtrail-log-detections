@@ -142,7 +142,7 @@ query "cloudtrail_trail_global_service_logging_disabled" {
     where
       event_source = 'cloudtrail.amazonaws.com'
       and event_name = 'UpdateTrail'
-      and (request_parameters -> 'includeGlobalServiceEvents') = 'false'
+      and (request_parameters -> 'includeGlobalServiceEvents') = false
       -- here we exclude console-based events by requiring 'session_credential_from_console' to be null, because console requests show all fields while CLI only shows updated fields.
       and session_credential_from_console is null
       ${local.detection_sql_where_conditions}
