@@ -14,6 +14,7 @@ benchmark "ec2_detections" {
     detection.ec2_instance_launched_with_public_ip,
     detection.ec2_key_pair_deleted,
     detection.ec2_reserved_instance_purchased,
+    detection.ec2_spot_instance_interrupted,
   ]
 
   tags = merge(local.ec2_common_tags, {
@@ -90,6 +91,36 @@ query "ec2_instance_launched_with_public_ip" {
   tags = local.ec2_common_tags
 }
 
+detection "ec2_key_pair_deleted" {
+  title           = "EC2 Key Pair Deleted"
+  description     = "Detect when an EC2 key pair was deleted. Deleting key pairs may remove access to instances configured to use the key, potentially leading to disruption or unauthorized access attempts."
+  documentation   = file("./detections/docs/ec2_key_pair_deleted.md")
+  severity        = "low"
+  display_columns = local.detection_display_columns
+  query           = query.ec2_key_pair_deleted
+
+  tags = merge(local.ec2_common_tags, {
+    mitre_attack_ids = "TA0040:T1531"
+  })
+}
+
+query "ec2_key_pair_deleted" {
+  sql = <<-EOQ
+    select
+      ${local.detection_sql_resource_column_request_parameters_key_name}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'ec2.amazonaws.com'
+      and event_name = 'DeleteKeyPair'
+      ${local.detection_sql_where_conditions}
+    order by
+      tp_timestamp desc;
+  EOQ
+
+  tags = local.ec2_common_tags
+}
+
 detection "ec2_reserved_instance_purchased" {
   title           = "EC2 Reserved Instance Purchased"
   description     = "Detect when an EC2 Reserved Instance was purchased. Purchasing reserved instances may indicate changes in resource planning or cost management strategies, which should be reviewed for compliance and alignment with organizational policies."
@@ -118,31 +149,37 @@ query "ec2_reserved_instance_purchased" {
   tags = local.ec2_common_tags
 }
 
-detection "ec2_key_pair_deleted" {
-  title           = "EC2 Key Pair Deleted"
-  description     = "Detect when an EC2 key pair was deleted. Deleting key pairs may remove access to instances configured to use the key, potentially leading to disruption or unauthorized access attempts."
-  documentation   = file("./detections/docs/ec2_key_pair_deleted.md")
+detection "ec2_spot_instance_interrupted" {
+  title           = "EC2 Spot Instance Interrupted"
+  description     = "Detect when EC2 spot instances are interrupted. Spot instance interruptions can disrupt workloads if not properly handled, potentially causing service outages or data loss if applications aren't designed for graceful termination."
+  documentation   = file("./detections/docs/ec2_spot_instance_interrupted.md")
   severity        = "low"
   display_columns = local.detection_display_columns
-  query           = query.ec2_key_pair_deleted
+  query           = query.ec2_spot_instance_interrupted
 
   tags = merge(local.ec2_common_tags, {
-    mitre_attack_ids = "TA0040:T1531"
+    mitre_attack_ids = "TA0040:T1496"
   })
 }
 
-query "ec2_key_pair_deleted" {
+query "ec2_spot_instance_interrupted" {
   sql = <<-EOQ
     select
-      ${local.detection_sql_resource_column_request_parameters_key_name}
+      ${local.detection_sql_resource_column_request_parameters_instance_id}
     from
       aws_cloudtrail_log
     where
       event_source = 'ec2.amazonaws.com'
-      and event_name = 'DeleteKeyPair'
+      and (
+        event_name = 'CancelSpotInstanceRequests'
+        or (
+          event_name = 'TerminateInstances' 
+          and json_contains(request_parameters, 'spotInstanceRequestId')
+        )
+      )
       ${local.detection_sql_where_conditions}
     order by
-      tp_timestamp desc;
+      event_time desc;
   EOQ
 
   tags = local.ec2_common_tags
