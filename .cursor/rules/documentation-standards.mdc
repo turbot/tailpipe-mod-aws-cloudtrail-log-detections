@@ -1,0 +1,30 @@
+---
+description: Documentation Standards
+globs: ["**/docs/*.md"]
+alwaysApply: true
+---
+
+When writing detection documentation:
+
+1. File Location:
+- Place in detections/docs/{detection_name}.md
+- Use same name as detection file
+
+2. Documentation Structure:
+```markdown
+## Overview
+
+Detect when [specific event occurs]. [Impact description]. [Purpose/benefit].
+
+**References**:
+- [Title](url)
+```
+
+3. Content Requirements:
+- Overview should be 2-3 sentences
+- First sentence describes what is being detected
+- Second sentence describes impact
+- Third sentence describes purpose/benefit
+- Include relevant AWS documentation links
+- Include related AWS CLI command references
+- Use proper markdown formatting 

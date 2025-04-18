@@ -1,0 +1,33 @@
+---
+description: Detection Naming and Structure Standards
+globs: ["**/*.pp"]
+alwaysApply: true
+---
+
+When working with detection files:
+
+1. File Naming:
+- Use lowercase with underscores (e.g., cloudtrail.pp, route_53.pp)
+- Place all detection files in detections/ directory
+- Place documentation in detections/docs/ directory
+
+2. Detection Block Structure:
+- Name format must be: detection "{service}_{specific_event}"
+- Names should be descriptive and action-oriented
+- Always include service prefix in name
+- Use lowercase with underscores throughout
+
+Required fields and order:
+```hcl
+detection "service_event_name" {
+  title           = "Title in Title Case"
+  description     = "Single sentence starting with 'Detect when...'"
+  documentation   = file("./detections/docs/detection_name.md")
+  severity        = "low|medium|high|critical"
+  display_columns = local.detection_display_columns
+  query           = query.matching_query_name
+  tags = merge(local.service_common_tags, {
+    mitre_attack_ids = "TAXXXX:TXXXX.XXX"
+  })
+}
+``` 

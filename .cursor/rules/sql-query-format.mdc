@@ -1,0 +1,40 @@
+---
+description: Query Standards and SQL Formatting
+globs: ["**/*.pp"]
+alwaysApply: true
+---
+
+When writing queries:
+
+1. Query Naming:
+- Must match the associated detection name exactly
+- Use lowercase with underscores
+
+2. SQL Structure Template:
+```hcl
+query "service_event_name" {
+  sql = <<-EOQ
+    select
+      ${local.detection_sql_resource_column_request_parameters_name}
+    from
+      aws_cloudtrail_log
+    where
+      event_source = 'service.amazonaws.com'
+      and event_name = 'SpecificEvent'
+      ${local.detection_sql_where_conditions}
+    order by
+      event_time desc;
+  EOQ
+
+  tags = local.service_common_tags
+}
+```
+
+3. SQL Formatting Rules:
+- Use 2-space indentation
+- Write keywords in lowercase
+- Place one condition per line
+- Always use <<-EOQ heredoc syntax
+- Include order by event_time desc
+- Use consistent column aliases
+- Add comments for non-obvious conditions using --

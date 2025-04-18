@@ -1,0 +1,24 @@
+---
+description: Tags and Locals Standards
+globs: ["**/*.pp"]
+alwaysApply: true
+---
+
+When defining tags and locals:
+
+1. Common Tags Structure:
+```hcl
+locals {
+  service_common_tags = merge(local.aws_cloudtrail_log_detections_common_tags, {
+    folder  = "ServiceName"
+    service = "AWS/ServiceName"
+  })
+}
+```
+
+2. Tag Requirements:
+- Always include folder and service tags
+- Use MITRE ATT&CK IDs where applicable
+- Maintain consistent tag structure across files
+- Use merge() for combining tags
+- Keep tags organized and minimal 

@@ -1,0 +1,33 @@
+---
+description: Benchmark Structure and Standards
+globs: ["**/*.pp"]
+alwaysApply: true
+---
+
+When creating benchmarks:
+
+1. Naming Convention:
+- Use format: benchmark "{service}_detections"
+- Use lowercase with underscores
+- Must end with "_detections"
+
+2. Structure Template:
+```hcl
+benchmark "service_detections" {
+  title       = "Service Name Detections"
+  description = "One-line description of the benchmark scope"
+  type        = "detection"
+  children    = [
+    detection.detection_name_1,
+    detection.detection_name_2
+  ]
+  tags = merge(local.service_common_tags, {
+    type = "Benchmark"
+  })
+}
+```
+
+3. Organization:
+- List all related detections in children block
+- Keep descriptions concise and focused on scope
+- Always include type = "detection" 

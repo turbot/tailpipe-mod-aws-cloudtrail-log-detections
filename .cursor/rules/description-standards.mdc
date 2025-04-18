@@ -1,0 +1,24 @@
+---
+description: Description Writing Standards
+globs: ["**/*.pp"]
+alwaysApply: true
+---
+
+When writing detection descriptions:
+
+1. Format Requirements:
+- Start with "Detect when..."
+- Include purpose using "to check for..."
+- End with potential impact using "potentially..."
+- Keep to a single sentence
+- Be specific about the event being detected
+
+2. Example Structure:
+"Detect when [specific event] to check for [potential issue], potentially [impact]."
+
+3. Style Guidelines:
+- Be clear and concise
+- Focus on security impact
+- Use active voice
+- Avoid technical jargon unless necessary
+- Include both the what and why of the detection 
